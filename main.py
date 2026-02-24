@@ -649,7 +649,7 @@ def render_quality(prof, label):
                 yaxis=dict(title='Registros', gridcolor=C['grid']),
                 yaxis2=dict(title='Crecimiento %', overlaying='y', side='right',
                             gridcolor='rgba(0,0,0,0)', ticksuffix='%',
-                            titlefont=dict(color=C['accent']),
+                            title_font=dict(color=C['accent']),
                             tickfont=dict(color=C['accent'])),
                 legend=dict(orientation='h', y=-0.15),
                 bargap=.15)
