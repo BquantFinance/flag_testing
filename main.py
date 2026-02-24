@@ -130,9 +130,26 @@ div[data-testid="stExpander"] {{ background:{C['card']}!important; border:1px so
 }}
 .hero-sub {{
     font-family:'JetBrains Mono',monospace; font-size:.65rem; color:{C['muted']};
-    letter-spacing:.2em; text-transform:uppercase;
+    letter-spacing:.2em; text-transform:uppercase; margin-bottom:.4rem;
 }}
+.hero-context {{
+    font-family:'Outfit',sans-serif; font-size:.92rem; color:{C['text2']};
+    max-width:700px; margin:0 auto; line-height:1.6; padding:0 1rem;
+}}
+.hero-context b {{ color:{C['text']} }}
 .hero-line {{ height:1px; background:linear-gradient(90deg,transparent,{C['border2']},transparent); margin:1.5rem auto; max-width:500px }}
+
+.intro-q {{
+    background:{C['card']}; border:1px solid {C['border']}; border-radius:10px;
+    padding:20px 24px; margin:8px 0; font-size:.84rem; color:{C['text']};
+    line-height:1.7; position:relative; overflow:hidden;
+}}
+.intro-q::before {{
+    content:''; position:absolute; top:0;left:0;bottom:0; width:3px;
+    background:linear-gradient(180deg,{C['accent']},{C['accent4']});
+}}
+.intro-q b {{ color:{C['accent']} }}
+.intro-q .iq-icon {{ font-size:1.1rem; margin-right:8px }}
 
 .sec {{
     font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:600; color:{C['accent']};
@@ -235,31 +252,31 @@ def discover_flags():
 
 FLAG_INFO = {
     # F1–F5 individual flags
-    'flag1_recien_creada':     {'label':'F1 Recién creada',       'icon':'🆕', 'css':'fb-r',  'short':'F1'},
-    'flag2_capital_ridiculo':  {'label':'F2 Capital ridículo',    'icon':'💰', 'css':'fb-w',  'short':'F2'},
-    'flag3_multi_admin':       {'label':'F3 Multi-admin',         'icon':'👥', 'css':'fb-p',  'short':'F3'},
-    'flag4_disolucion':        {'label':'F4 Disolución',          'icon':'💀', 'css':'fb-r',  'short':'F4'},
-    'flag5_concursal':         {'label':'F5 Concursal',           'icon':'⚖️', 'css':'fb-r',  'short':'F5'},
+    'flag1_recien_creada':     {'label':'Empresa recién creada',              'icon':'🆕', 'css':'fb-r',  'short':'F1'},
+    'flag2_capital_ridiculo':  {'label':'Capital social mínimo',              'icon':'💰', 'css':'fb-w',  'short':'F2'},
+    'flag3_multi_admin':       {'label':'Cambios frecuentes de administrador','icon':'👥', 'css':'fb-p',  'short':'F3'},
+    'flag4_disolucion':        {'label':'Empresa en disolución',              'icon':'💀', 'css':'fb-r',  'short':'F4'},
+    'flag5_concursal':         {'label':'Empresa en concurso de acreedores',  'icon':'⚖️', 'css':'fb-r',  'short':'F5'},
     # F6 network
-    'flag6_admin_network':     {'label':'F6 Red admin (detalle)', 'icon':'🕸️', 'css':'fb-b',  'short':'F6'},
-    'flag6_admin_network_cat': {'label':'F6 Red admin CAT',       'icon':'🕸️', 'css':'fb-b',  'short':'F6'},
-    'flag6_pares_unicos':      {'label':'F6 Pares empresas',      'icon':'🔗', 'css':'fb-b',  'short':'F6'},
-    'flag6_pares_cat':         {'label':'F6 Pares CAT',           'icon':'🔗', 'css':'fb-b',  'short':'F6'},
-    'flag6_personas_resumen':  {'label':'F6 Personas ranking',    'icon':'👤', 'css':'fb-b',  'short':'F6'},
-    'flag6_personas_cat':      {'label':'F6 Personas CAT',        'icon':'👤', 'css':'fb-b',  'short':'F6'},
+    'flag6_admin_network':     {'label':'Administrador compartido (detalle)', 'icon':'🕸️', 'css':'fb-b',  'short':'F6'},
+    'flag6_admin_network_cat': {'label':'Administrador compartido CAT',       'icon':'🕸️', 'css':'fb-b',  'short':'F6'},
+    'flag6_pares_unicos':      {'label':'Pares de empresas sospechosos',      'icon':'🔗', 'css':'fb-b',  'short':'F6'},
+    'flag6_pares_cat':         {'label':'Pares sospechosos CAT',              'icon':'🔗', 'css':'fb-b',  'short':'F6'},
+    'flag6_personas_resumen':  {'label':'Personas con más conexiones',        'icon':'👤', 'css':'fb-b',  'short':'F6'},
+    'flag6_personas_cat':      {'label':'Personas con más conexiones CAT',    'icon':'👤', 'css':'fb-b',  'short':'F6'},
     # F7–F11
-    'flag7_concentracion':     {'label':'F7 Concentración',       'icon':'🎯', 'css':'fb-g',  'short':'F7'},
-    'flag7_concentracion_cat': {'label':'F7 Concentración CAT',   'icon':'🎯', 'css':'fb-g',  'short':'F7'},
-    'flag8_utes_sospechosas':  {'label':'F8 UTEs sospechosas',    'icon':'🤝', 'css':'fb-w',  'short':'F8'},
-    'flag8_utes_cat':          {'label':'F8 UTEs CAT',            'icon':'🤝', 'css':'fb-w',  'short':'F8'},
-    'flag9_geo_discrepancia':  {'label':'F9 Discrepancia geo',    'icon':'📍', 'css':'fb-p',  'short':'F9'},
-    'flag10_troceo_cat':       {'label':'F10 Troceo CAT',         'icon':'✂️', 'css':'fb-r',  'short':'F10'},
-    'flag11_modificaciones_cat':{'label':'F11 Modificaciones CAT','icon':'📝', 'css':'fb-w',  'short':'F11'},
+    'flag7_concentracion':     {'label':'Empresa dominante en un órgano',     'icon':'🎯', 'css':'fb-g',  'short':'F7'},
+    'flag7_concentracion_cat': {'label':'Empresa dominante en órgano CAT',    'icon':'🎯', 'css':'fb-g',  'short':'F7'},
+    'flag8_utes_sospechosas':  {'label':'UTEs con miembros vinculados',       'icon':'🤝', 'css':'fb-w',  'short':'F8'},
+    'flag8_utes_cat':          {'label':'UTEs con miembros vinculados CAT',   'icon':'🤝', 'css':'fb-w',  'short':'F8'},
+    'flag9_geo_discrepancia':  {'label':'Empresa lejos de donde contrata',    'icon':'📍', 'css':'fb-p',  'short':'F9'},
+    'flag10_troceo_cat':       {'label':'Posible fraccionamiento de contratos','icon':'✂️','css':'fb-r',  'short':'F10'},
+    'flag11_modificaciones_cat':{'label':'Modificaciones contractuales excesivas','icon':'📝','css':'fb-w','short':'F11'},
     # Scoring & grupos
-    'risk_scoring_unificado':  {'label':'Scoring unificado',      'icon':'📊', 'css':'fb-r',  'short':'Risk'},
-    'risk_scoring_cat':        {'label':'Scoring CAT',            'icon':'📊', 'css':'fb-r',  'short':'Risk'},
-    'grupos_corporativos':     {'label':'Grupos corporativos',    'icon':'🏢', 'css':'fb-b',  'short':'Grp'},
-    'grupos_corporativos_cat': {'label':'Grupos corp. CAT',       'icon':'🏢', 'css':'fb-b',  'short':'Grp'},
+    'risk_scoring_unificado':  {'label':'Scoring de riesgo unificado',        'icon':'📊', 'css':'fb-r',  'short':'Risk'},
+    'risk_scoring_cat':        {'label':'Scoring de riesgo CAT',              'icon':'📊', 'css':'fb-r',  'short':'Risk'},
+    'grupos_corporativos':     {'label':'Grupos corporativos (filtrados)',     'icon':'🏢', 'css':'fb-b',  'short':'Grp'},
+    'grupos_corporativos_cat': {'label':'Grupos corporativos CAT',            'icon':'🏢', 'css':'fb-b',  'short':'Grp'},
 }
 
 def get_flag_meta(stem):
@@ -970,55 +987,6 @@ def filter_pares_by_year(df_pares, year_range):
     return df_pares[mask | df_pares[dc].isna()]
 
 
-# ═══════════════════════════════════════════════════════════════
-# COMPARADOR NACIONAL vs CATALUNYA
-# ═══════════════════════════════════════════════════════════════
-@st.cache_data(show_spinner=False)
-def build_comparador(flags):
-    """Find companies present in both Nacional and Catalunya flags."""
-    nac, cat = {}, {}
-    for stem, fi in flags.items():
-        try:
-            df = load_pq(fi['path'])
-            target = nac if fi['scope'] == 'Nacional' else cat
-            meta = get_flag_meta(stem)
-            emp_cols = [c for c in df.select_dtypes(include=['object']).columns
-                        if any(k in c.lower() for k in ['empresa','adj_norm','adjudicatario'])]
-            if not emp_cols:
-                obj_cols = df.select_dtypes(include=['object']).columns
-                emp_cols = [obj_cols[0]] if len(obj_cols) > 0 else []
-            sc_col = next((c for c in df.columns if any(k in c.lower()
-                for k in ['risk_score','par_score','score_max','score'])), None)
-            for col in emp_cols[:2]:
-                for emp in df[col].dropna().unique():
-                    e = str(emp).strip().upper()
-                    if len(e) < 3: continue
-                    if e not in target:
-                        target[e] = {'flags': set(), 'max_score': 0, 'count': 0}
-                    target[e]['flags'].add(meta['short'])
-                    target[e]['count'] += 1
-                    if sc_col:
-                        m = df[col].astype(str).str.upper().str.strip() == e
-                        if m.any():
-                            s = df.loc[m, sc_col].max()
-                            if pd.notna(s):
-                                target[e]['max_score'] = max(target[e]['max_score'], float(s))
-        except Exception:
-            pass
-
-    common = set(nac.keys()) & set(cat.keys())
-    rows = []
-    for emp in common:
-        n, c = nac[emp], cat[emp]
-        rows.append({
-            'empresa': emp[:50],
-            'flags_nac': ', '.join(sorted(n['flags'])), 'flags_cat': ', '.join(sorted(c['flags'])),
-            'n_flags_nac': len(n['flags']), 'n_flags_cat': len(c['flags']),
-            'score_nac': n['max_score'], 'score_cat': c['max_score'],
-            'total_flags': len(n['flags']) + len(c['flags']),
-        })
-    cdf = pd.DataFrame(rows).sort_values('total_flags', ascending=False) if rows else pd.DataFrame()
-    return cdf, len(nac), len(cat)
 
 
 def pl_comparador_scatter(cdf):
@@ -1041,61 +1009,6 @@ def pl_comparador_scatter(cdf):
         xaxis=dict(title='Score Nacional', gridcolor=C['grid']),
         yaxis=dict(title='Score Catalunya', gridcolor=C['grid']))
     return fig
-
-
-# ═══════════════════════════════════════════════════════════════
-# HEADLINE STATS — tweetable numbers
-# ═══════════════════════════════════════════════════════════════
-@st.cache_data(show_spinner=False)
-def compute_headline_stats(flags):
-    """Extract impactful numbers across all flags."""
-    stats = {}
-    for stem, fi in flags.items():
-        try:
-            df = load_pq(fi['path'])
-            scope = fi['scope']
-
-            if 'pares' in stem and 'unico' in stem:
-                imp_col = _fcol(df, 'importe', 'volumen')
-                if imp_col and imp_col in df.columns:
-                    stats[f'importe_pares_{scope.lower()}'] = float(df[imp_col].sum())
-                pc = _fcol(df, 'persona', 'decisor')
-                if pc:
-                    top_p = df.groupby(pc).size().nlargest(1)
-                    if len(top_p):
-                        stats[f'top_persona_{scope.lower()}'] = (top_p.index[0][:30], int(top_p.values[0]))
-                emps = set()
-                for ec in ['empresa_1','empresa_2']:
-                    if ec in df.columns: emps.update(df[ec].dropna().unique())
-                stats[f'n_empresas_red_{scope.lower()}'] = len(emps)
-                oc = _fcol(df, 'organo', 'n_organos')
-                if oc and oc in df.columns:
-                    stats[f'max_organos_{scope.lower()}'] = int(df[oc].max())
-                stats[f'n_pares_{scope.lower()}'] = len(df)
-
-            if 'flag7' in stem and 'pct_adj_organo' in df.columns:
-                top = df.nlargest(1, 'pct_adj_organo').iloc[0]
-                ec = next((c for c in ['adj_norm','empresa'] if c in df.columns), df.columns[0])
-                stats[f'top_concentracion_{scope.lower()}'] = (str(top[ec])[:30], float(top['pct_adj_organo'])*100)
-
-            if 'risk_scoring' in stem:
-                sc = next((c for c in ['risk_score','score'] if c in df.columns), None)
-                if sc:
-                    stats[f'n_risk_{scope.lower()}'] = len(df)
-                    bc = [c for c in df.columns if df[c].dtype == bool]
-                    if bc:
-                        df['_nf'] = df[bc].sum(axis=1)
-                        stats[f'multi_flag_{scope.lower()}'] = int((df['_nf'] >= 3).sum())
-
-            if 'flag9' in stem or 'geo' in stem:
-                stats['n_geo'] = len(df)
-            if 'flag10' in stem or 'troceo' in stem:
-                if 'importe_cluster' in df.columns:
-                    stats['troceo_importe'] = float(df['importe_cluster'].sum())
-                    stats['troceo_clusters'] = len(df)
-        except Exception:
-            pass
-    return stats
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1361,14 +1274,14 @@ def render_quality(prof, label):
 # ═══════════════════════════════════════════════════════════════
 def render_flags(flags):
     if not flags:
-        st.warning("No se encontraron flags en `data/nacional/` o `data/catalunya/`."); return
-    st.markdown('<div class="sec">Inventario</div>', unsafe_allow_html=True)
-    badges = ''.join(f'<span class="fb {get_flag_meta(s)["css"]}">{get_flag_meta(s)["icon"]} {get_flag_meta(s)["label"]} · {flags[s]["scope"]}</span> ' for s in flags)
+        st.warning("No se encontraron análisis. Coloca los parquets en `anomalias/`."); return
+    st.markdown('<div class="sec">Análisis disponibles</div>', unsafe_allow_html=True)
+    badges = ''.join(f'<span class="fb {get_flag_meta(s)["css"]}">{get_flag_meta(s)["icon"]} {get_flag_meta(s)["label"]}</span> ' for s in flags)
     st.markdown(f"<div style='margin-bottom:1rem'>{badges}</div>", unsafe_allow_html=True)
 
     stems = list(flags.keys())
-    display = [f"{get_flag_meta(s)['icon']} {s} ({flags[s]['scope']})" for s in stems]
-    idx = st.selectbox("Seleccionar flag", range(len(stems)), format_func=lambda i: display[i])
+    display = [f"{get_flag_meta(s)['icon']} {get_flag_meta(s)['label']} ({flags[s]['scope']})" for s in stems]
+    idx = st.selectbox("Seleccionar análisis", range(len(stems)), format_func=lambda i: display[i])
     sel = stems[idx]; info = flags[sel]; meta = get_flag_meta(sel)
     with st.spinner(f"Cargando {sel}..."): df = load_pq(info['path'])
 
@@ -1384,6 +1297,7 @@ def render_flags(flags):
         fig_temp, ydf_temp = pl_temporal_evolution(df)
         if fig_temp:
             st.markdown('<div class="sec">Evolución temporal · Red por año</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="graph-caption">Muestra cómo crece la red de pares sospechosos año a año (acumulado). Línea roja = nº de pares, azul punteada = empresas únicas, amarilla = score máximo detectado ese año. Permite ver si los patrones se concentran en ciertos períodos.</div>', unsafe_allow_html=True)
             st.plotly_chart(fig_temp, use_container_width=True)
             # Year filter slider
             date_cols = [c for c in df.columns if df[c].dtype in ['datetime64[ns]','datetime64[ns, UTC]']]
@@ -1409,7 +1323,7 @@ def render_flags(flags):
 
         # ── Ego-network ──
         st.markdown('<div class="sec">Ego-Network · Explorar persona</div>', unsafe_allow_html=True)
-        st.markdown('<div class="graph-caption">Selecciona una persona para ver sus empresas y conexiones · <span>D3.js interactivo con SVG glows</span></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="graph-caption">Grafo radial centrado en una persona. Nodos = empresas donde tiene cargo de decisión. Líneas doradas = vínculo persona→empresa. Líneas entre empresas = comparten órganos contratantes (grosor ∝ órganos comunes). Color del nodo: <span>azul</span> sin flags, naranja con 1 flag, rojo con 2+. Tamaño ∝ nº adjudicaciones. Arrastra nodos para explorar.</div>', unsafe_allow_html=True)
         pc = _fcol(df, 'persona','decisor','personas')
         if pc:
             personas_list = sorted(df[pc].dropna().unique().tolist())
@@ -1433,6 +1347,7 @@ def render_flags(flags):
 
         # ── Clusters ──
         st.markdown('<div class="sec">Clusters · Componentes conexas</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="graph-caption">Algoritmo Union-Find agrupa empresas conectadas (comparten persona con cargo). Cada burbuja = un cluster. Eje X = nº empresas en el cluster, Y = score máximo, tamaño ∝ nº pares, color = total de flags. Clusters grandes con score alto son los más sospechosos.</div>', unsafe_allow_html=True)
         cl_df = find_clusters(df)
         if len(cl_df) > 0:
             c1, c2, c3, c4 = st.columns(4)
@@ -1447,12 +1362,14 @@ def render_flags(flags):
 
         # ── Adjacency matrix ──
         st.markdown('<div class="sec">Adjacency Matrix · Persona × Empresa</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="graph-caption">Heatmap de las 25 personas con más conexiones × las 40 empresas más frecuentes. Cada celda = score máximo de ese par persona-empresa. Permite detectar personas que aparecen en muchas empresas simultáneamente (filas densas) o empresas con múltiples personas vinculadas (columnas densas).</div>', unsafe_allow_html=True)
         fig_adj = pl_adjacency(df)
         if fig_adj: st.plotly_chart(fig_adj, use_container_width=True)
         else: st.caption("No se detectó columna de persona para construir la matriz.")
 
         # ── Bubble chart ──
         st.markdown('<div class="sec">Score vs Concentración</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="graph-caption">Cada burbuja = un par de empresas. Eje X = concentración (órganos comunes / mín. órganos totales), Y = score del par. Tamaño ∝ importe total. Esquina superior derecha = máxima sospecha: alta concentración + alto score.</div>', unsafe_allow_html=True)
         fig_bub = pl_f6_bubble(df)
         if fig_bub: st.plotly_chart(fig_bub, use_container_width=True)
 
@@ -1460,6 +1377,7 @@ def render_flags(flags):
         sc_col = next((c for c in ['score_total','score_sum','score'] if c in df.columns), None)
         if sc_col:
             st.markdown('<div class="sec">Top personas por score</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="graph-caption">Ranking de las 30 personas con mayor score acumulado. El score suma las puntuaciones de todos los pares en los que participa esa persona. Una persona con muchas empresas en órganos comunes y flags activos tendrá un score más alto.</div>', unsafe_allow_html=True)
             top = df.nlargest(30, sc_col)
             fig = go.Figure(go.Bar(y=top.index.astype(str).str[:30][::-1], x=top[sc_col].values[::-1], orientation='h',
                 marker=dict(color=top[sc_col].values[::-1],
@@ -1470,6 +1388,7 @@ def render_flags(flags):
 
     elif 'flag7' in sel:
         st.markdown('<div class="sec">Concentración empresa × órgano</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="graph-caption">Heatmap: cada celda = % de adjudicaciones de un órgano ganadas por una empresa. Se muestran las 15 empresas con mayor concentración. Colores cálidos = dominancia alta. El histograma inferior muestra la distribución general de concentración.</div>', unsafe_allow_html=True)
         fig = pl_f7_heatmap(df)
         if fig: st.plotly_chart(fig, use_container_width=True)
         if 'pct_adj_organo' in df.columns:
@@ -1483,6 +1402,7 @@ def render_flags(flags):
         sc_col = next((c for c in ['risk_score','score'] if c in df.columns), None)
         if sc_col:
             st.markdown('<div class="sec">Scoring unificado</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="graph-caption">Distribución del risk_score unificado por empresa. Combina todos los flags (F1–F11) con pesos ponderados. El histograma muestra cuántas empresas hay en cada rango de score. La barra horizontal inferior desglosa cuántas empresas tienen cada flag activo.</div>', unsafe_allow_html=True)
             fig = pl_score(df, sc_col, f'Distribución: {sc_col}', C['accent'])
             if fig: st.plotly_chart(fig, use_container_width=True)
         bool_cols = [c for c in df.columns if df[c].dtype == bool]
@@ -1497,6 +1417,7 @@ def render_flags(flags):
 
     elif 'flag9' in sel or 'geo_dis' in sel:
         st.markdown('<div class="sec">Discrepancia geográfica — Mapa de flujos</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="graph-caption">Arcos sobre el mapa de España. Cada arco = empresas registradas en una CCAA (origen, según domicilio BORME) que ganan contratos mayoritariamente en otra CCAA (destino). Grosor ∝ nº empresas con esa discrepancia. Solo PYMEs (3–200 adj) para evitar falsos positivos de grandes corporaciones con sede en Madrid.</div>', unsafe_allow_html=True)
         fig_map = pl_geo_map(df)
         if fig_map:
             st.plotly_chart(fig_map, use_container_width=True)
@@ -1505,6 +1426,7 @@ def render_flags(flags):
 
     elif 'flag10' in sel or 'troceo' in sel:
         st.markdown('<div class="sec">Troceo — fraccionamiento de contratos</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="graph-caption">Detecta posible fraccionamiento: empresa que recibe ≥3 contratos del mismo órgano en 90 días, todos ≤15.000€ (umbral de contrato menor), pero cuya suma supera el umbral. Histograma izquierdo = contratos por cluster. Derecho = ratio sobre umbral (2x = suma doble del límite).</div>', unsafe_allow_html=True)
         if 'n_contratos_cluster' in df.columns and 'importe_cluster' in df.columns:
             t1, t2 = st.columns(2)
             with t1:
@@ -1520,6 +1442,7 @@ def render_flags(flags):
 
     elif 'flag11' in sel or 'modificacion' in sel:
         st.markdown('<div class="sec">Modificaciones contractuales excesivas</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="graph-caption">Empresas con ≥3 modificaciones contractuales y ≥20% de sus contratos modificados (promedio catalán: ~0.57%). Histograma izquierdo = % de contratos modificados por empresa. Derecho = nº absoluto de modificaciones. Modificaciones frecuentes pueden indicar adjudicaciones inicialmente bajas que se incrementan después.</div>', unsafe_allow_html=True)
         if 'pct_modificados' in df.columns:
             t1, t2 = st.columns(2)
             with t1:
@@ -1570,7 +1493,7 @@ def render_flags(flags):
     if sort_sel != '(original)' and sort_sel in ddf.columns: ddf = ddf.sort_values(sort_sel, ascending=False)
     st.dataframe(ddf.head(500), use_container_width=True, height=500, hide_index=True)
 
-    with st.expander("🔎 Buscar empresa en todos los flags"):
+    with st.expander("🔎 Buscar empresa en todos los análisis"):
         q = st.text_input("Nombre de empresa (parcial)", key="xf_q")
         if q:
             results = []
@@ -1584,7 +1507,7 @@ def render_flags(flags):
                             break
                 except Exception: pass
             if results: st.dataframe(pd.DataFrame(results), use_container_width=True, hide_index=True)
-            else: st.info(f"'{q}' no encontrado en ningún flag.")
+            else: st.info(f"'{q}' no encontrado en ningún análisis.")
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1828,10 +1751,10 @@ def render_meth():
 # ═══════════════════════════════════════════════════════════════
 def render_company_profile(flags):
     """Full company investigation page."""
-    st.markdown('<div class="sec">Ficha de empresa</div>', unsafe_allow_html=True)
-    q = st.text_input("🔍 Buscar empresa", key="cp_q", placeholder="Ej: IBERDROLA, PAVASAL, FCC...")
+    st.markdown('<div class="sec">Investigar empresa</div>', unsafe_allow_html=True)
+    q = st.text_input("🔍 Buscar empresa", key="cp_q", placeholder="Escribe el nombre de una empresa...")
     if not q or len(q) < 3:
-        st.markdown(f"<div class='mc'>Introduce al menos 3 caracteres para buscar una empresa en todos los flags.</div>",
+        st.markdown(f"<div class='mc'>Introduce al menos 3 caracteres. La búsqueda cruza el nombre en todos los análisis y muestra un resumen completo: señales activas, conexiones, órganos donde licita y detalle por cada señal.</div>",
                     unsafe_allow_html=True)
         return
 
@@ -1839,7 +1762,7 @@ def render_company_profile(flags):
         prof = build_company_profile(q, flags)
 
     if not prof['flags_active']:
-        st.info(f"'{q}' no encontrado en ningún flag.")
+        st.info(f"'{q}' no encontrado en ningún análisis.")
         return
 
     # ── Header ──
@@ -1852,7 +1775,7 @@ def render_company_profile(flags):
         <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:{C['text']};margin-bottom:4px">
             {prof['nombre'][:60]}</div>
         <div style="font-size:.8rem;color:{C['text2']}">
-            Aparece en <b style="color:{C['accent']}">{n_flags}</b> flags ·
+            Aparece en <b style="color:{C['accent']}">{n_flags}</b> análisis ·
             <b style="color:{C['text']}">{total_hits}</b> coincidencias ·
             Max score: <b style="color:{C['accent']}">{max_sc:.1f}</b></div>
     </div>""", unsafe_allow_html=True)
@@ -1872,7 +1795,7 @@ def render_company_profile(flags):
 
     # ── Connections (F6) ──
     if prof['connections']:
-        st.markdown('<div class="sec">Conexiones (F6)</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sec">Empresas conectadas por administrador</div>', unsafe_allow_html=True)
         conn_df = pd.DataFrame(prof['connections']).sort_values('score', ascending=False)
         st.dataframe(conn_df.head(20), use_container_width=True, hide_index=True)
 
@@ -1884,7 +1807,7 @@ def render_company_profile(flags):
 
     # ── Detail per flag ──
     if prof['details']:
-        st.markdown('<div class="sec">Detalle por flag</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sec">Detalle por análisis</div>', unsafe_allow_html=True)
         for stem, detail_df in prof['details'].items():
             meta = get_flag_meta(stem)
             with st.expander(f"{meta['icon']} {meta['label']} — {len(detail_df)} registros"):
@@ -1898,7 +1821,11 @@ def main():
     st.markdown("""
     <div class="hero">
         <div class="hero-title">🏛️ Contratación <span>Pública</span> España</div>
-        <div class="hero-sub">Calidad de datos · Red flags BORME × Contratación · Metodología</div>
+        <div class="hero-sub">BQuant Finance · @Gsnchez</div>
+        <div class="hero-context">
+            Cruzamos <b>8.7 millones de contratos públicos</b> con <b>17 millones de actos
+            del Registro Mercantil</b> para detectar patrones que merecen atención.
+        </div>
         <div class="hero-line"></div>
     </div>
     """, unsafe_allow_html=True)
@@ -1907,141 +1834,160 @@ def main():
     cat_prof = load_json(str(Q_DIR/"cat_profile.json")) if (Q_DIR/"cat_profile.json").exists() else None
     flags = discover_flags()
 
-    tab_names = ["📊 Visión General"]
-    if placsp_prof: tab_names.append("🏛️ PLACSP")
-    if cat_prof: tab_names.append("🏴 Catalunya")
-    tab_names += ["🚩 Flags", "🔎 Ficha Empresa", "📋 Metodología"]
-    tabs = st.tabs(tab_names)
-    ti = 0
+    tabs = st.tabs(["📊 Resumen", "🔎 Explorar", "📋 Cómo funciona"])
 
-    # ── Tab 0: Overview with universal search ──
-    with tabs[ti]:
-        ti += 1
+    # ══════════════════════════════════════════════════════════
+    # TAB 1: RESUMEN — narrative flow
+    # ══════════════════════════════════════════════════════════
+    with tabs[0]:
         if not placsp_prof and not cat_prof and not flags:
             st.markdown("<div class='mc'>Sin datos. Ejecuta <code>precompute_quality.py</code> y coloca parquets en <code>anomalias/</code>.</div>", unsafe_allow_html=True)
         else:
-            # ── Universal search ──
-            st.markdown('<div class="sec">Buscador universal</div>', unsafe_allow_html=True)
-            q = st.text_input("🔍 Buscar empresa, persona u órgano en todos los flags",
-                              key="univ_q", placeholder="Ej: IBERDROLA, MARTI SOLER, AENA...")
+            # ── 1. ¿Qué es esto? ──
+            st.markdown(f"""
+            <div class="intro-q">
+                <span class="iq-icon">🔍</span> <b>¿Qué tipo de patrones buscamos?</b><br><br>
+                <span class="iq-icon">🕸️</span> Dos empresas que comparten administrador ganan contratos
+                en los mismos organismos públicos — y no son del mismo grupo empresarial.<br>
+                <span class="iq-icon">🆕</span> Una empresa se constituye 3 meses antes de recibir
+                su primer contrato público.<br>
+                <span class="iq-icon">✂️</span> Un organismo divide un contrato grande en varios pequeños
+                para evadir el umbral de licitación pública.<br>
+                <span class="iq-icon">📍</span> Una empresa registrada en Málaga solo gana contratos
+                en el País Vasco.<br><br>
+                <span style="font-size:.75rem;color:{C['muted']}">Ninguno de estos patrones es prueba de
+                irregularidad. Son señales estadísticas que merecen revisión humana.</span>
+            </div>
+            """, unsafe_allow_html=True)
+
+            # ── 2. La historia en números ──
+            hs_path = Q_DIR / "headline_stats.json"
+            if hs_path.exists():
+                hs = load_json(str(hs_path))
+
+                st.markdown('<div class="sec">Lo que hemos encontrado</div>', unsafe_allow_html=True)
+
+                c1, c2, c3, c4 = st.columns(4)
+                with c1: st.metric("Pares sospechosos", fmt(hs.get('n_pares_nacional', 0)))
+                with c2: st.metric("Empresas implicadas", fmt(hs.get('n_empresas_red_nacional', 0)))
+                with c3: st.metric("Empresas con señal de alerta", fmt(hs.get('n_risk_nacional', 0)))
+                with c4: st.metric("Discrepancia geográfica", fmt(hs.get('n_geo', 0)))
+
+                # Narrative facts
+                facts = []
+                imp_nac = hs.get('importe_pares_nacional', 0)
+                if imp_nac > 0:
+                    facts.append(f"💰 <b>{imp_nac/1e6:,.0f}M€</b> en contratos adjudicados a empresas que comparten administrador sin ser del mismo grupo corporativo.")
+                tp = hs.get('top_persona_nacional')
+                if tp:
+                    facts.append(f"👤 La persona con más conexiones vincula <b>{tp[1]} pares</b> de empresas que licitan ante los mismos organismos.")
+                mo = hs.get('max_organos_nacional')
+                if mo:
+                    facts.append(f"🏛️ Hay pares de empresas con administrador común que coinciden en hasta <b>{mo} órganos contratantes</b>.")
+                tc = hs.get('top_concentracion_nacional')
+                if tc:
+                    facts.append(f"🎯 <b>{tc[0]}</b> acumula el <b>{tc[1]:.0f}%</b> de las adjudicaciones de un órgano contratante.")
+                mf = hs.get('multi_flag_nacional', 0)
+                if mf:
+                    facts.append(f"🚩 <b>{mf} empresas</b> acumulan 3 o más señales de alerta simultáneamente.")
+                ti_val = hs.get('troceo_importe', 0)
+                tc_val = hs.get('troceo_clusters', 0)
+                if ti_val > 0:
+                    facts.append(f"✂️ En Catalunya se detectan <b>{tc_val:,} posibles fraccionamientos</b> de contratos por un total de <b>{ti_val/1e6:,.1f}M€</b> — todos los contratos individuales están bajo el umbral de 15.000€.")
+
+                for f in facts:
+                    st.markdown(f"<div class='fcard' style='padding:12px 18px;font-size:.84rem;color:{C['text2']};line-height:1.6'>{f}</div>",
+                                unsafe_allow_html=True)
+
+            # ── 3. Comparador ──
+            comp_path = Q_DIR / "comparador.json"
+            if comp_path.exists():
+                comp_data = load_json(str(comp_path))
+                if comp_data and comp_data.get('n_common', 0) > 0:
+                    st.markdown('<div class="sec">¿Coinciden en Nacional y Catalunya?</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="graph-caption">Empresas que aparecen con señales de alerta en ambos ámbitos. El gráfico cruza el score en cada jurisdicción — los puntos en la esquina superior derecha son sospechosos en ambas.</div>', unsafe_allow_html=True)
+                    c1, c2, c3 = st.columns(3)
+                    with c1: st.metric("Empresas con señales · Nacional", fmt(comp_data['n_nac']))
+                    with c2: st.metric("Empresas con señales · Catalunya", fmt(comp_data['n_cat']))
+                    with c3: st.metric("Aparecen en ambos", fmt(comp_data['n_common']))
+
+                    cdf = pd.DataFrame(comp_data['empresas'])
+                    if len(cdf) > 2:
+                        fig_comp = pl_comparador_scatter(cdf)
+                        if fig_comp:
+                            st.plotly_chart(fig_comp, use_container_width=True)
+                    with st.expander(f"📋 Ver listado ({comp_data['n_common']} empresas)"):
+                        show_cols = ['empresa','flags_nac','flags_cat','score_nac','score_cat','total_flags']
+                        avail = [c for c in show_cols if c in cdf.columns]
+                        st.dataframe(cdf[avail].head(50), use_container_width=True, hide_index=True)
+
+            # ── 4. Buscar ──
+            st.markdown('<div class="sec">Buscar empresa o persona</div>', unsafe_allow_html=True)
+            st.markdown(f"<div style='font-size:.8rem;color:{C['text2']};margin-bottom:8px'>Busca en todos los análisis a la vez. Escribe un nombre y verás en qué señales aparece.</div>", unsafe_allow_html=True)
+            q = st.text_input("🔍", key="univ_q", placeholder="Ej: IBERDROLA, MARTI SOLER, AENA...", label_visibility="collapsed")
             if q and len(q) >= 3:
-                with st.spinner("Buscando en todos los flags..."):
+                with st.spinner("Buscando..."):
                     results = search_all_flags(q, flags)
                 if results:
                     st.markdown(f"<div style='margin:8px 0;font-size:.82rem;color:{C['text2']}'>"
-                        f"<b style='color:{C['text']}'>{len(results)}</b> flags con coincidencias para "
+                        f"<b style='color:{C['text']}'>{len(results)}</b> análisis con coincidencias para "
                         f"<b style='color:{C['accent']}'>{q}</b></div>", unsafe_allow_html=True)
                     for r in results:
-                        sc_str = f" · Max score: <b style='color:{C['accent']}'>{r['max_score']:.1f}</b>" if r['max_score'] else ""
+                        sc_str = f" · Score: <b style='color:{C['accent']}'>{r['max_score']:.1f}</b>" if r['max_score'] else ""
                         st.markdown(f"<div class='fcard'><span class='fb {r['css']}'>{r['icon']} {r['label']}</span> "
                             f"<span style='color:{C['text2']};font-size:.78rem'>{r['scope']} · "
                             f"{r['hits']} coincidencias{sc_str}</span></div>", unsafe_allow_html=True)
                         with st.expander(f"Ver datos ({r['stem']})"):
                             st.dataframe(r['sample'], use_container_width=True, hide_index=True)
                 else:
-                    st.info(f"'{q}' no encontrado en ningún flag.")
+                    st.info(f"'{q}' no encontrado en ningún análisis.")
 
-            # ── Dataset cards ──
-            st.markdown('<div class="sec">Datasets</div>', unsafe_allow_html=True)
-            for p in [placsp_prof, cat_prof]:
-                if p:
-                    st.markdown(f"<div class='fcard'><div style='font-family:\"Outfit\",sans-serif;font-size:.95rem;font-weight:700;color:{C['text']};margin-bottom:6px'>{p['name']}</div>"
-                        f"<div style='font-size:.8rem;color:{C['text2']}'><b style='color:{C['text']};font-size:1.1rem'>{p['n']:,}</b> registros · {p['nc']} cols · {qb(p['completitud'])} · Dupes: {p['dupe_pct']:.2f}%</div></div>", unsafe_allow_html=True)
+            # ── 5. Datasets (compact) ──
+            with st.expander("📂 Datos utilizados"):
+                for p in [placsp_prof, cat_prof]:
+                    if p:
+                        st.markdown(f"<div class='fcard'><div style='font-family:\"Outfit\",sans-serif;font-size:.9rem;font-weight:700;color:{C['text']};margin-bottom:4px'>{p['name']}</div>"
+                            f"<div style='font-size:.78rem;color:{C['text2']}'><b style='color:{C['text']}'>{p['n']:,}</b> registros · {p['nc']} columnas · Completitud: {qb(p['completitud'])} · Duplicados: {p['dupe_pct']:.2f}%</div></div>", unsafe_allow_html=True)
+                if placsp_prof and cat_prof:
+                    comp = pd.DataFrame({
+                        'Métrica': ['Registros','Columnas','Completitud (%)','Duplicados (%)'],
+                        'PLACSP': [f"{placsp_prof['n']:,}", placsp_prof['nc'], f"{placsp_prof['completitud']:.1f}", f"{placsp_prof['dupe_pct']:.2f}"],
+                        'Catalunya': [f"{cat_prof['n']:,}", cat_prof['nc'], f"{cat_prof['completitud']:.1f}", f"{cat_prof['dupe_pct']:.2f}"]})
+                    st.dataframe(comp, use_container_width=True, hide_index=True)
 
-            # ── Flags inventory ──
-            if flags:
-                badges = ' '.join(f'<span class="fb {get_flag_meta(s)["css"]}">{get_flag_meta(s)["icon"]} {get_flag_meta(s)["label"]}</span>' for s in flags)
-                st.markdown(f"<div class='fcard'><div style='font-family:\"Outfit\",sans-serif;font-size:.95rem;font-weight:700;color:{C['accent']};margin-bottom:8px'>🚩 Flags — {len(flags)} archivos</div><div style='margin-top:8px'>{badges}</div></div>", unsafe_allow_html=True)
+    # ══════════════════════════════════════════════════════════
+    # TAB 2: EXPLORAR — flags + ficha empresa + quality
+    # ══════════════════════════════════════════════════════════
+    with tabs[1]:
+        explore_section = st.radio("", ["🚩 Señales de alerta", "🔎 Ficha de empresa", "📊 Calidad de datos"],
+                                   horizontal=True, label_visibility="collapsed")
 
-            # ── Headline stats — tweetable ──
-            if flags:
-                st.markdown('<div class="sec">Cifras clave</div>', unsafe_allow_html=True)
-                hs = compute_headline_stats(flags)
+        if explore_section == "🚩 Señales de alerta":
+            render_flags(flags)
 
-                # Row 1: core metrics
-                c1, c2, c3, c4 = st.columns(4)
-                with c1: st.metric("Pares sospechosos", fmt(hs.get('n_pares_nacional', 0)))
-                with c2: st.metric("Empresas en red", fmt(hs.get('n_empresas_red_nacional', 0)))
-                with c3: st.metric("Empresas con flag", fmt(hs.get('n_risk_nacional', 0)))
-                with c4: st.metric("Discrepancia geo", fmt(hs.get('n_geo', 0)))
+        elif explore_section == "🔎 Ficha de empresa":
+            render_company_profile(flags)
 
-                # Row 2: impactful numbers
-                tweets = []
-                imp_nac = hs.get('importe_pares_nacional', 0)
-                if imp_nac > 0:
-                    tweets.append(f"💰 <b>{imp_nac/1e6:,.0f}M€</b> adjudicados a empresas con administrador compartido (sin ser grupo corporativo)")
-                tp = hs.get('top_persona_nacional')
-                mo = hs.get('max_organos_nacional')
-                if tp:
-                    tweets.append(f"👤 Top persona conecta <b>{tp[1]} pares</b> de empresas que licitan en los mismos órganos")
-                if mo:
-                    tweets.append(f"🏛️ Par de empresas con hasta <b>{mo} órganos contratantes</b> en común")
-                tc = hs.get('top_concentracion_nacional')
-                if tc:
-                    tweets.append(f"📊 <b>{tc[0]}</b> gana el <b>{tc[1]:.0f}%</b> de las adjudicaciones de un órgano")
-                mf = hs.get('multi_flag_nacional', 0)
-                if mf:
-                    tweets.append(f"🚩 <b>{mf} empresas</b> con 3 o más flags simultáneos")
-                ti_val = hs.get('troceo_importe', 0)
-                tc_val = hs.get('troceo_clusters', 0)
-                if ti_val > 0:
-                    tweets.append(f"✂️ Catalunya: <b>{tc_val:,} clusters</b> de troceo por <b>{ti_val/1e6:,.1f}M€</b> (todos bajo 15K€ individualmente)")
-
-                if tweets:
-                    for t in tweets:
-                        st.markdown(f"<div class='fcard' style='padding:10px 16px;font-size:.82rem;color:{C['text2']}'>{t}</div>",
-                                    unsafe_allow_html=True)
-
-            # ── Comparador Nacional vs Catalunya ──
-            nac_flags = [s for s, f in flags.items() if f['scope'] == 'Nacional'] if flags else []
-            cat_flags = [s for s, f in flags.items() if f['scope'] == 'Catalunya'] if flags else []
-            if nac_flags and cat_flags:
-                st.markdown('<div class="sec">Comparador · Nacional vs Catalunya</div>', unsafe_allow_html=True)
-                with st.spinner("Cruzando empresas entre ámbitos..."):
-                    cdf, n_nac, n_cat = build_comparador(flags)
-                if len(cdf) > 0:
-                    c1, c2, c3 = st.columns(3)
-                    with c1: st.metric("Empresas Nacional", fmt(n_nac))
-                    with c2: st.metric("Empresas Catalunya", fmt(n_cat))
-                    with c3: st.metric("En ambos ámbitos", fmt(len(cdf)))
-
-                    # Scatter plot
-                    fig_comp = pl_comparador_scatter(cdf)
-                    if fig_comp:
-                        st.plotly_chart(fig_comp, use_container_width=True)
-
-                    # Table with most flagged common companies
-                    with st.expander(f"📋 Top empresas en ambos ámbitos ({len(cdf)})"):
-                        show_cols = ['empresa','flags_nac','flags_cat','score_nac','score_cat','total_flags']
-                        avail = [c for c in show_cols if c in cdf.columns]
-                        st.dataframe(cdf[avail].head(50), use_container_width=True, hide_index=True)
+        elif explore_section == "📊 Calidad de datos":
+            if placsp_prof or cat_prof:
+                if placsp_prof and cat_prof:
+                    ds_tab = st.radio("Dataset", ["PLACSP — Nacional", "Catalunya"], horizontal=True, label_visibility="collapsed")
+                    if "PLACSP" in ds_tab:
+                        render_quality(placsp_prof, "PLACSP")
+                    else:
+                        render_quality(cat_prof, "Catalunya")
+                elif placsp_prof:
+                    render_quality(placsp_prof, "PLACSP")
                 else:
-                    st.caption("No se encontraron empresas comunes entre ambos ámbitos.")
+                    render_quality(cat_prof, "Catalunya")
+            else:
+                st.info("No hay perfiles de calidad. Ejecuta precompute_quality.py.")
 
-            # ── Comparativa ──
-            if placsp_prof and cat_prof:
-                st.markdown('<div class="sec">Comparativa</div>', unsafe_allow_html=True)
-                comp = pd.DataFrame({
-                    'Métrica': ['Registros','Columnas','Completitud (%)','Duplicados (%)','100% completas','>90% vacías'],
-                    'PLACSP': [f"{placsp_prof['n']:,}", placsp_prof['nc'], f"{placsp_prof['completitud']:.1f}", f"{placsp_prof['dupe_pct']:.2f}", placsp_prof['n_complete'], placsp_prof['n_hi_miss']],
-                    'Catalunya': [f"{cat_prof['n']:,}", cat_prof['nc'], f"{cat_prof['completitud']:.1f}", f"{cat_prof['dupe_pct']:.2f}", cat_prof['n_complete'], cat_prof['n_hi_miss']]})
-                st.dataframe(comp, use_container_width=True, hide_index=True)
-
-    # ── Tab: PLACSP ──
-    if placsp_prof:
-        with tabs[ti]: ti += 1; render_quality(placsp_prof, "PLACSP")
-    # ── Tab: Catalunya ──
-    if cat_prof:
-        with tabs[ti]: ti += 1; render_quality(cat_prof, "Catalunya")
-
-    # ── Tab: Flags ──
-    with tabs[ti]: ti += 1; render_flags(flags)
-
-    # ── Tab: Ficha Empresa ──
-    with tabs[ti]: ti += 1; render_company_profile(flags)
-
-    # ── Tab: Metodología ──
-    with tabs[ti]: render_meth()
+    # ══════════════════════════════════════════════════════════
+    # TAB 3: CÓMO FUNCIONA — methodology
+    # ══════════════════════════════════════════════════════════
+    with tabs[2]:
+        render_meth()
 
     st.markdown(f"<div class='ft'><a href='https://twitter.com/Gsnchez'>@Gsnchez</a> · <a href='https://bquantfinance.com'>bquantfinance.com</a> · <a href='https://github.com/BquantFinance'>GitHub</a></div>", unsafe_allow_html=True)
 
