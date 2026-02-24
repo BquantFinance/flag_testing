@@ -1,0 +1,5007 @@
+{
+  "n_nac": 1118955,
+  "n_cat": 4328,
+  "n_common": 2297,
+  "empresas": [
+    {
+      "empresa": "FCC MEDIO AMBIENTE",
+      "flags_nac": "flag6, flag7, flag9, grupos, risk",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 4,
+      "score_nac": 624.8,
+      "score_cat": 159.14,
+      "total_flags": 9
+    },
+    {
+      "empresa": "PROSEGUR ALARMAS ESPAÑA",
+      "flags_nac": "flag2, flag6, flag9, grupos, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 3,
+      "score_nac": 17.43,
+      "score_cat": 9.67,
+      "total_flags": 8
+    },
+    {
+      "empresa": "ENDESA ENERGIA",
+      "flags_nac": "flag7, flag9, grupos, risk",
+      "flags_cat": "flag10, flag7, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 4,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 8
+    },
+    {
+      "empresa": "IBERDROLA CLIENTES",
+      "flags_nac": "flag1, flag6, flag7, flag9, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 6,
+      "n_flags_cat": 2,
+      "score_nac": 8757.91,
+      "score_cat": 0,
+      "total_flags": 8
+    },
+    {
+      "empresa": "ABS INFORMATICA",
+      "flags_nac": "flag4, flag6, grupos, risk",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 4,
+      "score_nac": 25.42,
+      "score_cat": 22.47,
+      "total_flags": 8
+    },
+    {
+      "empresa": "RICOH ESPAÑA",
+      "flags_nac": "flag2, flag6, flag9, grupos, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 3,
+      "score_nac": 536.29,
+      "score_cat": 82.8,
+      "total_flags": 8
+    },
+    {
+      "empresa": "KPMG ABOGADOS",
+      "flags_nac": "flag2, flag6, flag9, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 3,
+      "score_nac": 105.36,
+      "score_cat": 0,
+      "total_flags": 8
+    },
+    {
+      "empresa": "AYTOS SOLUCIONES INFORMATICAS",
+      "flags_nac": "flag6, flag7, grupos, risk",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 4,
+      "score_nac": 98.19,
+      "score_cat": 20.22,
+      "total_flags": 8
+    },
+    {
+      "empresa": "ELECNOR SERVICIOS Y PROYECTOS",
+      "flags_nac": "flag6, flag7, grupos, risk",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 4,
+      "score_nac": 526.63,
+      "score_cat": 53.76,
+      "total_flags": 8
+    },
+    {
+      "empresa": "ENDESA X SERVICIOS",
+      "flags_nac": "flag1, flag4, flag9, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 8
+    },
+    {
+      "empresa": "TECNOFOR CONSULTING",
+      "flags_nac": "flag1, flag2, flag4, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 6,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 7
+    },
+    {
+      "empresa": "GRIFOLS MOVACO",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 4,
+      "score_nac": 288.55,
+      "score_cat": 106.22,
+      "total_flags": 7
+    },
+    {
+      "empresa": "S B S SEIDOR",
+      "flags_nac": "flag2, flag6, grupos, risk",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 3,
+      "score_nac": 28.7,
+      "score_cat": 124.95,
+      "total_flags": 7
+    },
+    {
+      "empresa": "LABAQUA",
+      "flags_nac": "flag6, flag9, grupos, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 3,
+      "score_nac": 83.72,
+      "score_cat": 21.01,
+      "total_flags": 7
+    },
+    {
+      "empresa": "KPMG ASESORES",
+      "flags_nac": "flag2, flag6, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 3,
+      "score_nac": 105.36,
+      "score_cat": 0,
+      "total_flags": 7
+    },
+    {
+      "empresa": "SERVICIOS INTEGRALES UNITECNIC",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 3,
+      "score_nac": 487.91,
+      "score_cat": 103.05,
+      "total_flags": 7
+    },
+    {
+      "empresa": "VITRO",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 4,
+      "score_nac": 73.87,
+      "score_cat": 2.58,
+      "total_flags": 7
+    },
+    {
+      "empresa": "VIAJES EL CORTE INGLES",
+      "flags_nac": "flag7, flag9, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 7
+    },
+    {
+      "empresa": "TELEFONICA MOVILES ESPAÑA",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 4,
+      "score_nac": 110.67,
+      "score_cat": 9.67,
+      "total_flags": 7
+    },
+    {
+      "empresa": "TELEFONICA DE ESPAÑA",
+      "flags_nac": "flag6, flag7, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 3,
+      "score_nac": 624.84,
+      "score_cat": 0,
+      "total_flags": 7
+    },
+    {
+      "empresa": "AIR LIQUIDE HEALTHCARE ESPAÑA",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 4,
+      "score_nac": 73.43,
+      "score_cat": 20.61,
+      "total_flags": 7
+    },
+    {
+      "empresa": "KPMG AUDITORES",
+      "flags_nac": "flag2, flag6, flag9, grupos, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 2,
+      "score_nac": 53.99,
+      "score_cat": 0,
+      "total_flags": 7
+    },
+    {
+      "empresa": "GAMMA SOLUTIONS HEALTH",
+      "flags_nac": "flag1, flag2, flag9, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 7
+    },
+    {
+      "empresa": "ALCON CUSI",
+      "flags_nac": "flag6, flag9, grupos, risk",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 3,
+      "score_nac": 71.19,
+      "score_cat": 46.37,
+      "total_flags": 7
+    },
+    {
+      "empresa": "ELECNOR SEGURIDAD",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 4,
+      "score_nac": 65.05,
+      "score_cat": 14.33,
+      "total_flags": 7
+    },
+    {
+      "empresa": "INTERNACIONAL PERIFERICOS Y MEMORIAS ESPAÑA",
+      "flags_nac": "flag4, flag6, grupos, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 3,
+      "score_nac": 536.29,
+      "score_cat": 82.8,
+      "total_flags": 7
+    },
+    {
+      "empresa": "SGS TECNOS",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 4,
+      "score_nac": 33.99,
+      "score_cat": 13.9,
+      "total_flags": 7
+    },
+    {
+      "empresa": "IDCQ HOSPITALES Y SANIDAD",
+      "flags_nac": "flag1, flag6, flag9, grupos, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 2,
+      "score_nac": 1012.79,
+      "score_cat": 0,
+      "total_flags": 7
+    },
+    {
+      "empresa": "HAVAS MEDIA GROUP SPAIN",
+      "flags_nac": "flag7, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "BOSCIREM",
+      "flags_nac": "flag2, flag6, flag7, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 44.31,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SERVICIOS MICROINFORMATICA",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 63.12,
+      "score_cat": 88.93,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SERVEO SERVICIOS",
+      "flags_nac": "flag6, grupos, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 477.83,
+      "score_cat": 41.43,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SGS INSPECCIONES REGLAMENTARIAS",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 33.99,
+      "score_cat": 13.9,
+      "total_flags": 6
+    },
+    {
+      "empresa": "INV VIGILANCIA",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 117.94,
+      "total_flags": 6
+    },
+    {
+      "empresa": "FISHER SCIENTIFIC",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 49.61,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "FEDEX SPAIN",
+      "flags_nac": "flag4, flag9, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SOLFIX ENGINEERING",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 80.19,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SERVICIOS AUXILIARES ARENA",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 14.06,
+      "score_cat": 173.11,
+      "total_flags": 6
+    },
+    {
+      "empresa": "MEIJI PHARMA SPAIN",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "DEPORTE AND BUSINESS SPORTS MARKETING",
+      "flags_nac": "flag1, flag2, flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ID GRUP",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 18.41,
+      "score_cat": 13.98,
+      "total_flags": 6
+    },
+    {
+      "empresa": "I H T MEDICAL",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 52.36,
+      "score_cat": 85.44,
+      "total_flags": 6
+    },
+    {
+      "empresa": "MP SOFTWARE TECNICO",
+      "flags_nac": "flag1, flag2, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 67.09,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ADO URBAN FURNITURE",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 2.04,
+      "score_cat": 59.32,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SEGURIDAD LEON 2018",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 14.06,
+      "score_cat": 173.11,
+      "total_flags": 6
+    },
+    {
+      "empresa": "MOCHILA Y VIAJES",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 26.54,
+      "score_cat": 151.73,
+      "total_flags": 6
+    },
+    {
+      "empresa": "BOEHRINGER INGELHEIM ESPAÑA",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 0,
+      "score_cat": 20.95,
+      "total_flags": 6
+    },
+    {
+      "empresa": "TECHKOVERY",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 49.76,
+      "score_cat": 41.34,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ESCOFET 1886",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 3.46,
+      "score_cat": 3.75,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SAYTEL INFORMATICA",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 31.52,
+      "score_cat": 22.67,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SAYTEL SERVICIOS INFORMATICOS",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 92.82,
+      "score_cat": 53.09,
+      "total_flags": 6
+    },
+    {
+      "empresa": "NAVARRA TECNOLOGIA DEL SOFTWARE",
+      "flags_nac": "flag6, flag9, grupos, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 63.01,
+      "score_cat": 30.01,
+      "total_flags": 6
+    },
+    {
+      "empresa": "EVERIS SPAIN",
+      "flags_nac": "flag2, grupos, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 183.73,
+      "total_flags": 6
+    },
+    {
+      "empresa": "KEYSIGHT TECHNOLOGIES SALES SPAIN",
+      "flags_nac": "flag2, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "INELEC",
+      "flags_nac": "flag2, flag4, flag5, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ESSENTIAM SERVICES",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 63.12,
+      "score_cat": 88.93,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SANDOZ FARMACEUTICA",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 93.89,
+      "score_cat": 46.37,
+      "total_flags": 6
+    },
+    {
+      "empresa": "LIFE TECHNOLOGIES",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 533.19,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "GSI PROFESIONALES DE LA SEGURIDAD Y SISTEMAS",
+      "flags_nac": "flag6, flag7, flag9, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 83.8,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SANITRADE",
+      "flags_nac": "flag2, flag4, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 234.8,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "AQUALOGY SOLUTIONS",
+      "flags_nac": "flag4, flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 83.72,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "GRUP CIEF",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 71.87,
+      "score_cat": 39.03,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ANALISTAS FINANCIEROS INTERNACIONALES",
+      "flags_nac": "flag6, flag7, grupos, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 28.69,
+      "score_cat": 2.92,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ASPY PREVENCION",
+      "flags_nac": "flag4, flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 71.77,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "PULSO EDICIONES",
+      "flags_nac": "flag2, flag9, grupos, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SENSUS ESPAÑA",
+      "flags_nac": "flag4, flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 49.0,
+      "score_cat": 8.78,
+      "total_flags": 6
+    },
+    {
+      "empresa": "LACER",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0.72,
+      "score_cat": 6.48,
+      "total_flags": 6
+    },
+    {
+      "empresa": "GPI IBERIA HEALTH SOLUTIONS",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "flag11, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ARION GRUPO BAS SOFTWARE FACTORY",
+      "flags_nac": "flag1, flag4, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "PUNT INFORMATIC I CREATIU",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 15.87,
+      "score_cat": 1.55,
+      "total_flags": 6
+    },
+    {
+      "empresa": "EDEN SPRINGS ESPAÑA",
+      "flags_nac": "flag4, flag6, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 13.68,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SEIDOR",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 106.08,
+      "score_cat": 121.35,
+      "total_flags": 6
+    },
+    {
+      "empresa": "QUANTITATIVE GENOMIC MEDICINE LABORATORIES",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 89.01,
+      "score_cat": 29.75,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SERVICIOS ESPECIALES DE LIMPIEZA",
+      "flags_nac": "flag6, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 38.51,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "AUREN AUDITORES SP",
+      "flags_nac": "flag2, flag3, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "AENOR INTERNACIONAL",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 28.78,
+      "score_cat": 8.01,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ZUCAR EVENT",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 25.0,
+      "score_cat": 36.5,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ESTEYCO SAP",
+      "flags_nac": "flag2, flag3, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ECONOCOM SERVICIOS",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 32.51,
+      "score_cat": 4.77,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SEIDOR TECH",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 140.66,
+      "score_cat": 11.0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ENDESA ENERGIA XXI",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ANTICIMEX 3D SANIDAD AMBIENTAL",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 14.27,
+      "score_cat": 7.02,
+      "total_flags": 6
+    },
+    {
+      "empresa": "PROMOCIONES MUSICALES GET IN",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 14.5,
+      "score_cat": 4.61,
+      "total_flags": 6
+    },
+    {
+      "empresa": "EL CORTE INGLES",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 76.31,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "AME MATERIAL ELECTRICO",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 7.52,
+      "score_cat": 24.1,
+      "total_flags": 6
+    },
+    {
+      "empresa": "GUERIN",
+      "flags_nac": "flag4, flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 11.29,
+      "score_cat": 24.1,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ARMERIA DEL CARMEN",
+      "flags_nac": "flag1, flag2, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 22.05,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "ACTURA 12",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 20.99,
+      "score_cat": 151.73,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SEIDOR CONSULTING",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 4,
+      "score_nac": 54.58,
+      "score_cat": 134.26,
+      "total_flags": 6
+    },
+    {
+      "empresa": "INV PROTECCION",
+      "flags_nac": "flag2, flag5, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "PMC GRUP 1985",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 3.29,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "FERRER INTERNACIONAL",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "DESARROLLO ORGANIZACIONAL PERSONAS Y PRODUCTIVIDAD",
+      "flags_nac": "flag2, flag3, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 5,
+      "n_flags_cat": 1,
+      "score_nac": 25.18,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "AIRIS TECHNOLOGY SOLUTIONS",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 80.19,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SCHINDLER",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 47.93,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "BSN MEDICAL",
+      "flags_nac": "flag4, flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 40.12,
+      "score_cat": 7.96,
+      "total_flags": 6
+    },
+    {
+      "empresa": "SODISPAN BIOTECH",
+      "flags_nac": "flag1, flag2, grupos, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "FCC AMBITO",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 22.7,
+      "score_cat": 0,
+      "total_flags": 6
+    },
+    {
+      "empresa": "CRONORENT",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 3,
+      "score_nac": 41.71,
+      "score_cat": 13.41,
+      "total_flags": 6
+    },
+    {
+      "empresa": "COFELY ESPAÑA",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 15.2,
+      "total_flags": 5
+    },
+    {
+      "empresa": "NIRCO",
+      "flags_nac": "flag7, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TECHNOLOGY 2050",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ENDALIA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "COMERCIAL GRUPO ANAYA",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SEINSOL",
+      "flags_nac": "flag4, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 36.36,
+      "total_flags": 5
+    },
+    {
+      "empresa": "OPQ SYSTEMS MAQUINARIA GRAFICA",
+      "flags_nac": "flag1, flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VANGUARD GRAFIC",
+      "flags_nac": "grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 4,
+      "score_nac": 0,
+      "score_cat": 14.34,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ACOTA GIRONA CONSTRUCCIONS",
+      "flags_nac": "flag1, flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "THE PROJECT MUSIC COMPANY",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 9.12,
+      "score_cat": 4.61,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ASCAN SERVICIOS URBANOS",
+      "flags_nac": "flag1, flag6, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 288.26,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VALIDATED ID",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 3.44,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "KEYLAB MEDICAL",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 21.42,
+      "score_cat": 9.9,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CARAT ESPAÑA",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "FLEXO ARQUITECTURA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LINEALAB",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INTEGRATED DNA TECHNOLOGIES SPAIN",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EDITORIAL MIC",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 95.05,
+      "score_cat": 36.41,
+      "total_flags": 5
+    },
+    {
+      "empresa": "DILOGRAF",
+      "flags_nac": "grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 4,
+      "score_nac": 0,
+      "score_cat": 6.45,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ORACLE IBERICA",
+      "flags_nac": "flag6, flag7, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 273.83,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "DD BIOLAB",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 4.23,
+      "score_cat": 6.34,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IMMUCOR",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SERVEIS DEL ESPECTACLE FOCUS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 25.11,
+      "total_flags": 5
+    },
+    {
+      "empresa": "GLOBAL PROJECTS & SUPPLIES",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "WISDOM TV ESPAÑA",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 381.6,
+      "score_cat": 103.05,
+      "total_flags": 5
+    },
+    {
+      "empresa": "AVALION INNOVATION & TRANSFORMATION SERVICES",
+      "flags_nac": "flag4, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 7.46,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VIFOR PHARMA ESPAÑA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CONSULTORES DE LAS ADMINISTRACIONES PUBLICAS",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 2.44,
+      "score_cat": 2.92,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SCA HYGIENE PRODUCTS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 32.52,
+      "total_flags": 5
+    },
+    {
+      "empresa": "M3I CONTROLS",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 253.73,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PROFIREX DEMOLICIONES",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "FERRER FARMA",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CONNECTIS ICT SERVICES",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CONNECTIS MANAGED CLOUD ESPAÑA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "GERMANS HOMS LLOGUER DE MAQUINARIA 1852",
+      "flags_nac": "flag6",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 4,
+      "score_nac": 6.79,
+      "score_cat": 24.73,
+      "total_flags": 5
+    },
+    {
+      "empresa": "D'ALEPH INICIATIVAS Y ORGANIZACION",
+      "flags_nac": "grupos",
+      "flags_cat": "flag10, flag6, grupos, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 4,
+      "score_nac": 0,
+      "score_cat": 12.83,
+      "total_flags": 5
+    },
+    {
+      "empresa": "RESIDENCIAS DE ESTUDIANTES",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "AIRMEDICAL PRODUCTS",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 21.42,
+      "score_cat": 9.9,
+      "total_flags": 5
+    },
+    {
+      "empresa": "GOBELIN PROJECTES",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SUPERMERCADOS CHAMPION",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 8.43,
+      "score_cat": 1.51,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ESPUBLICO SERVICIOS PARA LA ADMINISTRACION",
+      "flags_nac": "flag7, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EMURTEL",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "FRIGIKERN",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 30.85,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ALIBRI LIBRERIA",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SOLUCIONES AVANZADAS EN INFORMATICA APLICADA",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 98.19,
+      "score_cat": 22.47,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CALSERVICE HERATEC",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 32.44,
+      "score_cat": 11.93,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CELGENE",
+      "flags_nac": "flag2, flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "COKREA GREEN",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 60.53,
+      "score_cat": 138.54,
+      "total_flags": 5
+    },
+    {
+      "empresa": "H SANTOS D",
+      "flags_nac": "flag1, flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ID WASTE",
+      "flags_nac": "flag2, flag7, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MBA INCORPORADO",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 2.32,
+      "score_cat": 49.53,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CYTOGNOS",
+      "flags_nac": "flag2, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SOCIEDAD ESTATAL CORREOS Y TELEGRAFOS",
+      "flags_nac": "flag7, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VANTURE ESS",
+      "flags_nac": "flag2, flag6, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 28.88,
+      "score_cat": 24.31,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CARDINAL HEALTH SPAIN 511",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LEAN LEMON",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SAHAJANAND MEDICAL TECHNOLOGIES IBERIA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "KEYSIGHT TECHNOLOGIES SPAIN",
+      "flags_nac": "flag4, grupos, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ZARDOYA OTIS",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 37.29,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ELEROC SERVICIOS",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PRYSMA CALIDAD Y MEDIO AMBIENTE",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 28.78,
+      "score_cat": 8.01,
+      "total_flags": 5
+    },
+    {
+      "empresa": "AL TOP TOPOGRAFIA",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 95.97,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ERION MANTENIMIENTO FERROVIARIO",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IBERHOSPITEX",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 52.36,
+      "score_cat": 85.44,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PKF ATTEST BLUEWAY",
+      "flags_nac": "flag2, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BEMASCE TECNICA",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SIEMENS MOBILITY",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CESPA GESTION DE RESIDUOS",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BUREAU VERITAS IBERIA",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 46.94,
+      "score_cat": 9.86,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PRODUCCIONES MIC",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 95.05,
+      "score_cat": 36.41,
+      "total_flags": 5
+    },
+    {
+      "empresa": "HAIN LIFESCIENCE SPAIN",
+      "flags_nac": "flag4, flag6, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 279.68,
+      "score_cat": 180.78,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MAGMACULTURA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EHISA CONSTRUCCIONES Y OBRAS",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 426.7,
+      "score_cat": 53.76,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SOCIOEMPRENDE",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LINDE GAS ESPAÑA",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "METHOD SOFTWARE",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 18.41,
+      "score_cat": 16.73,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LANGUAGE KINGDOM",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ORIZON UNDERWRITERS",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SODISPAN BIOLAB",
+      "flags_nac": "flag1, grupos, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ORANGE ESPAGNE",
+      "flags_nac": "flag7, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "OESIA NETWORKS",
+      "flags_nac": "flag2, flag6, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 420.82,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PKF ATTEST ITC",
+      "flags_nac": "flag2, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BENIFONSSERVICES",
+      "flags_nac": "flag1, flag2, flag7, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EMSOR",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BIOAVIAN ALIMENTACION ANIMAL",
+      "flags_nac": "flag1, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ASOR 2019",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 13.56,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SILUJ ILUMINACION",
+      "flags_nac": "flag1, flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "GAS NATURAL COMERCIALIZADORA",
+      "flags_nac": "flag7, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IZERTIS",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 61.74,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CARYOSA HYGIENIC SOLUTIONS",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IZASA HOSPITAL",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TPARTNER NETWORK SERVICES",
+      "flags_nac": "flag4, flag6, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 61.74,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "AR VISION 2049",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 71.45,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "METROLOGIA SARIKI",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 43.01,
+      "score_cat": 3.82,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MERCADO ACTUAL CORPORATE",
+      "flags_nac": "flag1, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BASEFORM SOFTWARE",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SOLER GLOBAL SERVICE",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SIGNATURIT SOLUTIONS",
+      "flags_nac": "flag4, flag6, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 21.58,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ITALFARMACO",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0.72,
+      "score_cat": 6.48,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PARI PHARMA IBERIA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BEXAL FARMACEUTICA",
+      "flags_nac": "flag6, flag9, grupos, risk",
+      "flags_cat": "grupos",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 93.89,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "KNOWLEDGE SHARING NETWORK",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IMPRENTA ONLINE",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 1.84,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MEDIASET ESPAÑA COMUNICACION",
+      "flags_nac": "flag4, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "HEALTH DIAGNOSTIC",
+      "flags_nac": "flag6, flag9, grupos, risk",
+      "flags_cat": "grupos",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 15.39,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ARROW SERVICIOS TECNICOS",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 49.76,
+      "score_cat": 41.34,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VOLUMEN SOLUCIONES",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VERNE INFORMATION TECHNOLOGY",
+      "flags_nac": "flag2, flag6, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 109.71,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INETUM SOFTWARE IBERIA",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MAPFRE ESPAÑA COMPAÑIA DE SEGUROS Y REASEGUROS",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 17.06,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "NEURTEK SERVICES",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ABACUS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, flag7, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PROTECCION DE PATRIMONIOS",
+      "flags_nac": "flag6, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 26.51,
+      "score_cat": 115.51,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ALGECO CONSTRUCCIONES MODULARES",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ABBOTT LABORATORIES",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ESSITY SPAIN",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 40.12,
+      "score_cat": 32.52,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MEDIPLAST IBERIA",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 49.53,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IMESAPI",
+      "flags_nac": "flag7, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CENTRE MEDIC SITGES",
+      "flags_nac": "flag4, flag6, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 32.22,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ALAVA INGENIEROS TELECOM",
+      "flags_nac": "flag4, grupos, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PROUD EVENTS",
+      "flags_nac": "flag2, flag6, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 51.29,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "THERMO FISHER SCIENTIFIC",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 315.95,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LABORATORIOS FIDIA FARMACEUTICA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ETIC ONLINE",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 7.81,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SOLDENE",
+      "flags_nac": "flag7, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IDIOMUND",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "UNAVETS HEALTHCARE",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VIRCELL SPAIN",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ECONOCOM PRODUCTS & SOLUTIONS",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 22.22,
+      "score_cat": 1.28,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SICAL",
+      "flags_nac": "flag4, flag5, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "DIVISASOLUTIONS",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "NUEVOS TIEMPOS CONSULTORES",
+      "flags_nac": "flag2, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TRANSPORTES BOYACA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "AQUIDOS ARQUITECTES TECNICS I GESTIO",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EDITORIAL ARANZADI",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "FCC CONSTRUCCION",
+      "flags_nac": "flag6, flag9, grupos, risk",
+      "flags_cat": "grupos",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 526.19,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IELAB CALIDAD",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 67.28,
+      "score_cat": 21.01,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PROCARELIGHT",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VODAFONE ESPAÑA",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ALMIRALL",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 16.57,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "IZASA SCIENTIFIC",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ALBYN MEDICAL",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 3.39,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CONTRATAS VILOR",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 401.02,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BROCOLI",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SOCIEDAD GENERAL DE AGUAS DE BARCELONA",
+      "flags_nac": "flag7, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "DIATEC SPAIN",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "AENOR CONFIA",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 6.87,
+      "score_cat": 4.45,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VEGENAT",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 62.95,
+      "total_flags": 5
+    },
+    {
+      "empresa": "VITROLIFE MEDICAL DEVICES SPAIN",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INDUSTRIAS FRANCISCO BOTELLA",
+      "flags_nac": "flag1, flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MEDICARE PHARMA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TRECHOBS CONSULTORES",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "WAVEMAKER PUBLICIDAD SPAIN",
+      "flags_nac": "flag4, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ADECCO FORMACION",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 7.18,
+      "score_cat": 1.85,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ISOFT SANIDAD",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 231.88,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INFOBIBLIOTECAS",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 37.78,
+      "score_cat": 22.68,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CONTELOGIC",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LEMAITRE VASCULAR SPAIN",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SOLUCIONES NETQUEST DE INVESTIGACION",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LOCALIZADOR SHERLOG",
+      "flags_nac": "flag1, flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "HEALTH IN CODE",
+      "flags_nac": "flag4, grupos, risk",
+      "flags_cat": "grupos, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EUROFINS IPROMA",
+      "flags_nac": "flag6, flag9, grupos",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 46.76,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "GMV SOLUCIONES GLOBALES INTERNET",
+      "flags_nac": "flag6, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 27.17,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INNOVILAND SOLUTIONS",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TK ELEVADORES ESPAÑA",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 22.38,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INGEUS",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 12.83,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BANKIA",
+      "flags_nac": "flag4, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BROKER KIROL",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "NORDVERT",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 7.97,
+      "score_cat": 15.31,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TILLOTTS PHARMA SPAIN",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BIOTEST MEDICAL",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 288.55,
+      "score_cat": 106.22,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CONTADORES DE AGUA DE ZARAGOZA",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "GRUPO MECANICA DEL VUELO SISTEMAS",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 27.17,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INNOVACION HEXAGONAL",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PW ADVISORY & CAPITAL SERVICES",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 12.73,
+      "score_cat": 21.14,
+      "total_flags": 5
+    },
+    {
+      "empresa": "HASTINIK",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 11.25,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INNOVACIONES QUIMICAS BITAN",
+      "flags_nac": "flag5, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LINDE MEDICA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LIFTISA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 7.52,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INDRA SISTEMAS",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 81.66,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BIOSER",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 13.98,
+      "total_flags": 5
+    },
+    {
+      "empresa": "RADAR CULTURA",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "COVIDIEN SPAIN",
+      "flags_nac": "flag4, flag9, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "YKSIOS DIGITAL GROWTH",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SOUNDWARE MEDIA",
+      "flags_nac": "flag1, grupos, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 73.2,
+      "total_flags": 5
+    },
+    {
+      "empresa": "GENERAL DE ASFALTOS Y SERVICIOS",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 288.26,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EULEN",
+      "flags_nac": "flag7, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "DLIBROS DIFUSION Y DISTRIBUCION",
+      "flags_nac": "flag6, flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 37.78,
+      "score_cat": 22.68,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PREZERO GESTION DE RESIDUOS",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TALRENT",
+      "flags_nac": "flag1, flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CARL ZEISS MICROSCOPY",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 10.0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "RAIL EQUIP",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "PRODUCTES INDUSTRIALS DE SANEJAMENT I MANTENIMENT",
+      "flags_nac": "flag2, flag3, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "AL AIR LIQUIDE ESPAÑA",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "INSTITUTO GRIFOLS",
+      "flags_nac": "flag6, flag9, grupos, risk",
+      "flags_cat": "grupos",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 124.72,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "BITAC MAP",
+      "flags_nac": "flag2, flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TROMP MEDICAL",
+      "flags_nac": "flag1, flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SYDER COMERCIALIZADORA VERDE",
+      "flags_nac": "flag7, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "TUV SUD IBERIA",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "ALTRAN INNOVACION",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "LIESNO BUNO",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "CITELUM IBERICA",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SERTEGO SERVICIOS MEDIOAMBIENTALES",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MERCK",
+      "flags_nac": "flag6, grupos",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 51.75,
+      "score_cat": 34.9,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SYTE AIRPORTS",
+      "flags_nac": "flag1, flag2, flag6, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 4,
+      "n_flags_cat": 1,
+      "score_nac": 619.43,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "SACYR FACILITIES",
+      "flags_nac": "flag6, grupos, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 73.62,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EQUIPOS MEDICO BIOLOGICOS BCN",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, grupos, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "EXELTIS HEALTHCARE",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 8.68,
+      "total_flags": 5
+    },
+    {
+      "empresa": "REVERTER INDUSTRIES CORP",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 5
+    },
+    {
+      "empresa": "MEDIALOG COMMUNICATIONS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CONSULTORES Y ASESORES EN SEGURIDAD INTEGRAL EUROP",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SERVITEC RADYAL",
+      "flags_nac": "flag1, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "EMILIO DOMENECH MIRABET",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "LINDE MEDICINAL",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ASCENDER",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CALABRES TOME",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "XAVIER ALSINA",
+      "flags_nac": "grupos",
+      "flags_cat": "flag6, grupos, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 7.12,
+      "total_flags": 4
+    },
+    {
+      "empresa": "RENFE VIAJEROS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 2.55,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SGS ESPAÑOLA DE CONTROL",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "grupos",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CROBISER OBRES I SERVEIS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "TDA ARQUITECTURA Y URBANISMO 2002",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ADAMO TELECOM IBERIA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "JOHNSON & JOHNSON",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 62.12,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "LABORATORIOS TILLOMED SPAIN",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SITA SPE IBERICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PLANCHISTERIA INDUSTRIAL MIRPA",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SELVICOLA DEL MAESTRAZGO",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SOCIEDAD ESPAÑOLA DE CARBUROS METALICOS",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 14.15,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "FOTO K",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ABATEMENT & VACUUM TECHNOLOGY",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PREVILABOR 365",
+      "flags_nac": "flag4, flag6, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 71.77,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "COMERCIAL MEDICO QUIRURGICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NOU ACTIS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BIOCARE EUROPE ESPAÑA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "EUROSEÑAL",
+      "flags_nac": "flag1, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SUMINISTROS INDUSTRIALES Y DEL EMBALAJE",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "IURIS DOC",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SERVICIOS AVANZADOS PARA LAS INSTITUCIONES",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "EXCELENCIA Y GARANTIA PARA LA SALUD EN EL TRABAJO",
+      "flags_nac": "flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SUMINISTROS TECNICOS LOPEZ SANCHO",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AUREN CONSULTORES SP",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SNF FLOERGER IBERICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "INGEOMET PRECISION",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NH HOTELES ESPAÑA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 1.96,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GENOCHEM WORLD",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "FESTO PNEUMATIC",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PUBLIREGALO REGALOS EMPRESAS",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "REGS LABRADOR",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "WASTERENT",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SOFTWAREONE SPAIN",
+      "flags_nac": "flag4, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CATALANA DE DISPENSACION",
+      "flags_nac": "flag4, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AZUL PRODUCCIONES ESCENICAS",
+      "flags_nac": "flag1, flag2, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ROYAL PACK PRODUCTOS DE SEGURIDAD",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "DRB CARTO",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CERVOS",
+      "flags_nac": "flag7, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 54.81,
+      "total_flags": 4
+    },
+    {
+      "empresa": "IBERLEMO",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "OASIS DIST",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "LOOPS CLOUD COMPUTING",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PERGUT MEDICAL",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CAF POWER & AUTOMATION",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SIGMA ALDRICH QUIMICA",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 51.75,
+      "score_cat": 34.9,
+      "total_flags": 4
+    },
+    {
+      "empresa": "HURACAINS INDUMENTARIA",
+      "flags_nac": "flag1, flag6, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 7.64,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "DEPASUR PDR GROUP",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NORMETAL EQUIPAMIENTOS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "TISELAB",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ROVEBLOC",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MEASUREIT SYSTEMS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BALGON 2011",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "OBRES I CONSTRUCCIONS CORBERA",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MAHA MASCHINENBAU HALDENWANG ESPAÑA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SUNET PLAGAS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "DISTARMATEX",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "TSM SERCONTIC",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "UNDERGRAF",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "HERASCIENTIFIC LIFE SCIENCE",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "IMABE IBERICA",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "TELEFONICA SOLUCIONES DE INFORMATICA Y COMUNICACIO",
+      "flags_nac": "flag7, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NRD MULTIMEDIA",
+      "flags_nac": "flag7, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GLOBAL SOLUTIONS 2014",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "VUNKERS IT EXPERTS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "LANACCESS TELECOM",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "KIDO DYNAMICS ESPAÑA",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SWAV MEDICAL SPAIN",
+      "flags_nac": "flag1, flag2, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AMPANS MEDI AMBIENT",
+      "flags_nac": "grupos",
+      "flags_cat": "flag11, grupos, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AMBUSERTRANS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GRUP VIADA MATARO",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CSL BEHRING",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 213.53,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "VIVENTIAL VALUE CONSULTING",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "RADIO EVENTS TERRES DE L'EBRE",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CAFETERIA BAR VERTEX",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PHYGITAL DEST",
+      "flags_nac": "flag1, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SINAMEDIC",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ALK ABELLO",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MADTRAUMA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NUTRICIA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NEUROGAL ELECTROMEDICINA",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "TRAMEDIC",
+      "flags_nac": "flag6",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 3,
+      "score_nac": 17.27,
+      "score_cat": 48.51,
+      "total_flags": 4
+    },
+    {
+      "empresa": "K M ALARABI",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BYFACILITY",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CAPGROS COMUNICACIO",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "COMERTEL",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GETTY IMAGES SALES SPAIN",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "EDITORIAL VICENS VIVES",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SHOWSLAND",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "POLAR NIGHTS",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "VENTILACION Y FILTRACION",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "METROHM HISPANIA",
+      "flags_nac": "flag1, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "RISO IBERICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "DIGIBIS",
+      "flags_nac": "flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MANTENIMIENTO E INSTALACIONES INFORMATICAS GMRI",
+      "flags_nac": "flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 6.52,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PROSOL INGENIERIA",
+      "flags_nac": "flag1, flag4, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "INGENIERIA Y DESARROLLO DE MAQUINAS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BUXMAN PRODUCCIONES",
+      "flags_nac": "flag2, grupos, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CONCILE DIAGNOSTICS",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "R2ED & GESTION TECNICA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "INCIPY",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 7.75,
+      "total_flags": 4
+    },
+    {
+      "empresa": "3DWORLD",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SOCIETAT CATALANA DE PETROLIS",
+      "flags_nac": "flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "DISSENY BARRACA",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "RAMBLEJANT",
+      "flags_nac": "flag9",
+      "flags_cat": "flag10, flag6, risk",
+      "n_flags_nac": 1,
+      "n_flags_cat": 3,
+      "score_nac": 0,
+      "score_cat": 14.28,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PAVIESPORT 2000",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "LABORATORIOS GRIFOLS",
+      "flags_nac": "flag9, grupos, risk",
+      "flags_cat": "grupos",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CARLO ERBA REAGENTS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SYSTECH RAIL IBERICA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CAAS ARQUITECTES",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "IQVIA INFORMATION",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ADSPLANNING",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PRODUCTOS MEDICINALES MEDELA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ANGELINI FARMACEUTICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BET 4 HEALTHCARE",
+      "flags_nac": "flag1, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GIC RETAIL",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SERVISAR SERVICIOS SOCIALES",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "YOLEO EDUTAINMENT",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "EDITORIAL CASALS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BIZNEO SOLUTIONS",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "INYPSA CW INFRASTRUCTURES",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MEDICALONE",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GESEME MEDICOS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NUTRICION MEDICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NORD JIATEL",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "KELONIK DIGITAL",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BENITO URBAN",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CUATRECASAS GONCALVES PEREIRA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NEXTRET CIBERSEGURIDAD",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BONGARD IBERIA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ECODATA NATURA",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "IBEROAMERICANA DE HILADOS Y TEJIDOS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SORBCONTROL",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BRUMA ENTERTAINMENT",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AUDAX ENERGIA",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ADAGIO",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "BACULOS Y COLUMNAS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NORMEDAN",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MOVIANTO ESPAÑA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MEDICLINICS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 2.54,
+      "total_flags": 4
+    },
+    {
+      "empresa": "INJECCIO AMAC",
+      "flags_nac": "flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ILUMINACION ALBADALEJO",
+      "flags_nac": "flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "TAXO VALORACION",
+      "flags_nac": "flag4, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MEDITECH REPAIR",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GREEN LIGHT RESEARCH",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AGILENT TECHNOLOGIES SPAIN",
+      "flags_nac": "flag4, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "IMPLANTACIONES DE SISTEMAS DE GESTION",
+      "flags_nac": "flag4, flag6, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 21.43,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AUTOMATIZACION FARMACEUTICA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PETROPRIX ENERGIA",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NEURTEK",
+      "flags_nac": "flag1, flag4, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "COMMEND IBERICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "OBJETIVO TARSYS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AMBIENS GESTIO DE RECURSOS AMBIENTALS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CENTROS COMERCIALES CARREFOUR",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 18.14,
+      "score_cat": 1.51,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AGROLAB MEDIOAMBIENTE",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "FOMENTO DE CONSTRUCCIONES Y CONTRATAS",
+      "flags_nac": "flag6, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 55.7,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "OBRAS Y CONSTRUCCIONES TRIVAZQUEZ",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SECOM 4 CONSTRUCCIONES Y PROYECTOS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "AQUALIA GESTION INTEGRAL DEL AGUA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "EL KOALA NARANJA",
+      "flags_nac": "flag1, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ESTRUCTURAS CONDAL",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 27.52,
+      "total_flags": 4
+    },
+    {
+      "empresa": "IMPEMER",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ABACANTO SOLUCIONES",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "OSTEOPLAC INNOVATIONS",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "PWACS GESTION LOCAL",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 21.14,
+      "total_flags": 4
+    },
+    {
+      "empresa": "DISSENY TEA 3",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "MEGA SPORT",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 19.82,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SEGUR IBERICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NB OBRES I SERVEIS 1983",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "NORGINE DE ESPAÑA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "RAMON CHAO",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SOLUCIONES TECNICAS FERNANDEZ CUCALON",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ACTIVE ENGINEERING SOLUTIONS",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "10DENCEHISPAHARD",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CAIXABANK",
+      "flags_nac": "flag9, grupos",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "HOPEMUSIC",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "OBRASCON HUARTE LAIN",
+      "flags_nac": "flag7, risk",
+      "flags_cat": "flag11, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "INTERSCHULLER",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ITACA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "ECOTISA UNA TINTA DE IMPRESION",
+      "flags_nac": "flag6, flag9",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 13.82,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "EXYDE TECHFIRE",
+      "flags_nac": "flag2, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CLOUD CANTABRICO SIGLO XXI",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 4.25,
+      "total_flags": 4
+    },
+    {
+      "empresa": "SONMEDICA",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GLOBAL TECHNOLOGY 4 ELITE",
+      "flags_nac": "flag2, flag9, risk",
+      "flags_cat": "risk",
+      "n_flags_nac": 3,
+      "n_flags_cat": 1,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    },
+    {
+      "empresa": "CIRCONTROL",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag6, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 1.25,
+      "total_flags": 4
+    },
+    {
+      "empresa": "GECOM ESPACIOS DE COMUNICACION",
+      "flags_nac": "flag9, risk",
+      "flags_cat": "flag10, risk",
+      "n_flags_nac": 2,
+      "n_flags_cat": 2,
+      "score_nac": 0,
+      "score_cat": 0,
+      "total_flags": 4
+    }
+  ]
+}

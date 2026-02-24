@@ -1,0 +1,25 @@
+{
+  "importe_pares_nacional": 124364097119.47,
+  "top_persona_nacional": [
+    "1",
+    1472
+  ],
+  "n_empresas_red_nacional": 2684,
+  "max_organos_nacional": 101,
+  "n_pares_nacional": 1878,
+  "top_concentracion_nacional": [
+    "FCC MEDIO AMBIENTE",
+    100.0
+  ],
+  "n_geo": 27465,
+  "n_risk_nacional": 25675,
+  "multi_flag_nacional": 125,
+  "troceo_importe": 143239496.03,
+  "troceo_clusters": 4331,
+  "top_concentracion_catalunya": [
+    "EMPRESA MUNICIPAL MIXTA D'AIGU",
+    65.9
+  ],
+  "n_risk_catalunya": 4203,
+  "multi_flag_catalunya": 25
+}
