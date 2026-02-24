@@ -990,24 +990,38 @@ def filter_pares_by_year(df_pares, year_range):
 
 
 def pl_comparador_scatter(cdf):
-    """Scatter plot: Nacional score vs Catalunya score."""
+    """Heatmap: Nacional flags × Catalunya flags for common companies."""
     if len(cdf) < 3: return None
-    fig = go.Figure(go.Scatter(
-        x=cdf['score_nac'], y=cdf['score_cat'], mode='markers',
-        marker=dict(size=6+cdf['total_flags']*2.5, color=cdf['total_flags'],
-            colorscale=[[0,'rgba(59,130,246,.7)'],[.5,'rgba(245,158,11,.8)'],[1,'rgba(239,68,68,.9)']],
-            line=dict(width=.5, color='rgba(255,255,255,.15)'), opacity=.85,
-            colorbar=dict(title='Flags', thickness=12, len=.5, tickfont=dict(size=9, color=C['muted']))),
-        text=cdf['empresa'],
-        hovertemplate='<b>%{text}</b><br>Nacional: %{x:.1f}<br>Catalunya: %{y:.1f}<extra></extra>'))
-    mx = max(cdf['score_nac'].max(), cdf['score_cat'].max(), 1)
-    fig.add_trace(go.Scatter(x=[0,mx], y=[0,mx], mode='lines',
-        line=dict(color='rgba(255,255,255,.1)', dash='dash', width=1),
-        showlegend=False, hoverinfo='skip'))
-    fig.update_layout(**PL, height=400,
-        title=dict(text='<b>Nacional vs Catalunya</b> · Score máximo', font=dict(size=13), x=0),
-        xaxis=dict(title='Score Nacional', gridcolor=C['grid']),
-        yaxis=dict(title='Score Catalunya', gridcolor=C['grid']))
+
+    # Build crosstab: which Nacional flags co-occur with which Catalunya flags
+    rows = []
+    for _, r in cdf.iterrows():
+        nac_flags = [f.strip() for f in str(r.get('flags_nac','')).split(',') if f.strip()]
+        cat_flags = [f.strip() for f in str(r.get('flags_cat','')).split(',') if f.strip()]
+        for nf in nac_flags:
+            for cf in cat_flags:
+                rows.append({'nacional': nf, 'catalunya': cf})
+    if not rows:
+        return None
+
+    cross = pd.DataFrame(rows)
+    piv = cross.groupby(['nacional','catalunya']).size().reset_index(name='n')
+    piv_wide = piv.pivot(index='nacional', columns='catalunya', values='n').fillna(0)
+
+    # Sort by total
+    piv_wide = piv_wide.loc[piv_wide.sum(axis=1).sort_values(ascending=True).index]
+    piv_wide = piv_wide[piv_wide.sum(axis=0).sort_values(ascending=False).index]
+
+    fig = go.Figure(go.Heatmap(
+        z=piv_wide.values, x=piv_wide.columns.tolist(), y=piv_wide.index.tolist(),
+        colorscale=[[0,'rgba(5,6,9,1)'],[.15,'rgba(59,130,246,.25)'],[.4,'rgba(245,158,11,.5)'],[1,'rgba(239,68,68,.85)']],
+        hovertemplate='<b>Nacional:</b> %{y}<br><b>Catalunya:</b> %{x}<br><b>Empresas:</b> %{z}<extra></extra>',
+        colorbar=dict(title='Empresas', thickness=12, len=.6, tickfont=dict(size=9, color=C['muted'])),
+        xgap=2, ygap=2))
+    fig.update_layout(**PL, height=max(300, len(piv_wide)*32+80),
+        title=dict(text='<b>Señales cruzadas</b> · Nacional × Catalunya', font=dict(size=13), x=0),
+        xaxis=dict(title='Señales Catalunya', tickfont=dict(size=9), tickangle=-35, side='bottom'),
+        yaxis=dict(title='Señales Nacional', tickfont=dict(size=9)))
     return fig
 
 
@@ -1283,7 +1297,52 @@ def render_flags(flags):
     display = [f"{get_flag_meta(s)['icon']} {get_flag_meta(s)['label']} ({flags[s]['scope']})" for s in stems]
     idx = st.selectbox("Seleccionar análisis", range(len(stems)), format_func=lambda i: display[i])
     sel = stems[idx]; info = flags[sel]; meta = get_flag_meta(sel)
-    with st.spinner(f"Cargando {sel}..."): df = load_pq(info['path'])
+
+    # ── Explanation card per analysis type ──
+    _EX = {
+        'flag10': ('✂️ ¿Qué es?', 'Un órgano adjudica a la misma empresa <b>≥3 contratos en 90 días, todos bajo 15.000€</b> '
+                   '(umbral de contrato menor), pero cuya suma supera ese umbral. Posible fraccionamiento para evitar licitación pública.'),
+        'flag11': ('📝 ¿Qué es?', 'Empresas con <b>≥20% de sus contratos modificados</b> (la media catalana es ~0.57%). '
+                   'Las modificaciones frecuentes pueden indicar adjudicaciones inicialmente bajas que se incrementan después.'),
+        'flag1': ('🆕 ¿Qué es?', 'Empresas constituidas <b>menos de 6 meses antes</b> de recibir su primer contrato público. '
+                  'Puede indicar sociedades instrumentales creadas ad hoc para adjudicaciones concretas.'),
+        'flag2': ('💰 ¿Qué es?', 'Empresas con <b>capital social inferior a 3.000€</b> que reciben contratos significativos (>50K€). '
+                  'Un capital tan bajo es inusual para empresas que manejan contratación pública relevante.'),
+        'flag3': ('👥 ¿Qué es?', 'Empresas con <b>cambios frecuentes de administrador</b> en el Registro Mercantil. '
+                  'La rotación rápida de cargos de decisión puede indicar testaferros o cambios para evadir responsabilidades.'),
+        'flag4': ('💀 ¿Qué es?', 'Empresas con <b>acto de disolución publicado</b> en BORME que siguen recibiendo contratos públicos. '
+                  'Una empresa disuelta no debería participar en licitaciones.'),
+        'flag5': ('⚖️ ¿Qué es?', 'Empresas en <b>concurso de acreedores</b> (situación de insolvencia) según BORME. '
+                  'La legislación restringe la contratación pública a empresas en esta situación.'),
+        'persona': ('👤 ¿Qué es?', 'Ranking de <b>personas con más conexiones</b> entre empresas que licitan ante los mismos órganos. '
+                    'El score acumula las puntuaciones de todos los pares en los que participa.'),
+        'pares': ('🔗 ¿Qué es?', 'Cada fila es un <b>par de empresas</b> que comparten administrador y coinciden en ≥2 órganos contratantes. '
+                  'Ya se han filtrado los grupos corporativos legítimos. El score combina concentración, cargo, flags e importe.'),
+        'flag6': ('🕸️ ¿Qué es?', '<b>Dos empresas que comparten administrador</b> (sin ser del mismo grupo corporativo) ganan contratos '
+                  'ante los mismos órganos contratantes. Sugiere posible coordinación de ofertas. '
+                  'Se filtran grupos corporativos por nombre, solapamiento de consejo y fusiones BORME.'),
+        'flag7': ('🎯 ¿Qué es?', 'Una empresa gana un <b>porcentaje anormalmente alto</b> de las adjudicaciones de un órgano contratante '
+                  '(>40% en Nacional, adaptativo en Catalunya). Indica posible relación preferente.'),
+        'flag8': ('🤝 ¿Qué es?', '<b>UTEs (Uniones Temporales de Empresas)</b> cuyos miembros comparten administrador. '
+                  'Si dos empresas de una UTE tienen el mismo decisor, la "unión temporal" puede no ser independiente.'),
+        'flag9': ('📍 ¿Qué es?', 'Empresas registradas en una comunidad autónoma que ganan contratos <b>mayoritariamente en otra</b> muy distinta. '
+                  'Solo PYMEs (3–200 adj) — las grandes corporaciones con sede en Madrid se excluyen por ser habitual.'),
+        'risk': ('📊 ¿Qué es?', 'Puntuación unificada que <b>combina todas las señales</b> con pesos ponderados. '
+                 'A mayor score, más señales acumula una empresa. No es prueba de irregularidad — es una priorización para revisión humana.'),
+        'grupo': ('🏢 ¿Qué es?', 'Pares de empresas <b>filtrados como grupo corporativo legítimo</b>: comparten nombre de marca, '
+                  'tienen >40% solapamiento de consejo, o figuran en actos de fusión/absorción en BORME. Son falsos positivos descartados.'),
+    }
+    _exp = None
+    for _k, _v in _EX.items():
+        if _k in sel.lower():
+            _exp = _v; break
+    if _exp:
+        st.markdown(f"<div class='intro-q' style='margin:12px 0 16px'>"
+            f"<b style='color:{C['accent']}'>{_exp[0]}</b><br>"
+            f"<span style='font-size:.82rem;color:{C['text2']};line-height:1.7'>{_exp[1]}</span></div>",
+            unsafe_allow_html=True)
+
+    with st.spinner("Cargando..."): df = load_pq(info['path'])
 
     c1, c2, c3, c4 = st.columns(4)
     with c1: st.metric("Registros", fmt(len(df)))
@@ -1905,11 +1964,11 @@ def main():
                 comp_data = load_json(str(comp_path))
                 if comp_data and comp_data.get('n_common', 0) > 0:
                     st.markdown('<div class="sec">¿Coinciden en Nacional y Catalunya?</div>', unsafe_allow_html=True)
-                    st.markdown(f'<div class="graph-caption">Empresas que aparecen con señales de alerta en ambos ámbitos. El gráfico cruza el score en cada jurisdicción — los puntos en la esquina superior derecha son sospechosos en ambas.</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="graph-caption">De las {comp_data["n_common"]:,} empresas que aparecen en ambos ámbitos, el heatmap muestra qué combinaciones de señales Nacional × Catalunya son más frecuentes. Celdas más cálidas = más empresas con esa combinación.</div>', unsafe_allow_html=True)
                     c1, c2, c3 = st.columns(3)
-                    with c1: st.metric("Empresas con señales · Nacional", fmt(comp_data['n_nac']))
-                    with c2: st.metric("Empresas con señales · Catalunya", fmt(comp_data['n_cat']))
-                    with c3: st.metric("Aparecen en ambos", fmt(comp_data['n_common']))
+                    with c1: st.metric("En señales Nacional", fmt(comp_data['n_nac']))
+                    with c2: st.metric("En señales Catalunya", fmt(comp_data['n_cat']))
+                    with c3: st.metric("En ambos ámbitos", fmt(comp_data['n_common']))
 
                     cdf = pd.DataFrame(comp_data['empresas'])
                     if len(cdf) > 2:
