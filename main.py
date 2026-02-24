@@ -1065,7 +1065,7 @@ def render_quality(prof, label):
             title=dict(text='<b>% registros con valor</b> por campo clave', font=dict(size=13), x=0),
             xaxis=dict(range=[0, 105], gridcolor=C['grid']),
             yaxis=dict(tickfont=dict(size=10)))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     # ── 3. Quality Rules ──
     rules = prof.get('rules', [])
@@ -1092,11 +1092,11 @@ def render_quality(prof, label):
     ca, cb = st.columns([2, 1])
     with ca:
         fig = pl_missing_from_json(prof['missing'])
-        if fig: st.plotly_chart(fig, use_container_width=True)
+        if fig: st.plotly_chart(fig, width="stretch")
         else: st.success("✅ Sin valores faltantes significativos")
     with cb:
         fig = pl_radar_from_json(prof.get('radar', {}))
-        if fig: st.plotly_chart(fig, use_container_width=True)
+        if fig: st.plotly_chart(fig, width="stretch")
 
     # ── 5. Temporal ──
     temp = prof.get('temporal', {})
@@ -1106,7 +1106,7 @@ def render_quality(prof, label):
         d = temp[dc]
         fig = pl_temporal_from_json(temp, dc)
         if fig:
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
             st.caption(f"Rango: **{d['min']}** → **{d['max']}** · "
                        f"Válidos: {d.get('n_valid',0):,} · Nulos: {d['n_null']:,}")
 
@@ -1142,7 +1142,7 @@ def render_quality(prof, label):
                             tickfont=dict(color=C['accent'])),
                 legend=dict(orientation='h', y=-0.15),
                 bargap=.15)
-            st.plotly_chart(fig_yoy, use_container_width=True)
+            st.plotly_chart(fig_yoy, width="stretch")
 
     # ── 6. Importes ──
     amts = prof.get('amounts', {})
@@ -1162,7 +1162,7 @@ def render_quality(prof, label):
 
         # Histogram
         fig = pl_amounts_from_json(amts, ac)
-        if fig: st.plotly_chart(fig, use_container_width=True)
+        if fig: st.plotly_chart(fig, width="stretch")
 
         # Percentiles table
         pcts = d.get('percentiles', {})
@@ -1179,7 +1179,7 @@ def render_quality(prof, label):
                         extras.append({'Percentil': k.capitalize(), 'Valor': f"{pcts[k]:,.2f}"})
                 if extras:
                     pct_df = pd.concat([pct_df, pd.DataFrame(extras)], ignore_index=True)
-                st.dataframe(pct_df, use_container_width=True, hide_index=True)
+                st.dataframe(pct_df, width="stretch", hide_index=True)
 
         # Amount brackets (treemap-style bar chart)
         brackets = d.get('brackets')
@@ -1206,7 +1206,7 @@ def render_quality(prof, label):
                 xaxis=dict(gridcolor=C['grid'], tickangle=-30, tickfont=dict(size=9)),
                 yaxis=dict(title='%', gridcolor=C['grid']),
                 legend=dict(orientation='h', y=-0.22), bargap=.2)
-            st.plotly_chart(fig_br, use_container_width=True)
+            st.plotly_chart(fig_br, width="stretch")
 
     # ── 7. Categorías ──
     cats = prof.get('categories', {})
@@ -1223,7 +1223,7 @@ def render_quality(prof, label):
         with mc4: st.metric("HHI (concentración)", f"{d.get('hhi_approx', 0):.0f}")
 
         fig = pl_category_from_json(cats, cc)
-        if fig: st.plotly_chart(fig, use_container_width=True)
+        if fig: st.plotly_chart(fig, width="stretch")
 
     # ── 8. CPV ──
     cpv = prof.get('cpv_top')
@@ -1237,7 +1237,7 @@ def render_quality(prof, label):
         fig.update_layout(**PL, height=max(300, len(cpv_labels)*24),
             title=dict(text='<b>Top 15 familias CPV</b>', font=dict(size=13), x=0),
             xaxis=dict(gridcolor=C['grid']), yaxis=dict(tickfont=dict(size=9)))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     # ── 9. Top adjudicatarios ──
     top_adj = prof.get('top_adjudicatarios')
@@ -1257,7 +1257,7 @@ def render_quality(prof, label):
             title=dict(text='<b>Top adjudicatarios</b> · Importe acumulado (M€)', font=dict(size=13), x=0),
             xaxis=dict(title='M€', gridcolor=C['grid']),
             yaxis=dict(tickfont=dict(size=8)))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     # ── 10. Top órganos ──
     top_org = prof.get('top_organos')
@@ -1276,11 +1276,11 @@ def render_quality(prof, label):
                 title=dict(text='<b>Top órganos contratantes</b> · M€', font=dict(size=13), x=0),
                 xaxis=dict(title='M€', gridcolor=C['grid']),
                 yaxis=dict(tickfont=dict(size=8)))
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     # ── 11. Catálogo de columnas ──
     with st.expander("📋 Catálogo completo de columnas"):
-        st.dataframe(pd.DataFrame(prof['catalog']), use_container_width=True, height=500, hide_index=True)
+        st.dataframe(pd.DataFrame(prof['catalog']), width="stretch", height=500, hide_index=True)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1357,7 +1357,7 @@ def render_flags(flags):
         if fig_temp:
             st.markdown('<div class="sec">Evolución temporal · Red por año</div>', unsafe_allow_html=True)
             st.markdown(f'<div class="graph-caption">Muestra cómo crece la red de pares sospechosos año a año (acumulado). Línea roja = nº de pares, azul punteada = empresas únicas, amarilla = score máximo detectado ese año. Permite ver si los patrones se concentran en ciertos períodos.</div>', unsafe_allow_html=True)
-            st.plotly_chart(fig_temp, use_container_width=True)
+            st.plotly_chart(fig_temp, width="stretch")
             # Year filter slider
             date_cols = [c for c in df.columns if df[c].dtype in ['datetime64[ns]','datetime64[ns, UTC]']]
             if not date_cols:
@@ -1415,22 +1415,22 @@ def render_flags(flags):
             with c3: st.metric("Max score", f"{cl_df['max_score'].max():.0f}")
             with c4: st.metric("Con flags", int((cl_df['flags_total'] > 0).sum()))
             fig_cl = pl_clusters_bubble(cl_df)
-            if fig_cl: st.plotly_chart(fig_cl, use_container_width=True)
+            if fig_cl: st.plotly_chart(fig_cl, width="stretch")
             with st.expander("📋 Detalle de clusters"):
-                st.dataframe(cl_df.head(50), use_container_width=True, hide_index=True)
+                st.dataframe(cl_df.head(50), width="stretch", hide_index=True)
 
         # ── Adjacency matrix ──
         st.markdown('<div class="sec">Adjacency Matrix · Persona × Empresa</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="graph-caption">Heatmap de las 25 personas con más conexiones × las 40 empresas más frecuentes. Cada celda = score máximo de ese par persona-empresa. Permite detectar personas que aparecen en muchas empresas simultáneamente (filas densas) o empresas con múltiples personas vinculadas (columnas densas).</div>', unsafe_allow_html=True)
         fig_adj = pl_adjacency(df)
-        if fig_adj: st.plotly_chart(fig_adj, use_container_width=True)
+        if fig_adj: st.plotly_chart(fig_adj, width="stretch")
         else: st.caption("No se detectó columna de persona para construir la matriz.")
 
         # ── Bubble chart ──
         st.markdown('<div class="sec">Score vs Concentración</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="graph-caption">Cada burbuja = un par de empresas. Eje X = concentración (órganos comunes / mín. órganos totales), Y = score del par. Tamaño ∝ importe total. Esquina superior derecha = máxima sospecha: alta concentración + alto score.</div>', unsafe_allow_html=True)
         fig_bub = pl_f6_bubble(df)
-        if fig_bub: st.plotly_chart(fig_bub, use_container_width=True)
+        if fig_bub: st.plotly_chart(fig_bub, width="stretch")
 
     elif 'personas' in sel:
         sc_col = next((c for c in ['score_total','score_sum','score'] if c in df.columns), None)
@@ -1443,19 +1443,19 @@ def render_flags(flags):
                     colorscale=[[0,'rgba(59,130,246,.7)'],[1,'rgba(239,68,68,.9)']], line=dict(width=0))))
             fig.update_layout(**PL, height=max(350, len(top)*20),
                 title=dict(text='<b>Top 30</b> · Score acumulado', font=dict(size=13), x=0))
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     elif 'flag7' in sel:
         st.markdown('<div class="sec">Concentración empresa × órgano</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="graph-caption">Heatmap: cada celda = % de adjudicaciones de un órgano ganadas por una empresa. Se muestran las 15 empresas con mayor concentración. Colores cálidos = dominancia alta. El histograma inferior muestra la distribución general de concentración.</div>', unsafe_allow_html=True)
         fig = pl_f7_heatmap(df)
-        if fig: st.plotly_chart(fig, use_container_width=True)
+        if fig: st.plotly_chart(fig, width="stretch")
         if 'pct_adj_organo' in df.columns:
             fig = go.Figure(go.Histogram(x=df['pct_adj_organo']*100, nbinsx=40, marker=dict(color=C['good'], opacity=.85)))
             fig.update_layout(**PL, height=280,
                 title=dict(text='<b>Distribución</b> · % adjudicaciones capturadas', font=dict(size=13), x=0),
                 xaxis=dict(title='%', gridcolor=C['grid']), yaxis=dict(title='Freq', gridcolor=C['grid']), bargap=.03)
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width="stretch")
 
     elif 'risk_scoring' in sel:
         sc_col = next((c for c in ['risk_score','score'] if c in df.columns), None)
@@ -1463,7 +1463,7 @@ def render_flags(flags):
             st.markdown('<div class="sec">Scoring unificado</div>', unsafe_allow_html=True)
             st.markdown(f'<div class="graph-caption">Distribución del risk_score unificado por empresa. Combina todos los flags (F1–F11) con pesos ponderados. El histograma muestra cuántas empresas hay en cada rango de score. La barra horizontal inferior desglosa cuántas empresas tienen cada flag activo.</div>', unsafe_allow_html=True)
             fig = pl_score(df, sc_col, f'Distribución: {sc_col}', C['accent'])
-            if fig: st.plotly_chart(fig, use_container_width=True)
+            if fig: st.plotly_chart(fig, width="stretch")
         bool_cols = [c for c in df.columns if df[c].dtype == bool]
         if bool_cols:
             flag_sums = {c: int(df[c].sum()) for c in bool_cols if df[c].sum() > 0}
@@ -1472,14 +1472,14 @@ def render_flags(flags):
                 fig = go.Figure(go.Bar(y=fs_df['Flag'], x=fs_df['Empresas'], orientation='h', marker=dict(color=C['accent'], opacity=.85)))
                 fig.update_layout(**PL, height=max(220, len(fs_df)*30),
                     title=dict(text='<b>Composición</b> · Flags por empresa', font=dict(size=13), x=0))
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
 
     elif 'flag9' in sel or 'geo_dis' in sel:
         st.markdown('<div class="sec">Discrepancia geográfica — Mapa de flujos</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="graph-caption">Arcos sobre el mapa de España. Cada arco = empresas registradas en una CCAA (origen, según domicilio BORME) que ganan contratos mayoritariamente en otra CCAA (destino). Grosor ∝ nº empresas con esa discrepancia. Solo PYMEs (3–200 adj) para evitar falsos positivos de grandes corporaciones con sede en Madrid.</div>', unsafe_allow_html=True)
         fig_map = pl_geo_map(df)
         if fig_map:
-            st.plotly_chart(fig_map, use_container_width=True)
+            st.plotly_chart(fig_map, width="stretch")
         else:
             st.caption("No se detectaron columnas de CCAA registro/contratos para generar el mapa.")
 
@@ -1492,12 +1492,12 @@ def render_flags(flags):
                 fig = go.Figure(go.Histogram(x=df['n_contratos_cluster'], nbinsx=30, marker=dict(color=C['accent'], opacity=.85)))
                 fig.update_layout(**PL, height=280, title=dict(text='<b>Contratos por cluster</b>', font=dict(size=13), x=0),
                     xaxis=dict(title='Nº contratos', gridcolor=C['grid']), yaxis=dict(title='Freq', gridcolor=C['grid']), bargap=.03)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             with t2:
                 fig = go.Figure(go.Histogram(x=df['ratio_sobre_umbral'], nbinsx=30, marker=dict(color=C['warn'], opacity=.85)))
                 fig.update_layout(**PL, height=280, title=dict(text='<b>Ratio sobre umbral</b> (1x = justo en umbral)', font=dict(size=13), x=0),
                     xaxis=dict(title='Ratio', gridcolor=C['grid']), yaxis=dict(title='Freq', gridcolor=C['grid']), bargap=.03)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
 
     elif 'flag11' in sel or 'modificacion' in sel:
         st.markdown('<div class="sec">Modificaciones contractuales excesivas</div>', unsafe_allow_html=True)
@@ -1508,12 +1508,12 @@ def render_flags(flags):
                 fig = go.Figure(go.Histogram(x=df['pct_modificados']*100, nbinsx=30, marker=dict(color=C['accent5'], opacity=.85)))
                 fig.update_layout(**PL, height=280, title=dict(text='<b>% contratos modificados</b> por empresa', font=dict(size=13), x=0),
                     xaxis=dict(title='%', gridcolor=C['grid']), yaxis=dict(title='Freq', gridcolor=C['grid']), bargap=.03)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
             with t2:
                 fig = go.Figure(go.Histogram(x=df['n_modificaciones'], nbinsx=30, marker=dict(color=C['accent2'], opacity=.85)))
                 fig.update_layout(**PL, height=280, title=dict(text='<b>Nº modificaciones</b> por empresa', font=dict(size=13), x=0),
                     xaxis=dict(title='Modificaciones', gridcolor=C['grid']), yaxis=dict(title='Freq', gridcolor=C['grid']), bargap=.03)
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
 
     # ── Generic ──
     sc_cols = [c for c in df.columns if any(k in c.lower() for k in ['score','parscore','par_score','risk_score','pct_adj','pct_concurrent','board_overlap','cargo_weight','concentracion'])]
@@ -1523,7 +1523,7 @@ def render_flags(flags):
             sc = st.selectbox("Score/métrica", sc_cols, key="sc_det")
             fig = pl_score(df, sc, f"Distribución: {sc}")
             if fig:
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width="stretch")
                 v = df[sc].dropna()
                 s1, s2, s3, s4 = st.columns(4)
                 with s1: st.metric("Media", f"{v.mean():.2f}")
@@ -1533,7 +1533,7 @@ def render_flags(flags):
         if am_cols:
             ac = st.selectbox("Importe", am_cols, key="am_det")
             fig = pl_amt_df(df, ac)
-            if fig: st.plotly_chart(fig, use_container_width=True)
+            if fig: st.plotly_chart(fig, width="stretch")
 
     st.markdown('<div class="sec">Explorar datos</div>', unsafe_allow_html=True)
     fc1, fc2, fc3 = st.columns([1, 1, 1])
@@ -1550,7 +1550,7 @@ def render_flags(flags):
         ddf = ddf[mask]
     if sterm: st.caption(f"🔍 {len(ddf):,} de {len(df):,}")
     if sort_sel != '(original)' and sort_sel in ddf.columns: ddf = ddf.sort_values(sort_sel, ascending=False)
-    st.dataframe(ddf.head(500), use_container_width=True, height=500, hide_index=True)
+    st.dataframe(ddf.head(500), width="stretch", height=500, hide_index=True)
 
     with st.expander("🔎 Buscar empresa en todos los análisis"):
         q = st.text_input("Nombre de empresa (parcial)", key="xf_q")
@@ -1565,7 +1565,7 @@ def render_flags(flags):
                             results.append({'Flag': get_flag_meta(s)['label'], 'Archivo': s, 'Coincidencias': n, 'Campo': col, 'Ámbito': fi['scope']})
                             break
                 except Exception: pass
-            if results: st.dataframe(pd.DataFrame(results), use_container_width=True, hide_index=True)
+            if results: st.dataframe(pd.DataFrame(results), width="stretch", hide_index=True)
             else: st.info(f"'{q}' no encontrado en ningún análisis.")
 
 
@@ -1856,7 +1856,7 @@ def render_company_profile(flags):
     if prof['connections']:
         st.markdown('<div class="sec">Empresas conectadas por administrador</div>', unsafe_allow_html=True)
         conn_df = pd.DataFrame(prof['connections']).sort_values('score', ascending=False)
-        st.dataframe(conn_df.head(20), use_container_width=True, hide_index=True)
+        st.dataframe(conn_df.head(20), width="stretch", hide_index=True)
 
     # ── Órganos ──
     if prof['organos']:
@@ -1870,7 +1870,7 @@ def render_company_profile(flags):
         for stem, detail_df in prof['details'].items():
             meta = get_flag_meta(stem)
             with st.expander(f"{meta['icon']} {meta['label']} — {len(detail_df)} registros"):
-                st.dataframe(detail_df, use_container_width=True, hide_index=True, height=250)
+                st.dataframe(detail_df, width="stretch", hide_index=True, height=250)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1906,18 +1906,60 @@ def main():
             st.markdown(f"""
             <div class="intro-q">
                 <span class="iq-icon">🔍</span> <b>¿Qué tipo de patrones buscamos?</b><br><br>
-                <span class="iq-icon">🕸️</span> Dos empresas que comparten administrador ganan contratos
-                en los mismos organismos públicos — y no son del mismo grupo empresarial.<br>
-                <span class="iq-icon">🆕</span> Una empresa se constituye 3 meses antes de recibir
-                su primer contrato público.<br>
-                <span class="iq-icon">✂️</span> Un organismo divide un contrato grande en varios pequeños
-                para evadir el umbral de licitación pública.<br>
-                <span class="iq-icon">📍</span> Una empresa registrada en Málaga solo gana contratos
-                en el País Vasco.<br><br>
-                <span style="font-size:.75rem;color:{C['muted']}">Ninguno de estos patrones es prueba de
-                irregularidad. Son señales estadísticas que merecen revisión humana.</span>
+                Cruzamos los datos del <b>Registro Mercantil</b> (quién dirige cada empresa) con la
+                <b>contratación pública</b> (quién gana contratos del Estado) para detectar situaciones
+                que merecen atención. Ningún patrón es prueba de irregularidad — son señales
+                estadísticas para revisión humana.
             </div>
             """, unsafe_allow_html=True)
+
+            with st.expander("📋 Ver las 11 señales que analizamos", expanded=False):
+                st.markdown(f"""
+                <div class="mc mc-acc" style="border-left-color:{C['accent2']}">
+                <b style="color:{C['accent2']}">🕸️ Administrador compartido</b> (F6)<br>
+                Dos empresas comparten la misma persona en su consejo de administración, no son del mismo grupo
+                corporativo, y ganan contratos ante los mismos organismos públicos. Sugiere posible coordinación de ofertas.</div>
+
+                <div class="mc mc-acc" style="border-left-color:{C['accent2']}">
+                <b style="color:{C['accent2']}">🎯 Empresa dominante</b> (F7)<br>
+                Una empresa gana más del 40% de todas las adjudicaciones de un organismo contratante.
+                Indica posible relación preferente entre la empresa y el órgano.</div>
+
+                <div class="mc" style="border-left-color:{C['bad']}">
+                <b style="color:{C['bad']}">🆕 Empresa recién creada</b> (F1)<br>
+                Empresa constituida menos de 6 meses antes de recibir su primer contrato público.
+                Puede indicar una sociedad instrumental creada ad hoc para una adjudicación concreta.</div>
+
+                <div class="mc" style="border-left-color:{C['warn']}">
+                <b style="color:{C['warn']}">💰 Capital social mínimo</b> (F2)<br>
+                Empresa con capital inferior a 3.000€ que recibe contratos de más de 50.000€.
+                Un capital tan bajo es inusual para empresas en contratación pública.</div>
+
+                <div class="mc" style="border-left-color:{C['bad']}">
+                <b style="color:{C['bad']}">💀 Empresa disuelta</b> (F4) · <b>⚖️ En concurso</b> (F5)<br>
+                Empresas con acto de disolución o concurso de acreedores publicado en el BORME
+                que siguen apareciendo en adjudicaciones. La legislación restringe su participación.</div>
+
+                <div class="mc" style="border-left-color:{C['warn']}">
+                <b style="color:{C['warn']}">🤝 UTEs con miembros vinculados</b> (F8)<br>
+                Uniones Temporales de Empresas cuyos miembros comparten administrador.
+                Si las dos partes de una UTE tienen el mismo decisor, no es una unión independiente.</div>
+
+                <div class="mc" style="border-left-color:{C['accent5']}">
+                <b style="color:{C['accent5']}">📍 Empresa lejos de donde contrata</b> (F9)<br>
+                Empresa registrada en una comunidad autónoma que gana contratos mayoritariamente en otra
+                muy distinta. Solo PYMEs — las grandes con sede en Madrid se excluyen.</div>
+
+                <div class="mc" style="border-left-color:{C['bad']}">
+                <b style="color:{C['bad']}">✂️ Posible fraccionamiento</b> (F10 · Catalunya)<br>
+                Un organismo adjudica a la misma empresa 3+ contratos en 90 días, todos bajo 15.000€
+                (umbral de contrato menor), pero cuya suma supera ese umbral. Posible división artificial.</div>
+
+                <div class="mc" style="border-left-color:{C['warn']}">
+                <b style="color:{C['warn']}">📝 Modificaciones excesivas</b> (F11 · Catalunya)<br>
+                Empresas con más del 20% de sus contratos modificados (la media es ~0.6%).
+                Puede indicar adjudicaciones inicialmente bajas que se incrementan después.</div>
+                """, unsafe_allow_html=True)
 
             # ── 2. La historia en números ──
             hs_path = Q_DIR / "headline_stats.json"
@@ -1974,11 +2016,11 @@ def main():
                     if len(cdf) > 2:
                         fig_comp = pl_comparador_scatter(cdf)
                         if fig_comp:
-                            st.plotly_chart(fig_comp, use_container_width=True)
+                            st.plotly_chart(fig_comp, width="stretch")
                     with st.expander(f"📋 Ver listado ({comp_data['n_common']} empresas)"):
                         show_cols = ['empresa','flags_nac','flags_cat','score_nac','score_cat','total_flags']
                         avail = [c for c in show_cols if c in cdf.columns]
-                        st.dataframe(cdf[avail].head(50), use_container_width=True, hide_index=True)
+                        st.dataframe(cdf[avail].head(50), width="stretch", hide_index=True)
 
             # ── 4. Buscar ──
             st.markdown('<div class="sec">Buscar empresa o persona</div>', unsafe_allow_html=True)
@@ -1997,7 +2039,7 @@ def main():
                             f"<span style='color:{C['text2']};font-size:.78rem'>{r['scope']} · "
                             f"{r['hits']} coincidencias{sc_str}</span></div>", unsafe_allow_html=True)
                         with st.expander(f"Ver datos ({r['stem']})"):
-                            st.dataframe(r['sample'], use_container_width=True, hide_index=True)
+                            st.dataframe(r['sample'], width="stretch", hide_index=True)
                 else:
                     st.info(f"'{q}' no encontrado en ningún análisis.")
 
@@ -2010,15 +2052,15 @@ def main():
                 if placsp_prof and cat_prof:
                     comp = pd.DataFrame({
                         'Métrica': ['Registros','Columnas','Completitud (%)','Duplicados (%)'],
-                        'PLACSP': [f"{placsp_prof['n']:,}", placsp_prof['nc'], f"{placsp_prof['completitud']:.1f}", f"{placsp_prof['dupe_pct']:.2f}"],
-                        'Catalunya': [f"{cat_prof['n']:,}", cat_prof['nc'], f"{cat_prof['completitud']:.1f}", f"{cat_prof['dupe_pct']:.2f}"]})
-                    st.dataframe(comp, use_container_width=True, hide_index=True)
+                        'PLACSP': [f"{placsp_prof['n']:,}", str(placsp_prof['nc']), f"{placsp_prof['completitud']:.1f}", f"{placsp_prof['dupe_pct']:.2f}"],
+                        'Catalunya': [f"{cat_prof['n']:,}", str(cat_prof['nc']), f"{cat_prof['completitud']:.1f}", f"{cat_prof['dupe_pct']:.2f}"]})
+                    st.dataframe(comp, width="stretch", hide_index=True)
 
     # ══════════════════════════════════════════════════════════
     # TAB 2: EXPLORAR — flags + ficha empresa + quality
     # ══════════════════════════════════════════════════════════
     with tabs[1]:
-        explore_section = st.radio("", ["🚩 Señales de alerta", "🔎 Ficha de empresa", "📊 Calidad de datos"],
+        explore_section = st.radio("Sección", ["🚩 Señales de alerta", "🔎 Ficha de empresa", "📊 Calidad de datos"],
                                    horizontal=True, label_visibility="collapsed")
 
         if explore_section == "🚩 Señales de alerta":
