@@ -668,6 +668,437 @@ def pl_f7_heatmap(df):
 
 
 # ═══════════════════════════════════════════════════════════════
+# UNIVERSAL SEARCH — scan all parquets
+# ═══════════════════════════════════════════════════════════════
+@st.cache_data(show_spinner=False)
+def search_all_flags(q, flags):
+    """Search a term across all flag parquets. Returns summary per flag."""
+    results = []
+    for stem, fi in flags.items():
+        try:
+            df = load_pq(fi['path'])
+            meta = get_flag_meta(stem)
+            # Search in object columns
+            hit_cols = []
+            total_hits = 0
+            for col in df.select_dtypes(include=['object']).columns:
+                n = df[col].astype(str).str.contains(q, case=False, na=False).sum()
+                if n > 0:
+                    hit_cols.append(col)
+                    total_hits += n
+            if total_hits > 0:
+                # Get sample rows
+                mask = pd.Series(False, index=df.index)
+                for col in hit_cols:
+                    mask |= df[col].astype(str).str.contains(q, case=False, na=False)
+                sample = df[mask].head(5)
+                # Get score if available
+                sc_col = next((c for c in df.columns if any(k in c.lower()
+                    for k in ['risk_score','par_score','score_max','score'])), None)
+                max_sc = float(sample[sc_col].max()) if sc_col and sc_col in sample.columns else None
+                results.append({
+                    'stem': stem, 'label': meta['label'], 'icon': meta['icon'],
+                    'css': meta['css'], 'scope': fi['scope'],
+                    'hits': total_hits, 'cols': hit_cols,
+                    'max_score': max_sc, 'sample': sample,
+                })
+        except Exception:
+            pass
+    return results
+
+@st.cache_data(show_spinner=False)
+def build_company_profile(empresa_q, flags):
+    """Aggregate all info about a company across flags."""
+    profile = {'nombre': empresa_q, 'flags_active': [], 'connections': [],
+               'organos': set(), 'scores': {}, 'details': {}}
+
+    for stem, fi in flags.items():
+        try:
+            df = load_pq(fi['path'])
+            meta = get_flag_meta(stem)
+            # Search company
+            mask = pd.Series(False, index=df.index)
+            for col in df.select_dtypes(include=['object']).columns:
+                mask |= df[col].astype(str).str.contains(empresa_q, case=False, na=False)
+            hits = df[mask]
+            if len(hits) == 0:
+                continue
+
+            profile['flags_active'].append({
+                'flag': meta['label'], 'icon': meta['icon'], 'stem': stem,
+                'scope': fi['scope'], 'n_hits': len(hits)})
+
+            # Scores
+            for sc_col in ['risk_score','par_score','score_max','score','pct_adj_organo']:
+                if sc_col in hits.columns:
+                    val = hits[sc_col].max()
+                    if pd.notna(val):
+                        profile['scores'][f"{meta['short']}_{sc_col}"] = round(float(val), 2)
+
+            # Connections (from F6)
+            if 'empresa_1' in hits.columns and 'empresa_2' in hits.columns:
+                for _, r in hits.iterrows():
+                    e1, e2 = str(r.get('empresa_1','')), str(r.get('empresa_2',''))
+                    other = e2 if empresa_q.lower() in e1.lower() else e1
+                    pc = _fcol(hits, 'persona', 'decisor')
+                    persona = str(r[pc])[:40] if pc else '?'
+                    profile['connections'].append({
+                        'empresa': other[:40], 'persona': persona,
+                        'score': float(r.get('par_score', r.get('score_max', 0)) or 0),
+                        'organos': int(r.get('n_organos_comunes', r.get('organos_comunes', 0)) or 0),
+                        'flags': int(r.get('n_flags', 0) or 0),
+                    })
+
+            # Órganos (from F7)
+            if 'organo_contratante' in hits.columns:
+                for o in hits['organo_contratante'].dropna().unique():
+                    profile['organos'].add(str(o)[:60])
+
+            # Details per flag
+            profile['details'][stem] = hits.head(10)
+
+        except Exception:
+            pass
+
+    profile['organos'] = sorted(profile['organos'])
+    return profile
+
+
+# ═══════════════════════════════════════════════════════════════
+# F9 GEOGRAPHIC MAP — arcs between CCAA
+# ═══════════════════════════════════════════════════════════════
+CCAA_COORDS = {
+    'Andalucía': (37.38, -4.77), 'Aragón': (41.60, -0.88), 'Asturias': (43.36, -5.85),
+    'Canarias': (28.12, -15.43), 'Cantabria': (43.18, -3.99), 'Castilla y León': (41.65, -4.73),
+    'Castilla-La Mancha': (39.28, -2.88), 'Cataluña': (41.82, 1.47), 'Ceuta': (35.89, -5.32),
+    'Comunidad Valenciana': (39.48, -0.75), 'Extremadura': (39.16, -6.17), 'Galicia': (42.57, -8.17),
+    'Islas Baleares': (39.57, 2.65), 'La Rioja': (42.29, -2.52), 'Madrid': (40.42, -3.70),
+    'Melilla': (35.29, -2.94), 'Murcia': (37.99, -1.13), 'Navarra': (42.70, -1.68),
+    'País Vasco': (43.00, -2.62),
+}
+
+def pl_geo_map(df_geo):
+    """Map of Spain with arcs showing geographic discrepancy."""
+    reg_col = next((c for c in df_geo.columns if 'registro' in c.lower() or 'ccaa_borme' in c.lower()
+                    or 'ccaa_registro' in c.lower()), None)
+    con_col = next((c for c in df_geo.columns if 'contrato' in c.lower() or 'ccaa_contrato' in c.lower()
+                    or 'ccaa_principal' in c.lower()), None)
+    if not reg_col or not con_col:
+        return None
+
+    # Aggregate flows: (origin, dest) → count, total_importe
+    imp_col = _fcol(df_geo, 'importe', 'volumen', 'amount')
+    flows = {}
+    for _, r in df_geo.iterrows():
+        orig = str(r[reg_col]).strip()
+        dest = str(r[con_col]).strip()
+        if orig == dest or orig not in CCAA_COORDS or dest not in CCAA_COORDS:
+            continue
+        key = (orig, dest)
+        if key not in flows:
+            flows[key] = {'count': 0, 'importe': 0}
+        flows[key]['count'] += 1
+        if imp_col and pd.notna(r.get(imp_col)):
+            flows[key]['importe'] += float(r[imp_col])
+
+    if not flows:
+        return None
+
+    # Sort by count
+    top_flows = sorted(flows.items(), key=lambda x: -x[1]['count'])[:60]
+    max_count = max(f[1]['count'] for f in top_flows)
+
+    fig = go.Figure()
+
+    # ── Arcs ──
+    for (orig, dest), info in top_flows:
+        lat0, lon0 = CCAA_COORDS[orig]
+        lat1, lon1 = CCAA_COORDS[dest]
+        intensity = info['count'] / max_count
+        width = 1 + intensity * 5
+        alpha = 0.15 + intensity * 0.55
+        # Curved arc via midpoint
+        mid_lat = (lat0 + lat1) / 2 + (lon1 - lon0) * 0.08
+        mid_lon = (lon0 + lon1) / 2 - (lat1 - lat0) * 0.08
+        lats = [lat0, mid_lat, lat1]
+        lons = [lon0, mid_lon, lon1]
+
+        fig.add_trace(go.Scattergeo(
+            lat=lats, lon=lons, mode='lines',
+            line=dict(width=width, color=f'rgba(245,158,11,{alpha})'),
+            hoverinfo='text',
+            hovertext=f"<b>{orig} → {dest}</b><br>{info['count']} empresas<br>"
+                      f"{info['importe']/1e6:.0f}M€",
+            showlegend=False))
+
+    # ── CCAA dots ──
+    all_ccaa = set()
+    for (o, d), _ in top_flows:
+        all_ccaa.add(o); all_ccaa.add(d)
+    # Count outgoing per CCAA
+    out_count = {}
+    for (o, d), info in top_flows:
+        out_count[o] = out_count.get(o, 0) + info['count']
+        out_count[d] = out_count.get(d, 0) + info['count']
+
+    for ccaa in all_ccaa:
+        if ccaa in CCAA_COORDS:
+            lat, lon = CCAA_COORDS[ccaa]
+            sz = 6 + (out_count.get(ccaa, 0) / max(out_count.values())) * 20
+            fig.add_trace(go.Scattergeo(
+                lat=[lat], lon=[lon], mode='markers+text',
+                marker=dict(size=sz, color='#3b82f6',
+                            line=dict(width=1, color='rgba(255,255,255,.2)'),
+                            opacity=0.9),
+                text=[ccaa[:12]], textposition='top center',
+                textfont=dict(size=8, color=C['text2'], family='JetBrains Mono'),
+                hovertext=f"<b>{ccaa}</b><br>{out_count.get(ccaa, 0)} flujos",
+                hoverinfo='text', showlegend=False))
+
+    fig.update_geos(
+        scope='europe', center=dict(lat=40.0, lon=-3.5),
+        projection_scale=6.5,
+        showland=True, landcolor='rgba(13,16,23,1)',
+        showocean=True, oceancolor='rgba(5,6,9,1)',
+        showcoastlines=True, coastlinecolor='rgba(37,43,61,.6)',
+        showcountries=True, countrycolor='rgba(37,43,61,.4)',
+        showlakes=False, showrivers=False,
+        bgcolor='rgba(0,0,0,0)',
+        lonaxis_range=[-10, 5], lataxis_range=[27, 44])
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(family='JetBrains Mono, monospace', color=C['text'], size=11),
+        margin=dict(l=0, r=0, t=50, b=0), height=550,
+        title=dict(text='<b>F9</b> · Discrepancia geográfica — Registro ≠ Contratos',
+                   font=dict(size=14, color=C['text'], family='JetBrains Mono'),
+                   x=0.5, xanchor='center'),
+        hoverlabel=dict(bgcolor='rgba(13,16,23,0.97)', bordercolor=C['border2'],
+                        font=dict(color=C['text'], size=11, family='JetBrains Mono')),
+        annotations=[dict(
+            text="<b style='color:#f59e0b'>→</b> Arcos: CCAA registro → CCAA mayoritaria de contratos · Grosor ∝ nº empresas",
+            xref="paper", yref="paper", x=0.5, y=-0.02, showarrow=False,
+            font=dict(size=9, color=C['text2'], family='JetBrains Mono'))])
+    return fig
+
+
+# ═══════════════════════════════════════════════════════════════
+# TEMPORAL EVOLUTION — network by year
+# ═══════════════════════════════════════════════════════════════
+def pl_temporal_evolution(df_pares):
+    """Show how the network evolves over time."""
+    date_cols = [c for c in df_pares.columns if df_pares[c].dtype in ['datetime64[ns]','datetime64[ns, UTC]']]
+    if not date_cols:
+        for c in df_pares.columns:
+            if any(k in c.lower() for k in ['fecha','date','año','year','first_','last_']):
+                try:
+                    parsed = pd.to_datetime(df_pares[c], errors='coerce')
+                    if parsed.notna().sum() > len(df_pares) * 0.3:
+                        df_pares = df_pares.copy()
+                        df_pares[c] = parsed
+                        date_cols.append(c)
+                except Exception:
+                    pass
+    if not date_cols:
+        return None, None
+    dc = date_cols[0]
+    df_t = df_pares.dropna(subset=[dc]).copy()
+    if len(df_t) < 10:
+        return None, None
+    df_t['_year'] = df_t[dc].dt.year
+    years = sorted(int(y) for y in df_t['_year'].dropna().unique() if 2005 <= y <= 2026)
+    if len(years) < 2:
+        return None, None
+
+    sc_col = next((c for c in ['par_score','score_max','score'] if c in df_t.columns), None)
+    yearly = []
+    for y in years:
+        sub = df_t[df_t['_year'] <= y]
+        row = {'year': y, 'pares': len(sub)}
+        emps = set()
+        for ec in ['empresa_1','empresa_2']:
+            if ec in sub.columns:
+                emps.update(sub[ec].dropna().unique())
+        row['empresas'] = len(emps)
+        if sc_col:
+            row['max_score'] = float(sub[sc_col].max()) if len(sub) else 0
+        yearly.append(row)
+
+    ydf = pd.DataFrame(yearly)
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=ydf['year'], y=ydf['pares'], name='Pares (acum.)',
+        mode='lines+markers', line=dict(color=C['accent'], width=2.5),
+        marker=dict(size=7, color=C['accent'])))
+    if 'empresas' in ydf.columns:
+        fig.add_trace(go.Scatter(x=ydf['year'], y=ydf['empresas'], name='Empresas',
+            mode='lines+markers', line=dict(color=C['accent2'], width=2, dash='dot'),
+            marker=dict(size=5, color=C['accent2'])))
+    if 'max_score' in ydf.columns:
+        fig.add_trace(go.Scatter(x=ydf['year'], y=ydf['max_score'], name='Max score',
+            mode='lines+markers', line=dict(color=C['warn'], width=2),
+            marker=dict(size=5, color=C['warn']), yaxis='y2'))
+
+    fig.update_layout(**PL, height=340,
+        title=dict(text='<b>Evolución temporal</b> · Red acumulada por año', font=dict(size=13), x=0),
+        xaxis=dict(title='Año', gridcolor=C['grid'], dtick=2),
+        yaxis=dict(title='Pares / Empresas', gridcolor=C['grid']),
+        yaxis2=dict(title='Max score', overlaying='y', side='right', showgrid=False,
+                    title_font=dict(color=C['warn'], size=11),
+                    tickfont=dict(color=C['warn'], size=9)),
+        legend=dict(orientation='h', y=1.12, x=0, font=dict(size=10)))
+    return fig, ydf
+
+
+def filter_pares_by_year(df_pares, year_range):
+    """Filter pares to a year range using first date column found."""
+    date_cols = [c for c in df_pares.columns if df_pares[c].dtype in ['datetime64[ns]','datetime64[ns, UTC]']]
+    if not date_cols:
+        for c in df_pares.columns:
+            if any(k in c.lower() for k in ['fecha','date','año','year']):
+                try:
+                    parsed = pd.to_datetime(df_pares[c], errors='coerce')
+                    if parsed.notna().sum() > len(df_pares) * 0.3:
+                        df_pares = df_pares.copy()
+                        df_pares[c] = parsed
+                        date_cols.append(c)
+                        break
+                except Exception:
+                    pass
+    if not date_cols:
+        return df_pares
+    dc = date_cols[0]
+    mask = df_pares[dc].dt.year.between(year_range[0], year_range[1])
+    return df_pares[mask | df_pares[dc].isna()]
+
+
+# ═══════════════════════════════════════════════════════════════
+# COMPARADOR NACIONAL vs CATALUNYA
+# ═══════════════════════════════════════════════════════════════
+@st.cache_data(show_spinner=False)
+def build_comparador(flags):
+    """Find companies present in both Nacional and Catalunya flags."""
+    nac, cat = {}, {}
+    for stem, fi in flags.items():
+        try:
+            df = load_pq(fi['path'])
+            target = nac if fi['scope'] == 'Nacional' else cat
+            meta = get_flag_meta(stem)
+            emp_cols = [c for c in df.select_dtypes(include=['object']).columns
+                        if any(k in c.lower() for k in ['empresa','adj_norm','adjudicatario'])]
+            if not emp_cols:
+                obj_cols = df.select_dtypes(include=['object']).columns
+                emp_cols = [obj_cols[0]] if len(obj_cols) > 0 else []
+            sc_col = next((c for c in df.columns if any(k in c.lower()
+                for k in ['risk_score','par_score','score_max','score'])), None)
+            for col in emp_cols[:2]:
+                for emp in df[col].dropna().unique():
+                    e = str(emp).strip().upper()
+                    if len(e) < 3: continue
+                    if e not in target:
+                        target[e] = {'flags': set(), 'max_score': 0, 'count': 0}
+                    target[e]['flags'].add(meta['short'])
+                    target[e]['count'] += 1
+                    if sc_col:
+                        m = df[col].astype(str).str.upper().str.strip() == e
+                        if m.any():
+                            s = df.loc[m, sc_col].max()
+                            if pd.notna(s):
+                                target[e]['max_score'] = max(target[e]['max_score'], float(s))
+        except Exception:
+            pass
+
+    common = set(nac.keys()) & set(cat.keys())
+    rows = []
+    for emp in common:
+        n, c = nac[emp], cat[emp]
+        rows.append({
+            'empresa': emp[:50],
+            'flags_nac': ', '.join(sorted(n['flags'])), 'flags_cat': ', '.join(sorted(c['flags'])),
+            'n_flags_nac': len(n['flags']), 'n_flags_cat': len(c['flags']),
+            'score_nac': n['max_score'], 'score_cat': c['max_score'],
+            'total_flags': len(n['flags']) + len(c['flags']),
+        })
+    cdf = pd.DataFrame(rows).sort_values('total_flags', ascending=False) if rows else pd.DataFrame()
+    return cdf, len(nac), len(cat)
+
+
+def pl_comparador_scatter(cdf):
+    """Scatter plot: Nacional score vs Catalunya score."""
+    if len(cdf) < 3: return None
+    fig = go.Figure(go.Scatter(
+        x=cdf['score_nac'], y=cdf['score_cat'], mode='markers',
+        marker=dict(size=6+cdf['total_flags']*2.5, color=cdf['total_flags'],
+            colorscale=[[0,'rgba(59,130,246,.7)'],[.5,'rgba(245,158,11,.8)'],[1,'rgba(239,68,68,.9)']],
+            line=dict(width=.5, color='rgba(255,255,255,.15)'), opacity=.85,
+            colorbar=dict(title='Flags', thickness=12, len=.5, tickfont=dict(size=9, color=C['muted']))),
+        text=cdf['empresa'],
+        hovertemplate='<b>%{text}</b><br>Nacional: %{x:.1f}<br>Catalunya: %{y:.1f}<extra></extra>'))
+    mx = max(cdf['score_nac'].max(), cdf['score_cat'].max(), 1)
+    fig.add_trace(go.Scatter(x=[0,mx], y=[0,mx], mode='lines',
+        line=dict(color='rgba(255,255,255,.1)', dash='dash', width=1),
+        showlegend=False, hoverinfo='skip'))
+    fig.update_layout(**PL, height=400,
+        title=dict(text='<b>Nacional vs Catalunya</b> · Score máximo', font=dict(size=13), x=0),
+        xaxis=dict(title='Score Nacional', gridcolor=C['grid']),
+        yaxis=dict(title='Score Catalunya', gridcolor=C['grid']))
+    return fig
+
+
+# ═══════════════════════════════════════════════════════════════
+# HEADLINE STATS — tweetable numbers
+# ═══════════════════════════════════════════════════════════════
+@st.cache_data(show_spinner=False)
+def compute_headline_stats(flags):
+    """Extract impactful numbers across all flags."""
+    stats = {}
+    for stem, fi in flags.items():
+        try:
+            df = load_pq(fi['path'])
+            scope = fi['scope']
+
+            if 'pares' in stem and 'unico' in stem:
+                imp_col = _fcol(df, 'importe', 'volumen')
+                if imp_col and imp_col in df.columns:
+                    stats[f'importe_pares_{scope.lower()}'] = float(df[imp_col].sum())
+                pc = _fcol(df, 'persona', 'decisor')
+                if pc:
+                    top_p = df.groupby(pc).size().nlargest(1)
+                    if len(top_p):
+                        stats[f'top_persona_{scope.lower()}'] = (top_p.index[0][:30], int(top_p.values[0]))
+                emps = set()
+                for ec in ['empresa_1','empresa_2']:
+                    if ec in df.columns: emps.update(df[ec].dropna().unique())
+                stats[f'n_empresas_red_{scope.lower()}'] = len(emps)
+                oc = _fcol(df, 'organo', 'n_organos')
+                if oc and oc in df.columns:
+                    stats[f'max_organos_{scope.lower()}'] = int(df[oc].max())
+                stats[f'n_pares_{scope.lower()}'] = len(df)
+
+            if 'flag7' in stem and 'pct_adj_organo' in df.columns:
+                top = df.nlargest(1, 'pct_adj_organo').iloc[0]
+                ec = next((c for c in ['adj_norm','empresa'] if c in df.columns), df.columns[0])
+                stats[f'top_concentracion_{scope.lower()}'] = (str(top[ec])[:30], float(top['pct_adj_organo'])*100)
+
+            if 'risk_scoring' in stem:
+                sc = next((c for c in ['risk_score','score'] if c in df.columns), None)
+                if sc:
+                    stats[f'n_risk_{scope.lower()}'] = len(df)
+                    bc = [c for c in df.columns if df[c].dtype == bool]
+                    if bc:
+                        df['_nf'] = df[bc].sum(axis=1)
+                        stats[f'multi_flag_{scope.lower()}'] = int((df['_nf'] >= 3).sum())
+
+            if 'flag9' in stem or 'geo' in stem:
+                stats['n_geo'] = len(df)
+            if 'flag10' in stem or 'troceo' in stem:
+                if 'importe_cluster' in df.columns:
+                    stats['troceo_importe'] = float(df['importe_cluster'].sum())
+                    stats['troceo_clusters'] = len(df)
+        except Exception:
+            pass
+    return stats
+
+
+# ═══════════════════════════════════════════════════════════════
 # TAB 1: CALIDAD DE DATOS
 # ═══════════════════════════════════════════════════════════════
 def render_quality(prof, label):
@@ -949,6 +1380,33 @@ def render_flags(flags):
 
     # ── Specialized views ──
     if 'pares' in sel or 'admin_network' in sel:
+        # ── Temporal evolution ──
+        fig_temp, ydf_temp = pl_temporal_evolution(df)
+        if fig_temp:
+            st.markdown('<div class="sec">Evolución temporal · Red por año</div>', unsafe_allow_html=True)
+            st.plotly_chart(fig_temp, use_container_width=True)
+            # Year filter slider
+            date_cols = [c for c in df.columns if df[c].dtype in ['datetime64[ns]','datetime64[ns, UTC]']]
+            if not date_cols:
+                for c in df.columns:
+                    if any(k in c.lower() for k in ['fecha','date','año','year']):
+                        try:
+                            parsed = pd.to_datetime(df[c], errors='coerce')
+                            if parsed.notna().sum() > len(df) * 0.3:
+                                df[c] = parsed
+                                date_cols.append(c)
+                        except Exception:
+                            pass
+            if date_cols:
+                dc = date_cols[0]
+                ymin = int(df[dc].dt.year.min())
+                ymax = int(df[dc].dt.year.max())
+                if ymax > ymin:
+                    yr = st.slider("Filtrar por rango de años", ymin, ymax, (ymin, ymax), key="yr_slider")
+                    if yr != (ymin, ymax):
+                        df = filter_pares_by_year(df, yr)
+                        st.caption(f"Mostrando {len(df)} pares en rango {yr[0]}–{yr[1]}")
+
         # ── Ego-network ──
         st.markdown('<div class="sec">Ego-Network · Explorar persona</div>', unsafe_allow_html=True)
         st.markdown('<div class="graph-caption">Selecciona una persona para ver sus empresas y conexiones · <span>D3.js interactivo con SVG glows</span></div>', unsafe_allow_html=True)
@@ -1037,6 +1495,14 @@ def render_flags(flags):
                     title=dict(text='<b>Composición</b> · Flags por empresa', font=dict(size=13), x=0))
                 st.plotly_chart(fig, use_container_width=True)
 
+    elif 'flag9' in sel or 'geo_dis' in sel:
+        st.markdown('<div class="sec">Discrepancia geográfica — Mapa de flujos</div>', unsafe_allow_html=True)
+        fig_map = pl_geo_map(df)
+        if fig_map:
+            st.plotly_chart(fig_map, use_container_width=True)
+        else:
+            st.caption("No se detectaron columnas de CCAA registro/contratos para generar el mapa.")
+
     elif 'flag10' in sel or 'troceo' in sel:
         st.markdown('<div class="sec">Troceo — fraccionamiento de contratos</div>', unsafe_allow_html=True)
         if 'n_contratos_cluster' in df.columns and 'importe_cluster' in df.columns:
@@ -1122,11 +1588,11 @@ def render_flags(flags):
 
 
 # ═══════════════════════════════════════════════════════════════
-# TAB 3: METODOLOGÍA
+# TAB: METODOLOGÍA (expanded)
 # ═══════════════════════════════════════════════════════════════
 def render_meth():
     st.markdown(f"""
-    <div class="disc"><strong>Nota:</strong> Esta pestaña documenta el pipeline de <strong>cruce
+    <div class="disc"><strong>Nota:</strong> Esta pestaña documenta el pipeline completo de <strong>cruce
     BORME × Contratación Pública</strong>. Consiste en filtros deterministas — no es un modelo
     estadístico ni de machine learning. Un score alto indica un patrón que merece revisión humana,
     <strong>no constituye prueba de irregularidad</strong>.</div>
@@ -1135,100 +1601,294 @@ def render_meth():
     st.markdown('<div class="sec">1. Fuentes de datos</div>', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="mc"><strong>BORME — Boletín Oficial del Registro Mercantil</strong><br><br>
-    126.073 PDFs del BORME-A (2009–2026) parseados:<br>
-    <code>borme_cargos.parquet</code> — acto (nombramiento, cese, reelección, revocación)
-    vinculado a persona × empresa × cargo × fecha.<br>
-    <code>borme_empresas.parquet</code> — datos societarios: fusiones, absorciones, escisiones,
-    disoluciones, concursos, capital, domicilio.</div>
+    17.1M filas parseadas de PDFs del BORME-A (2009–2026):<br>
+    <code>borme_cargos.parquet</code> — 3.8M personas únicas. Cada fila es un acto (nombramiento, cese,
+    reelección, revocación, cancelación) vinculado a persona × empresa × cargo × fecha.<br>
+    <code>borme_empresas.parquet</code> — 9.2M filas de actos societarios: constitución, fusión, absorción,
+    escisión, disolución, concurso de acreedores, cambio de domicilio, ampliación/reducción de capital.</div>
     <div class="mc"><strong>PLACSP — Plataforma de Contratación del Sector Público</strong><br><br>
-    <code>licitaciones_espana.parquet</code> — 8.7M registros (2012–2026). Se filtran adjudicaciones
-    con importe &gt; 0 y adjudicatario identificado.</div>
+    <code>licitaciones_espana.parquet</code> — 8.7M registros (2012–2026), 48 columnas.
+    Se filtran adjudicaciones con importe &gt; 0 y adjudicatario identificado → 5.8M registros útiles.
+    23.931 órganos contratantes, colapsados a 23.304 tras normalización (627 duplicados detectados).</div>
     <div class="mc"><strong>Contratación Catalunya</strong><br><br>
-    <code>contratos_registro.parquet</code> (~3.4M) + <code>contratos_menores_bcn.parquet</code> (~177K) unificados.</div>
-    <div class="mc"><strong>Flags pre-computados (F1–F5)</strong><br><br>
-    <code>F1</code> Empresa constituida &lt;6 meses antes de su primer contrato ·
-    <code>F2</code> Capital social &lt;3.000€ para contratos significativos ·
-    <code>F4</code> Acto de disolución publicado ·
-    <code>F5</code> Concurso de acreedores publicado</div>
+    <code>contratos_registro.parquet</code> (~3.4M registros, 50 columnas) del Registre Públic de Contractes.<br>
+    <code>contratos_menores_bcn.parquet</code> (~177K) del Portal de Transparència de Barcelona.<br>
+    Se unifican con mapeo de columnas: catalán → castellano normalizado.</div>
+    <div class="mc"><strong>Flags pre-computados (F1–F5) — BORME</strong><br><br>
+    <code>F1</code> Empresa constituida &lt;6 meses antes de su primer contrato público<br>
+    <code>F2</code> Capital social &lt;3.000€ y contrato significativo (&gt;50K€)<br>
+    <code>F3</code> Empresa con múltiples administradores en períodos cortos<br>
+    <code>F4</code> Acto de disolución publicado en BORME<br>
+    <code>F5</code> Declaración de concurso de acreedores publicada</div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="sec">2. Normalización</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sec">2. Normalización de nombres</div>', unsafe_allow_html=True)
     st.markdown(f"""
-    <div class="mc"><strong>Empresas:</strong> Mayúsculas → eliminar acentos (preservando Ñ)
-    → limpiar sufijos R.M. → colapsar formas societarias (S.L., S.A., S.L.U., S.C.P., S.C.C.L.)
-    → eliminar sufijos (EN LIQUIDACION, EN DISOLUCION…) → strip puntuación.<br>
-    Ejemplo: <code>"Construcciones García, S.L.U. (R.M. Madrid)"</code> → <code>"CONSTRUCCIONES GARCIA"</code><br><br>
-    <strong>Stop words:</strong> Data-driven — tokens en &gt;0.5% de empresas BORME (~5.500 auto) + 203 curadas (ES/CAT/EN trilingüe).<br>
-    <strong>Pesos de cargo:</strong> Regex-based (10 niveles: Adm.Único=10, Liquidador=9, …, Apoderado=1).</div>
+    <div class="mc mc-acc"><strong>2.1 normalize_empresa()</strong> — Función central de matching<br><br>
+    Pipeline secuencial aplicado a todos los nombres de empresa (BORME y contratación):<br><br>
+    <span class="step-num">1</span> <strong>Mayúsculas + Unicode NFC</strong><br>
+    <code>"Construcciones García, S.L."</code> → <code>"CONSTRUCCIONES GARCIA, S.L."</code><br><br>
+    <span class="step-num">2</span> <strong>Eliminar acentos</strong> (preservando Ñ)<br>
+    <code>"GARCÍA"</code> → <code>"GARCIA"</code> · <code>"MUÑOZ"</code> → <code>"MUÑOZ"</code><br><br>
+    <span class="step-num">3</span> <strong>Limpiar sufijos R.M.</strong> (Registro Mercantil)<br>
+    regex: <code>\\(R\\.M\\.?[^)]*\\)</code> → eliminado<br>
+    <code>"EMPRESA SL (R.M. PALMA DE MALLORCA)"</code> → <code>"EMPRESA SL"</code><br><br>
+    <span class="step-num">4</span> <strong>Colapsar formas societarias</strong><br>
+    <code>S.L., S.L.U., SOC. LIMITADA, SOCIEDAD LIMITADA</code> → eliminados<br>
+    <code>S.A., S.A.U., SOCIEDAD ANONIMA</code> → eliminados<br>
+    Catalán: <code>S.C.P., S.C.C.L., SOCIETAT COOPERATIVA</code> → eliminados<br>
+    Otros: <code>S.COM., S.COOP., S.R.L., A.I.E.</code> → eliminados<br><br>
+    <span class="step-num">5</span> <strong>Eliminar sufijos adicionales</strong><br>
+    <code>EN LIQUIDACION, EN DISOLUCION, EN CONCURSO, SUCURSAL EN ESPAÑA</code><br><br>
+    <span class="step-num">6</span> <strong>Strip puntuación y espacios</strong><br>
+    Comas, puntos, guiones → espacios → colapsar múltiples espacios → strip<br><br>
+    Ejemplo completo:<br>
+    <code>"Construcciones García López, S.L.U. (R.M. Madrid)"</code><br>
+    → <code>"CONSTRUCCIONES GARCIA LOPEZ"</code></div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="sec">3. Pipeline de detección</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="mc mc-grn"><strong>2.2 Stop Words — Data-driven</strong><br><br>
+    Función <code>build_stop_words(cargos_df, threshold=0.005)</code>:<br><br>
+    <span class="step-num">A</span> <strong>Auto-generadas:</strong> Tokeniza las 2.77M empresas únicas del BORME.
+    Tokens que aparecen en &gt;0.5% de empresas → genérico → stop word. Resultado: ~5.400 tokens auto-detectados.
+    Incluye tokens ≤2 caracteres y números puros.<br><br>
+    <span class="step-num">B</span> <strong>Curadas manualmente:</strong> 203 términos trilingües (ES/CAT/EN):<br>
+    · <em>Legal:</em> SA, SL, SLU, SAU, SICAV, SOCIMI, AIE, SCR, SGIIC...<br>
+    · <em>Sector:</em> SERVICIOS, SOLUCIONES, PROYECTOS, GESTION, CONSTRUCCIONES, INGENIERIA, CONSULTING...<br>
+    · <em>Geográfico:</em> ESPAÑA, IBERIA, EUROPEA, INTERNACIONAL, GLOBAL, PENINSULAR, MEDITERRANEO...<br>
+    · <em>Corporativo:</em> GRUPO, HOLDING, CORPORACION, EMPRESA, ASOCIADOS, PARTICIPACIONES...<br>
+    · <em>Inglés:</em> SYSTEMS, SOLUTIONS, MANAGEMENT, ENERGY, CAPITAL, SERVICES, TECHNOLOGIES...<br>
+    · <em>Catalán:</em> SERVEIS, OBRES, CATALANES, CATALANA, VALENCIANA...<br><br>
+    <span class="step-num">C</span> <strong>Unión:</strong> 5.400 auto ∪ 203 curadas = ~5.550 stop words totales (42 overlap).<br>
+    Se usan en F6 para evitar que tokens como "SERVICIOS" vinculen empresas no relacionadas.</div>
+    """, unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="mc mc-wrn"><strong>2.3 Pesos de cargo — Regex-based</strong><br><br>
+    Reemplazo del diccionario hardcoded por reglas regex. Primera coincidencia gana:<br><br>
+    <div class="formula" style="font-size:.68rem">
+    10: <code>ADM.*UNIC</code> → Administrador Único, Adm. Unico, ADM.UNICO...<br>
+    &nbsp;9: <code>LIQUIDADOR</code><br>
+    &nbsp;8: <code>ADM.*SOLID|ADM.*MANCOM</code> → Solidario, Mancomunado<br>
+    &nbsp;7: <code>CONS.*DELEG|CONSEJERO.*DELEGAD</code><br>
+    &nbsp;6: <code>PRESIDENTE</code><br>
+    &nbsp;5: <code>VICEPRESID|GERENTE|DIRECTOR.*GEN</code><br>
+    &nbsp;4: <code>SOCIO\\s*UNIC</code><br>
+    &nbsp;3: <code>CONSEJERO|VOCAL</code><br>
+    &nbsp;2: <code>SOCIO|SOC\\.\\s*PROF|MIEMBR</code><br>
+    &nbsp;1: <code>SECRETARI|APODERAD|REPRESENTANT</code><br>
+    &nbsp;0: Sin coincidencia (default)
+    </div>
+    Esto captura variantes como <code>"Adm. Unico"</code>, <code>"ADM.UNICO"</code>,
+    <code>"ADMINISTRADOR UNICO"</code>, <code>"Apo.Sol."</code>, <code>"APOD.MANCOMU"</code>, etc.</div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="sec">3. Pipeline de detección F6 — Red de administradores</div>', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="mc mc-acc"><span class="step-num">1</span> <strong>Intersección BORME ∩ Contratación</strong><br><br>
-    Cruce por nombre normalizado. Solo empresas en <strong>ambos</strong> datasets con ≥3 adjudicaciones.</div>
+    Cruce por nombre normalizado. Nacional: 126.073 empresas en ambos datasets.<br>
+    Catalunya: 23.156 empresas matched. Solo empresas con ≥3 adjudicaciones.</div>
+
     <div class="mc mc-acc"><span class="step-num">2</span> <strong>Cargos vigentes</strong><br><br>
-    Último acto por terna (persona, empresa, cargo). Filtro: solo cargos de decisión. Exclusión de personas jurídicas.</div>
+    17.1M actos BORME → unificados: 11.0M nombramientos + 6.1M ceses. Para cada terna (persona, empresa, cargo)
+    se toma el <strong>último acto</strong>. Si es nombramiento/reelección → vigente. Si es cese/revocación → inactivo.<br>
+    Nacional: 618.577 cargos activos → filtro de decisión (eliminar apoderados/representantes) → 232.493.<br>
+    Filtro personas jurídicas (S.L., GMBH, LTD en el nombre) → 211.843 cargos finales.</div>
+
     <div class="mc mc-acc"><span class="step-num">3</span> <strong>Detectar pares sospechosos</strong><br><br>
-    Persona con 2–50 empresas → combinaciones de pares → retener si ≥2 órganos contratantes comunes.
-    Análisis temporal: % órganos con actividad concurrente (±365 días).</div>
-    <div class="mc mc-grn"><span class="step-num">4</span> <strong>Filtrar grupos corporativos</strong><br><br>
-    <strong>a)</strong> Nombre de marca: Jaccard ≥0.5 en tokens no-genéricos<br>
-    <strong>b)</strong> Solapamiento consejo: &gt;40% overlap + ≥3 personas<br>
-    <strong>c)</strong> Multinacional: &gt;60% overlap + ≥4 personas<br>
-    <strong>d)</strong> Fusiones BORME: ambas con actos de fusión/absorción/escisión</div>
+    Personas con 2–50 empresas (excluir &gt;50 para evitar consejeros profesionales masivos).<br>
+    Para cada persona: combinaciones de pares de sus empresas → retener si comparten ≥2 órganos contratantes.<br>
+    Nacional: 7.514 personas multi-empresa → 3.970 pares con ≥2 órganos comunes.<br>
+    Análisis temporal: para cada par, % de órganos con adjudicaciones concurrentes (±365 días).</div>
+
+    <div class="mc mc-grn"><span class="step-num">4</span> <strong>Filtrar grupos corporativos</strong> (falsos positivos legítimos)<br><br>
+    <strong>a) Nombre de marca:</strong> Tokenizar ambos nombres, calcular Jaccard similarity en tokens
+    no-stop-word. Si Jaccard ≥0.5 → grupo corporativo. Incluye check de "primera palabra de marca" y
+    containment (PAVASAL ⊂ PAVASAL EMPRESA CONSTRUCTORA).<br>
+    <strong>b) Solapamiento consejo:</strong> Para cada par de empresas, calcular % de personas compartidas
+    en el consejo. Si &gt;40% overlap Y ≥3 personas compartidas → grupo corporativo.<br>
+    <strong>c) Fusiones BORME:</strong> Si ambas empresas tienen actos de fusión/absorción/escisión → grupo.<br>
+    Nacional: 3.970 → 2.287 pares (1.683 eliminados: 953 por nombre, 902 por consejo, 287 por fusiones).</div>
+
     <div class="mc mc-acc"><span class="step-num">5</span> <strong>Enriquecer pares</strong><br><br>
-    Peso del cargo (1–10), Flags F1–F5, stats contratación, concentración.</div>
+    Cada par recibe: peso del cargo (1–10 regex), flags F1–F5, nº adjudicaciones por empresa,
+    importe total, concentración (órganos comunes / min órganos), % temporal concurrente.</div>
+
     <div class="mc mc-wrn"><span class="step-num">6</span> <strong>Scoring de pares</strong></div>
     <div class="formula">
     score = concentración × √(n_órganos_comunes) × flag_weight × (cargo_weight / 5)<br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× 1/log(1 + max_adj/5) × √(importe_par / 10K)<br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× solo_admin_bonus × temporal_bonus<br><br>
-    <span style="color:{C['text2']}">Flag weights: F1 ×4.0 · F5 ×3.0 · F4 ×2.5 · F2 ×2.0 (multiplicativos)</span><br>
-    <span style="color:{C['text2']}">Agregación: par_score = score_max × log(1 + n_personas)</span>
+    <span style="color:{C['text2']}">Flag weights (multiplicativos): F1 ×4.0 · F5 ×3.0 · F4 ×2.5 · F2 ×2.0</span><br>
+    <span style="color:{C['text2']}">Solo_admin_bonus: ×1.5 si la persona es el único decisor en ambas empresas</span><br>
+    <span style="color:{C['text2']}">Temporal_bonus: 1 + 0.5 × pct_concurrent (hasta ×1.5 si 100% concurrente)</span><br>
+    <span style="color:{C['text2']}">Agregación persona: par_score = score_max × log₂(1 + n_personas)</span>
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="sec">4. Flags adicionales (F7–F11)</div>', unsafe_allow_html=True)
     st.markdown(f"""
-    <div class="mc"><strong>F7 — Concentración</strong>: % adj del órgano ganadas por una empresa.
-    Nacional: &gt;40% fijo. Catalunya: adaptativo (≥200 adj → 20%, ≥50 → 30%, &lt;50 → 40%).</div>
-    <div class="mc"><strong>F8 — UTEs sospechosas</strong>: UTEs cuyos miembros comparten administrador (detectados en F6).</div>
-    <div class="mc"><strong>F9 — Discrepancia geo</strong> <span class="qg qg-wn">Nacional</span>:
-    Provincia BORME ≠ CCAA mayoritaria de contratos (NUTS2). Solo PYMEs (3–200 adj).</div>
-    <div class="mc"><strong>F10 — Troceo</strong> <span class="qg qg-wn">Catalunya</span>:
-    ≥3 contratos misma empresa→órgano en 90d, todos bajo 15.000€, suma &gt; umbral.</div>
-    <div class="mc"><strong>F11 — Modificaciones excesivas</strong> <span class="qg qg-wn">Catalunya</span>:
-    ≥3 modificaciones y ≥20% de contratos modificados (promedio ~0.4%).</div>
+    <div class="mc"><strong>F7 — Concentración de adjudicaciones</strong><br><br>
+    Para cada par empresa×órgano: % de adjudicaciones del órgano ganadas por esa empresa.<br>
+    · Nacional: umbral fijo &gt;40%, mínimo 5 adj propias y 10 del órgano. Resultado: 358 pares, 286 empresas.<br>
+    · Catalunya: adaptativo según tamaño — ≥200 adj → 20%, ≥50 → 30%, &lt;50 → 40%.</div>
+
+    <div class="mc"><strong>F8 — UTEs sospechosas</strong><br><br>
+    Detección de UTEs (Uniones Temporales de Empresas) cuyos miembros comparten administrador:<br>
+    1. Regex: <code>U\\.?T\\.?E\\.?|UNIÓN TEMPORAL|AGRUPACIÓN TEMPORAL</code><br>
+    2. Parseo de miembros del nombre de la UTE (separadores: <code>- / y &amp;</code>)<br>
+    3. Normalización de cada miembro → cruce con red F6<br>
+    Nacional: 69.520 adj a UTEs → 13.684 parseables → 127 pares con admin compartido.<br>
+    Catalunya: 17.292 adj a UTEs → 4.025 parseables → 0 matches (nombres UTE no normalizan a BORME).</div>
+
+    <div class="mc"><strong>F9 — Discrepancia geográfica</strong> <span class="qg qg-wn">Nacional</span><br><br>
+    Provincia BORME → CCAA de registro. NUTS2 del contrato → CCAA mayoritaria de contratos.<br>
+    Flag si CCAA registro ≠ CCAA principal de contratos. Solo PYMEs (3–200 adj).<br>
+    Resultado: 14.832 empresas con discrepancia geográfica de 27.465 con CCAA mapeada.</div>
+
+    <div class="mc"><strong>F10 — Troceo</strong> <span class="qg qg-wn">Catalunya</span><br><br>
+    Fraccionamiento de contratos para evadir umbrales de procedimiento:<br>
+    Sliding window de 90 días → empresa×órgano con ≥3 contratos, todos ≤15.000€ (umbral contrato menor),
+    cuya suma supera el umbral.<br>
+    81.348 pares empresa×órgano analizados → 4.331 clusters de troceo, 2.651 empresas flaggeadas.<br>
+    Media cluster: 33K€ (2.2× sobre el umbral).</div>
+
+    <div class="mc"><strong>F11 — Modificaciones excesivas</strong> <span class="qg qg-wn">Catalunya</span><br><br>
+    Usa columnas nativas del registro catalán: Número/Tipus/Import de modificació.<br>
+    Flag si empresa tiene ≥3 modificaciones Y ≥20% de sus contratos modificados.<br>
+    (Promedio catalán: ~0.57% de contratos con modificación.)<br>
+    Resultado: 115 empresas flaggeadas.</div>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="sec">5. Scoring unificado por empresa</div>', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="formula">
-    risk_score = F1×3.0 + F2×0.5 + F4×2.0 + F5×2.0 + min(f6/50, 10) + f7×5.0 + F8×3.0 + F9×1.0
+    <strong>Nacional:</strong><br>
+    risk_score = F1×3.0 + F2×0.5 + F4×2.0 + F5×2.0 + min(f6_par_score/50, 10) + F7×5.0 + F8×3.0 + F9×1.0<br><br>
+    <strong>Catalunya:</strong><br>
+    risk_score = F1×3.0 + F2×0.5 + F4×2.0 + F5×2.0 + min(f6_par_score/50, 10) + F7×5.0 + F8×3.0 + F10×2.5 + F11×1.5
     </div>
-    <div class="mc">Solo empresas con ≥1 flag. Salida: <code>risk_scoring_unificado.parquet</code>.<br><br>
-    <strong>Catalunya (v4):</strong> risk_score = F1×3.0 + F2×0.5 + F4×2.0 + F5×2.0 + min(f6/50, 10) + f7×5.0 + F8×3.0 + F10×2.5 + F11×1.5</div>
+    <div class="mc">
+    Solo empresas con ≥1 flag. Nacional: 25.675 empresas (125 con ≥3 flags). Catalunya: 4.203 empresas.<br><br>
+    <strong>Distribución Nacional:</strong> F9 geo (14.832) &gt; F2 capital (5.735) &gt; F1 recién creada (5.435)
+    &gt; F4 disolución (1.294) &gt; F5 concursal (540) &gt; F7 concentración (286) &gt; F8 UTEs (97).<br>
+    <strong>Distribución Catalunya:</strong> F10 troceo (2.651) &gt; F2 (1.032) &gt; F6 red (571) &gt; F4 (174)
+    &gt; F1 (163) &gt; F11 modificaciones (115) &gt; F5 (22) &gt; F7 (10).</div>
     """, unsafe_allow_html=True)
 
     st.markdown('<div class="sec">6. Diferencias Nacional vs Catalunya</div>', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="mc">
-    <strong>Datos:</strong> Nacional = PLACSP 8.7M · Catalunya = Registro 3.4M + Menores BCN 177K<br>
+    <strong>Datos:</strong> Nacional = PLACSP 5.8M adj con importe · Catalunya = Registro 3.4M + Menores BCN 177K<br>
+    <strong>Matching:</strong> Nacional 126.073 empresas cruzadas · Catalunya 23.156<br>
     <strong>F7:</strong> Nacional umbral fijo 40% · Catalunya adaptativo 20/30/40%<br>
-    <strong>Exclusivo Nacional:</strong> F9 geo · <strong>Exclusivo Catalunya:</strong> F10 troceo, F11 modificaciones<br>
-    <strong>Ambos:</strong> F1–F8, scoring unificado</div>
+    <strong>Normalización:</strong> Catalunya incluye formas catalanas (S.C.P., S.C.C.L., SOCIETAT COOPERATIVA…)<br>
+    <strong>Exclusivo Nacional:</strong> F9 discrepancia geográfica<br>
+    <strong>Exclusivo Catalunya:</strong> F10 troceo (datos de contratos menores), F11 modificaciones (columnas nativas)<br>
+    <strong>Ambos:</strong> F1–F8, scoring unificado, filtro grupos corporativos</div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="sec">7. Limitaciones</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sec">7. Resultados clave</div>', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="mc">
-    <strong>Cobertura:</strong> ~52% de adjudicatarios PLACSP en BORME. Autónomos y extranjeras no figuran.<br>
-    <strong>Matching:</strong> Por nombre normalizado, no por NIF. Posibles falsos positivos/negativos.<br>
-    <strong>Score ≠ fraude.</strong> Patrón estadístico que requiere investigación humana.</div>
-    <div class="disc"><strong>Descargo de responsabilidad</strong><br><br>
-    Datos públicos de PLACSP, Transparència Catalunya y BORME. <strong>No vinculado</strong> a estos organismos.
-    <strong>Un score alto NO es prueba de irregularidad.</strong></div>
+    <strong>Nacional:</strong> 2.287 pares persona×empresa sospechosos (1.878 pares únicos de empresas,
+    1.416 personas únicas, 2.684 empresas). 677 pares con ≥1 flag adicional. Top score: 8.758 (CURENERGIA × IBERDROLA).<br><br>
+    <strong>Catalunya:</strong> 439 pares (353 únicos). Top score: 7.5 (SILUJ ILUMINACION, F1+F4+F10).
+    F10 troceo es el flag dominante (63% de flaggeadas).<br><br>
+    <strong>Grupos corporativos filtrados:</strong> Nacional 1.683 pares legítimos eliminados. Catalunya 295.</div>
     """, unsafe_allow_html=True)
+
+    st.markdown('<div class="sec">8. Limitaciones</div>', unsafe_allow_html=True)
+    st.markdown(f"""
+    <div class="mc">
+    <strong>Cobertura:</strong> ~52% de adjudicatarios PLACSP cruzados con BORME. Autónomos, personas físicas y
+    empresas extranjeras no figuran en BORME.<br>
+    <strong>Matching:</strong> Por nombre normalizado, no por NIF (no disponible en BORME). Posibles falsos
+    positivos (homónimos) y falsos negativos (variantes no capturadas).<br>
+    <strong>Vigencia cargos:</strong> Depende de que el cese se publique en BORME. Cargos no cesados
+    explícitamente aparecen como vigentes aunque hayan terminado de facto.<br>
+    <strong>Grupos corporativos:</strong> Filtros heurísticos. Grupos complejos con holdings intermedios
+    pueden no detectarse.<br>
+    <strong>F10 troceo:</strong> Solo ventana de 90 días y umbral 15K€. Troceo más sofisticado
+    (diferentes órganos, plazos más largos) no se detecta.<br>
+    <strong>Score ≠ fraude.</strong> Un patrón estadístico que requiere investigación humana cualificada.</div>
+
+    <div class="disc"><strong>Descargo de responsabilidad</strong><br><br>
+    Datos públicos de PLACSP, Registre Públic de Contractes de Catalunya, Portal de Transparència de Barcelona
+    y BORME. <strong>No vinculado</strong> a estos organismos.
+    Puede contener errores derivados del parsing automático de documentos.
+    <strong>Un score alto NO es prueba de irregularidad.</strong> Este es un ejercicio de análisis de datos
+    con fines educativos y de transparencia.</div>
+    """, unsafe_allow_html=True)
+
+
+# ═══════════════════════════════════════════════════════════════
+# RENDER: Company Profile
+# ═══════════════════════════════════════════════════════════════
+def render_company_profile(flags):
+    """Full company investigation page."""
+    st.markdown('<div class="sec">Ficha de empresa</div>', unsafe_allow_html=True)
+    q = st.text_input("🔍 Buscar empresa", key="cp_q", placeholder="Ej: IBERDROLA, PAVASAL, FCC...")
+    if not q or len(q) < 3:
+        st.markdown(f"<div class='mc'>Introduce al menos 3 caracteres para buscar una empresa en todos los flags.</div>",
+                    unsafe_allow_html=True)
+        return
+
+    with st.spinner("Buscando..."):
+        prof = build_company_profile(q, flags)
+
+    if not prof['flags_active']:
+        st.info(f"'{q}' no encontrado en ningún flag.")
+        return
+
+    # ── Header ──
+    n_flags = len(prof['flags_active'])
+    max_sc = max(prof['scores'].values()) if prof['scores'] else 0
+    total_hits = sum(f['n_hits'] for f in prof['flags_active'])
+
+    st.markdown(f"""
+    <div class="fcard">
+        <div style="font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:700;color:{C['text']};margin-bottom:4px">
+            {prof['nombre'][:60]}</div>
+        <div style="font-size:.8rem;color:{C['text2']}">
+            Aparece en <b style="color:{C['accent']}">{n_flags}</b> flags ·
+            <b style="color:{C['text']}">{total_hits}</b> coincidencias ·
+            Max score: <b style="color:{C['accent']}">{max_sc:.1f}</b></div>
+    </div>""", unsafe_allow_html=True)
+
+    # ── Flag badges ──
+    badges = ''.join(f'<span class="fb {f["icon"]}">{f["icon"]} {f["flag"]} · {f["scope"]} ({f["n_hits"]})</span> '
+                     for f in prof['flags_active'])
+    st.markdown(f"<div style='margin:10px 0'>{badges}</div>", unsafe_allow_html=True)
+
+    # ── Scores ──
+    if prof['scores']:
+        st.markdown('<div class="sec">Scores</div>', unsafe_allow_html=True)
+        cols = st.columns(min(len(prof['scores']), 6))
+        for i, (k, v) in enumerate(prof['scores'].items()):
+            with cols[i % len(cols)]:
+                st.metric(k, f"{v:.2f}")
+
+    # ── Connections (F6) ──
+    if prof['connections']:
+        st.markdown('<div class="sec">Conexiones (F6)</div>', unsafe_allow_html=True)
+        conn_df = pd.DataFrame(prof['connections']).sort_values('score', ascending=False)
+        st.dataframe(conn_df.head(20), use_container_width=True, hide_index=True)
+
+    # ── Órganos ──
+    if prof['organos']:
+        with st.expander(f"📍 Órganos contratantes ({len(prof['organos'])})"):
+            for o in prof['organos'][:50]:
+                st.caption(f"· {o}")
+
+    # ── Detail per flag ──
+    if prof['details']:
+        st.markdown('<div class="sec">Detalle por flag</div>', unsafe_allow_html=True)
+        for stem, detail_df in prof['details'].items():
+            meta = get_flag_meta(stem)
+            with st.expander(f"{meta['icon']} {meta['label']} — {len(detail_df)} registros"):
+                st.dataframe(detail_df, use_container_width=True, hide_index=True, height=250)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -1250,22 +1910,115 @@ def main():
     tab_names = ["📊 Visión General"]
     if placsp_prof: tab_names.append("🏛️ PLACSP")
     if cat_prof: tab_names.append("🏴 Catalunya")
-    tab_names += ["🚩 Flags", "📋 Metodología"]
+    tab_names += ["🚩 Flags", "🔎 Ficha Empresa", "📋 Metodología"]
     tabs = st.tabs(tab_names)
     ti = 0
 
+    # ── Tab 0: Overview with universal search ──
     with tabs[ti]:
         ti += 1
         if not placsp_prof and not cat_prof and not flags:
-            st.markdown("<div class='mc'>Sin datos. Ejecuta <code>precompute_quality.py</code> y coloca parquets en <code>data/</code>.</div>", unsafe_allow_html=True)
+            st.markdown("<div class='mc'>Sin datos. Ejecuta <code>precompute_quality.py</code> y coloca parquets en <code>anomalias/</code>.</div>", unsafe_allow_html=True)
         else:
+            # ── Universal search ──
+            st.markdown('<div class="sec">Buscador universal</div>', unsafe_allow_html=True)
+            q = st.text_input("🔍 Buscar empresa, persona u órgano en todos los flags",
+                              key="univ_q", placeholder="Ej: IBERDROLA, MARTI SOLER, AENA...")
+            if q and len(q) >= 3:
+                with st.spinner("Buscando en todos los flags..."):
+                    results = search_all_flags(q, flags)
+                if results:
+                    st.markdown(f"<div style='margin:8px 0;font-size:.82rem;color:{C['text2']}'>"
+                        f"<b style='color:{C['text']}'>{len(results)}</b> flags con coincidencias para "
+                        f"<b style='color:{C['accent']}'>{q}</b></div>", unsafe_allow_html=True)
+                    for r in results:
+                        sc_str = f" · Max score: <b style='color:{C['accent']}'>{r['max_score']:.1f}</b>" if r['max_score'] else ""
+                        st.markdown(f"<div class='fcard'><span class='fb {r['css']}'>{r['icon']} {r['label']}</span> "
+                            f"<span style='color:{C['text2']};font-size:.78rem'>{r['scope']} · "
+                            f"{r['hits']} coincidencias{sc_str}</span></div>", unsafe_allow_html=True)
+                        with st.expander(f"Ver datos ({r['stem']})"):
+                            st.dataframe(r['sample'], use_container_width=True, hide_index=True)
+                else:
+                    st.info(f"'{q}' no encontrado en ningún flag.")
+
+            # ── Dataset cards ──
+            st.markdown('<div class="sec">Datasets</div>', unsafe_allow_html=True)
             for p in [placsp_prof, cat_prof]:
                 if p:
                     st.markdown(f"<div class='fcard'><div style='font-family:\"Outfit\",sans-serif;font-size:.95rem;font-weight:700;color:{C['text']};margin-bottom:6px'>{p['name']}</div>"
                         f"<div style='font-size:.8rem;color:{C['text2']}'><b style='color:{C['text']};font-size:1.1rem'>{p['n']:,}</b> registros · {p['nc']} cols · {qb(p['completitud'])} · Dupes: {p['dupe_pct']:.2f}%</div></div>", unsafe_allow_html=True)
+
+            # ── Flags inventory ──
             if flags:
                 badges = ' '.join(f'<span class="fb {get_flag_meta(s)["css"]}">{get_flag_meta(s)["icon"]} {get_flag_meta(s)["label"]}</span>' for s in flags)
                 st.markdown(f"<div class='fcard'><div style='font-family:\"Outfit\",sans-serif;font-size:.95rem;font-weight:700;color:{C['accent']};margin-bottom:8px'>🚩 Flags — {len(flags)} archivos</div><div style='margin-top:8px'>{badges}</div></div>", unsafe_allow_html=True)
+
+            # ── Headline stats — tweetable ──
+            if flags:
+                st.markdown('<div class="sec">Cifras clave</div>', unsafe_allow_html=True)
+                hs = compute_headline_stats(flags)
+
+                # Row 1: core metrics
+                c1, c2, c3, c4 = st.columns(4)
+                with c1: st.metric("Pares sospechosos", fmt(hs.get('n_pares_nacional', 0)))
+                with c2: st.metric("Empresas en red", fmt(hs.get('n_empresas_red_nacional', 0)))
+                with c3: st.metric("Empresas con flag", fmt(hs.get('n_risk_nacional', 0)))
+                with c4: st.metric("Discrepancia geo", fmt(hs.get('n_geo', 0)))
+
+                # Row 2: impactful numbers
+                tweets = []
+                imp_nac = hs.get('importe_pares_nacional', 0)
+                if imp_nac > 0:
+                    tweets.append(f"💰 <b>{imp_nac/1e6:,.0f}M€</b> adjudicados a empresas con administrador compartido (sin ser grupo corporativo)")
+                tp = hs.get('top_persona_nacional')
+                mo = hs.get('max_organos_nacional')
+                if tp:
+                    tweets.append(f"👤 Top persona conecta <b>{tp[1]} pares</b> de empresas que licitan en los mismos órganos")
+                if mo:
+                    tweets.append(f"🏛️ Par de empresas con hasta <b>{mo} órganos contratantes</b> en común")
+                tc = hs.get('top_concentracion_nacional')
+                if tc:
+                    tweets.append(f"📊 <b>{tc[0]}</b> gana el <b>{tc[1]:.0f}%</b> de las adjudicaciones de un órgano")
+                mf = hs.get('multi_flag_nacional', 0)
+                if mf:
+                    tweets.append(f"🚩 <b>{mf} empresas</b> con 3 o más flags simultáneos")
+                ti_val = hs.get('troceo_importe', 0)
+                tc_val = hs.get('troceo_clusters', 0)
+                if ti_val > 0:
+                    tweets.append(f"✂️ Catalunya: <b>{tc_val:,} clusters</b> de troceo por <b>{ti_val/1e6:,.1f}M€</b> (todos bajo 15K€ individualmente)")
+
+                if tweets:
+                    for t in tweets:
+                        st.markdown(f"<div class='fcard' style='padding:10px 16px;font-size:.82rem;color:{C['text2']}'>{t}</div>",
+                                    unsafe_allow_html=True)
+
+            # ── Comparador Nacional vs Catalunya ──
+            nac_flags = [s for s, f in flags.items() if f['scope'] == 'Nacional'] if flags else []
+            cat_flags = [s for s, f in flags.items() if f['scope'] == 'Catalunya'] if flags else []
+            if nac_flags and cat_flags:
+                st.markdown('<div class="sec">Comparador · Nacional vs Catalunya</div>', unsafe_allow_html=True)
+                with st.spinner("Cruzando empresas entre ámbitos..."):
+                    cdf, n_nac, n_cat = build_comparador(flags)
+                if len(cdf) > 0:
+                    c1, c2, c3 = st.columns(3)
+                    with c1: st.metric("Empresas Nacional", fmt(n_nac))
+                    with c2: st.metric("Empresas Catalunya", fmt(n_cat))
+                    with c3: st.metric("En ambos ámbitos", fmt(len(cdf)))
+
+                    # Scatter plot
+                    fig_comp = pl_comparador_scatter(cdf)
+                    if fig_comp:
+                        st.plotly_chart(fig_comp, use_container_width=True)
+
+                    # Table with most flagged common companies
+                    with st.expander(f"📋 Top empresas en ambos ámbitos ({len(cdf)})"):
+                        show_cols = ['empresa','flags_nac','flags_cat','score_nac','score_cat','total_flags']
+                        avail = [c for c in show_cols if c in cdf.columns]
+                        st.dataframe(cdf[avail].head(50), use_container_width=True, hide_index=True)
+                else:
+                    st.caption("No se encontraron empresas comunes entre ambos ámbitos.")
+
+            # ── Comparativa ──
             if placsp_prof and cat_prof:
                 st.markdown('<div class="sec">Comparativa</div>', unsafe_allow_html=True)
                 comp = pd.DataFrame({
@@ -1274,12 +2027,20 @@ def main():
                     'Catalunya': [f"{cat_prof['n']:,}", cat_prof['nc'], f"{cat_prof['completitud']:.1f}", f"{cat_prof['dupe_pct']:.2f}", cat_prof['n_complete'], cat_prof['n_hi_miss']]})
                 st.dataframe(comp, use_container_width=True, hide_index=True)
 
+    # ── Tab: PLACSP ──
     if placsp_prof:
         with tabs[ti]: ti += 1; render_quality(placsp_prof, "PLACSP")
+    # ── Tab: Catalunya ──
     if cat_prof:
         with tabs[ti]: ti += 1; render_quality(cat_prof, "Catalunya")
 
+    # ── Tab: Flags ──
     with tabs[ti]: ti += 1; render_flags(flags)
+
+    # ── Tab: Ficha Empresa ──
+    with tabs[ti]: ti += 1; render_company_profile(flags)
+
+    # ── Tab: Metodología ──
     with tabs[ti]: render_meth()
 
     st.markdown(f"<div class='ft'><a href='https://twitter.com/Gsnchez'>@Gsnchez</a> · <a href='https://bquantfinance.com'>bquantfinance.com</a> · <a href='https://github.com/BquantFinance'>GitHub</a></div>", unsafe_allow_html=True)
