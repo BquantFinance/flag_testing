@@ -23,6 +23,7 @@ import json
 from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
+import streamlit.components.v1 as components
 
 # ═══════════════════════════════════════════════════════════════
 # CONFIG
@@ -385,134 +386,264 @@ def pl_f6_bubble(df):
 
 
 # ═══════════════════════════════════════════════════════════════
-# 3D NETWORK GRAPH — neon glow effects
+# EGO-NETWORK — D3.js interactive radial graph
 # ═══════════════════════════════════════════════════════════════
-def pl_network_3d(df_pares, max_nodes=60):
-    """3D force-directed network with neon glow layers."""
-    if 'empresa_1' not in df_pares.columns:
-        return None
+def _fcol(df, *hints):
+    """Find first column matching any hint substring."""
+    for h in hints:
+        for c in df.columns:
+            if h in c.lower(): return c
+    return None
 
-    top = df_pares.head(max_nodes)
-    nodes = set(); edges = []
-    for _, r in top.iterrows():
-        e1 = str(r['empresa_1'])[:30]; e2 = str(r['empresa_2'])[:30]
-        nodes.add(e1); nodes.add(e2)
-        sc = r.get('par_score', r.get('score_max', 1))
-        nf = r.get('n_flags', 0)
-        edges.append((e1, e2, sc, nf))
-    nodes = list(nodes)
-    if len(nodes) < 3: return None
+def build_ego_data(df_pares, persona_name):
+    """Build ego-network graph data for a person."""
+    e1c = _fcol(df_pares, 'empresa_1'); e2c = _fcol(df_pares, 'empresa_2')
+    if not e1c or not e2c: return None
+    # Find rows involving this person
+    mask = pd.Series(False, index=df_pares.index)
+    safe = persona_name.replace('(','\\(').replace(')','\\)')
+    for col in df_pares.select_dtypes(include=['object']).columns:
+        mask |= df_pares[col].astype(str).str.contains(safe, case=False, na=False, regex=True)
+    ego = df_pares[mask]
+    if len(ego) == 0: return None
 
-    # ── 3D Force-directed layout ──
-    np.random.seed(42)
-    pos = {n: np.random.randn(3) * 4 for n in nodes}
-    for iteration in range(120):
-        forces = {n: np.zeros(3) for n in nodes}
-        for i, n1 in enumerate(nodes):
-            for n2 in nodes[i+1:]:
-                diff = pos[n1] - pos[n2]
-                d = max(0.15, np.linalg.norm(diff))
-                direction = diff / d
-                forces[n1] += direction * (3.0 / d**2)
-                forces[n2] -= direction * (3.0 / d**2)
-        for e1, e2, sc, _ in edges:
-            if e1 in pos and e2 in pos:
-                diff = pos[e2] - pos[e1]
-                d = max(0.15, np.linalg.norm(diff))
-                direction = diff / d
-                forces[e1] += direction * d * 0.04
-                forces[e2] -= direction * d * 0.04
-        for n in nodes:
-            d_c = np.linalg.norm(pos[n])
-            if d_c > 0.1: forces[n] -= pos[n] / d_c * 0.02
-        damping = 0.15 * max(0.3, 1.0 - iteration / 120)
-        for n in nodes: pos[n] = pos[n] + forces[n] * damping
+    companies = {}
+    for _, r in ego.iterrows():
+        for ec, ac, ic in [(e1c,'adj_e1','importe_e1'),(e2c,'adj_e2','importe_e2')]:
+            nm = str(r[ec])[:35]
+            if nm not in companies:
+                ac_c = _fcol(df_pares, ac); ic_c = _fcol(df_pares, ic)
+                nf_c = _fcol(df_pares, 'n_flags')
+                companies[nm] = {
+                    'adj': int(r[ac_c]) if ac_c and pd.notna(r.get(ac_c)) else 0,
+                    'imp': float(r[ic_c]) if ic_c and pd.notna(r.get(ic_c)) else 0,
+                    'flags': int(r[nf_c]) if nf_c and pd.notna(r.get(nf_c)) else 0,
+                }
+    nodes = [{'id': persona_name[:30], 'type': 'person', 'flags': 0, 'adj': 0, 'imp': 0}]
+    for nm, info in companies.items():
+        nodes.append({'id': nm, 'type': 'company', **info})
+    links = []
+    for nm in companies:
+        links.append({'source': persona_name[:30], 'target': nm, 'type': 'admin', 'score': 0, 'organos': 0, 'flags': 0})
+    sc_c = _fcol(df_pares, 'par_score','score_max'); org_c = _fcol(df_pares, 'n_organos','organos_comunes')
+    nf_c2 = _fcol(df_pares, 'n_flags')
+    for _, r in ego.iterrows():
+        links.append({
+            'source': str(r[e1c])[:35], 'target': str(r[e2c])[:35], 'type': 'overlap',
+            'score': float(r[sc_c]) if sc_c and pd.notna(r.get(sc_c)) else 0,
+            'organos': int(r[org_c]) if org_c and pd.notna(r.get(org_c)) else 1,
+            'flags': int(r[nf_c2]) if nf_c2 and pd.notna(r.get(nf_c2)) else 0,
+        })
+    return {'nodes': nodes, 'links': links, 'persona': persona_name}
 
-    # ── Node metrics ──
-    deg = {n: 0 for n in nodes}; flag_count = {n: 0 for n in nodes}; max_score = {n: 0 for n in nodes}
-    for e1, e2, sc, nf in edges:
-        deg[e1] += 1; deg[e2] += 1
-        flag_count[e1] = max(flag_count[e1], nf); flag_count[e2] = max(flag_count[e2], nf)
-        max_score[e1] = max(max_score[e1], sc); max_score[e2] = max(max_score[e2], sc)
-    max_deg = max(deg.values()) if deg else 1
+def ego_d3_html(data, width=920, height=600):
+    """Generate D3.js HTML for ego-network with SVG glows."""
+    data_json = json.dumps(data, ensure_ascii=False)
+    persona_disp = data.get('persona','')[:40]
+    n_co = len(data['nodes']) - 1
+    html = _EGO_HTML_TEMPLATE
+    html = html.replace('__DATA__', data_json)
+    html = html.replace('__W__', str(width)).replace('__H__', str(height))
+    html = html.replace('__PERSONA__', persona_disp)
+    html = html.replace('__NCO__', str(n_co))
+    return html
 
-    fig = go.Figure()
+_EGO_HTML_TEMPLATE = r"""<!DOCTYPE html><html><head><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:transparent;overflow:hidden;font-family:'JetBrains Mono',monospace}
+.tt{position:absolute;background:rgba(13,16,23,.96);border:1px solid rgba(37,43,61,.8);border-radius:8px;
+  padding:10px 14px;font-size:11px;color:#e2e8f0;pointer-events:none;opacity:0;transition:opacity .2s;
+  max-width:280px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.tt b{color:#fbbf24} .tt .m{color:#3b82f6}
+.lg{position:absolute;bottom:10px;right:14px;font-size:9px;color:#64748b;letter-spacing:.05em}
+.li{display:flex;align-items:center;gap:6px;margin:3px 0}
+.ld{width:8px;height:8px;border-radius:50%}
+.hd{position:absolute;top:10px;left:16px;font-size:13px;font-weight:600;color:#e2e8f0;letter-spacing:-.01em}
+.hd span{color:#fbbf24;text-shadow:0 0 20px rgba(245,158,11,.3)}
+.sd{position:absolute;top:30px;left:16px;font-size:9px;color:#64748b;letter-spacing:.08em;text-transform:uppercase}
+</style></head><body>
+<div class="hd"><span>●</span> __PERSONA__</div>
+<div class="sd">__NCO__ empresas · Drag para mover · Hover para detalles</div>
+<div id="g"></div>
+<div class="lg">
+<div class="li"><div class="ld" style="background:#fbbf24;box-shadow:0 0 8px rgba(245,158,11,.5)"></div>Persona</div>
+<div class="li"><div class="ld" style="background:#3b82f6;box-shadow:0 0 6px rgba(59,130,246,.4)"></div>Sin flags</div>
+<div class="li"><div class="ld" style="background:#f59e0b"></div>1 flag</div>
+<div class="li"><div class="ld" style="background:#ef4444;box-shadow:0 0 6px rgba(239,68,68,.4)"></div>2+ flags</div>
+<div class="li" style="margin-top:5px;border-top:1px solid rgba(255,255,255,.05);padding-top:4px">
+<div style="width:18px;height:1px;background:rgba(245,158,11,.5);border-top:1px dashed rgba(245,158,11,.5)"></div>Admin</div>
+<div class="li"><div style="width:18px;height:2px;background:rgba(59,130,246,.5)"></div>Órganos comunes</div>
+</div>
+<div class="tt" id="tt"></div>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+const data=__DATA__,W=__W__,H=__H__;
+const svg=d3.select("#g").append("svg").attr("width",W).attr("height",H);
+const defs=svg.append("defs");
+[{id:'gb',c:'59,130,246',s:4},{id:'gr',c:'239,68,68',s:5},{id:'gg',c:'245,158,11',s:8},{id:'gl',c:'245,158,11',s:18}]
+.forEach(g=>{const f=defs.append("filter").attr("id",g.id).attr("x","-80%").attr("y","-80%").attr("width","260%").attr("height","260%");
+f.append("feGaussianBlur").attr("in","SourceGraphic").attr("stdDeviation",g.s).attr("result","b");
+const m=f.append("feMerge");m.append("feMergeNode").attr("in","b");m.append("feMergeNode").attr("in","SourceGraphic")});
+const rg=defs.append("radialGradient").attr("id","pg");
+rg.append("stop").attr("offset","0%").attr("stop-color","#fbbf24");
+rg.append("stop").attr("offset","100%").attr("stop-color","#b45309");
+const nodes=data.nodes.map(d=>({...d})),links=data.links.map(d=>({...d}));
+const pn=nodes.find(n=>n.type==='person');if(pn){pn.fx=W/2;pn.fy=H/2}
+const sim=d3.forceSimulation(nodes)
+.force("link",d3.forceLink(links).id(d=>d.id).distance(d=>d.type==='admin'?150:200))
+.force("charge",d3.forceManyBody().strength(-500))
+.force("center",d3.forceCenter(W/2,H/2))
+.force("collision",d3.forceCollide().radius(40))
+.force("x",d3.forceX(W/2).strength(.04)).force("y",d3.forceY(H/2).strength(.04));
+const lk=svg.append("g").selectAll("line").data(links).join("line")
+.attr("stroke",d=>d.type==='admin'?'rgba(245,158,11,.22)':d.flags>=2?'rgba(239,68,68,.35)':'rgba(59,130,246,.28)')
+.attr("stroke-width",d=>d.type==='admin'?1:Math.max(1.5,Math.min(5,(d.organos||1)/2)))
+.attr("stroke-dasharray",d=>d.type==='admin'?'5,5':'none');
+const gl2=svg.append("g").selectAll("circle").data(nodes).join("circle")
+.attr("r",d=>d.type==='person'?42:20)
+.attr("fill",d=>d.type==='person'?'rgba(245,158,11,.06)':d.flags>=2?'rgba(239,68,68,.05)':'rgba(59,130,246,.04)')
+.attr("filter",d=>d.type==='person'?'url(#gl)':d.flags>=2?'url(#gr)':'url(#gb)');
+const gl1=svg.append("g").selectAll("circle").data(nodes).join("circle")
+.attr("r",d=>d.type==='person'?28:14)
+.attr("fill",d=>d.type==='person'?'rgba(245,158,11,.15)':d.flags>=2?'rgba(239,68,68,.12)':'rgba(59,130,246,.1)')
+.attr("filter",d=>d.type==='person'?'url(#gg)':d.flags>=2?'url(#gr)':'url(#gb)');
+const nd=svg.append("g").selectAll("circle").data(nodes).join("circle")
+.attr("r",d=>d.type==='person'?20:Math.max(8,Math.min(16,6+Math.sqrt(d.adj||1)*.7)))
+.attr("fill",d=>d.type==='person'?'url(#pg)':d.flags>=2?'#ef4444':d.flags===1?'#f59e0b':'#3b82f6')
+.attr("stroke",d=>d.type==='person'?'#fbbf24':'rgba(255,255,255,.12)')
+.attr("stroke-width",d=>d.type==='person'?2:1)
+.attr("filter",d=>d.type==='person'?'url(#gg)':d.flags>=2?'url(#gr)':'url(#gb)')
+.style("cursor","grab")
+.call(d3.drag()
+.on("start",(e,d)=>{if(!e.active)sim.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y})
+.on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y})
+.on("end",(e,d)=>{if(!e.active)sim.alphaTarget(0);if(d.type!=='person'){d.fx=null;d.fy=null}}));
+const cr=svg.append("g").selectAll("circle").data(nodes).join("circle")
+.attr("r",d=>d.type==='person'?5:2.5).attr("fill","rgba(255,255,255,.6)").attr("pointer-events","none");
+const lb=svg.append("g").selectAll("text").data(nodes).join("text")
+.text(d=>d.id.substring(0,d.type==='person'?25:20))
+.attr("font-size",d=>d.type==='person'?11:8)
+.attr("fill",d=>d.type==='person'?'#fbbf24':'#94a3b8')
+.attr("text-anchor","middle").attr("dy",d=>d.type==='person'?-28:-20)
+.attr("font-family","'JetBrains Mono',monospace").attr("font-weight",d=>d.type==='person'?600:400)
+.attr("pointer-events","none");
+const tt=d3.select("#tt");
+nd.on("mouseover",(e,d)=>{tt.style("opacity",1);
+let h=`<b>${d.id}</b><br>`;
+if(d.type==='person')h+=`Tipo: <span class="m">Decisor</span>`;
+else h+=`Adj: <span class="m">${d.adj}</span><br>Importe: <span class="m">${(d.imp/1e6).toFixed(1)}M€</span><br>Flags: <span class="m">${d.flags}</span>`;
+tt.html(h)}).on("mousemove",e=>{tt.style("left",(e.pageX+15)+"px").style("top",(e.pageY-10)+"px")})
+.on("mouseout",()=>tt.style("opacity",0));
+sim.on("tick",()=>{
+lk.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+gl2.attr("cx",d=>d.x).attr("cy",d=>d.y);gl1.attr("cx",d=>d.x).attr("cy",d=>d.y);
+nd.attr("cx",d=>d.x).attr("cy",d=>d.y);cr.attr("cx",d=>d.x).attr("cy",d=>d.y);
+lb.attr("x",d=>d.x).attr("y",d=>d.y)});
+nd.attr("r",0).transition().duration(800).delay((_,i)=>i*60)
+.attr("r",d=>d.type==='person'?20:Math.max(8,Math.min(16,6+Math.sqrt(d.adj||1)*.7)));
+lk.attr("opacity",0).transition().duration(500).delay(300).attr("opacity",1);
+lb.attr("opacity",0).transition().duration(700).delay(600).attr("opacity",1);
+</script></body></html>"""
 
-    # ── Edges with intensity color ──
-    max_edge_sc = max(sc for _, _, sc, _ in edges) if edges else 1
-    for e1, e2, sc, nf in edges:
-        intensity = sc / max_edge_sc
-        alpha = 0.08 + intensity * 0.35
-        width = 1 + intensity * 3
-        if nf >= 2:   edge_color = f'rgba(239,68,68,{alpha})'
-        elif nf == 1: edge_color = f'rgba(245,158,11,{alpha})'
-        else:         edge_color = f'rgba(59,130,246,{alpha})'
-        fig.add_trace(go.Scatter3d(
-            x=[pos[e1][0], pos[e2][0]], y=[pos[e1][1], pos[e2][1]], z=[pos[e1][2], pos[e2][2]],
-            mode='lines', line=dict(width=width, color=edge_color),
-            hoverinfo='none', showlegend=False))
 
-    # ── Outer glow (large soft halo) ──
-    gx = [pos[n][0] for n in nodes]; gy = [pos[n][1] for n in nodes]; gz = [pos[n][2] for n in nodes]
-    glow2_sz = [max(28, min(70, 20 + deg[n]/max_deg*55)) for n in nodes]
-    glow2_c = []
-    for n in nodes:
-        fc = flag_count.get(n, 0)
-        if fc >= 2:   glow2_c.append('rgba(239,68,68,.06)')
-        elif fc == 1: glow2_c.append('rgba(245,158,11,.05)')
-        else:         glow2_c.append('rgba(59,130,246,.04)')
-    fig.add_trace(go.Scatter3d(x=gx, y=gy, z=gz, mode='markers',
-        marker=dict(size=glow2_sz, color=glow2_c, line=dict(width=0), opacity=1),
-        hoverinfo='none', showlegend=False))
+# ═══════════════════════════════════════════════════════════════
+# CLUSTER ANALYSIS — connected components
+# ═══════════════════════════════════════════════════════════════
+def find_clusters(df_pares):
+    """Union-Find connected components from pairs."""
+    e1c = _fcol(df_pares, 'empresa_1'); e2c = _fcol(df_pares, 'empresa_2')
+    if not e1c or not e2c: return pd.DataFrame()
+    parent = {}
+    def find(x):
+        while parent.get(x, x) != x: parent[x] = parent.get(parent[x], parent[x]); x = parent[x]
+        return x
+    def union(a, b): ra, rb = find(a), find(b); parent[ra] = rb if ra != rb else ra
 
-    # ── Inner glow ──
-    glow1_sz = [max(16, min(48, 14 + deg[n]/max_deg*38)) for n in nodes]
-    glow1_c = []
-    for n in nodes:
-        fc = flag_count.get(n, 0)
-        if fc >= 2:   glow1_c.append('rgba(239,68,68,.18)')
-        elif fc == 1: glow1_c.append('rgba(245,158,11,.15)')
-        else:         glow1_c.append('rgba(59,130,246,.12)')
-    fig.add_trace(go.Scatter3d(x=gx, y=gy, z=gz, mode='markers',
-        marker=dict(size=glow1_sz, color=glow1_c, line=dict(width=0), opacity=1),
-        hoverinfo='none', showlegend=False))
+    for _, r in df_pares.iterrows(): union(str(r[e1c]), str(r[e2c]))
+    clusters = {}
+    for _, r in df_pares.iterrows():
+        root = find(str(r[e1c]))
+        if root not in clusters: clusters[root] = {'empresas': set(), 'pares': 0, 'max_score': 0, 'flags_sum': 0}
+        cl = clusters[root]
+        cl['empresas'].add(str(r[e1c])); cl['empresas'].add(str(r[e2c]))
+        cl['pares'] += 1
+        sc_c = _fcol(df_pares, 'par_score','score_max')
+        nf_c = _fcol(df_pares, 'n_flags')
+        if sc_c: cl['max_score'] = max(cl['max_score'], float(r.get(sc_c, 0) or 0))
+        if nf_c: cl['flags_sum'] += int(r.get(nf_c, 0) or 0)
 
-    # ── Main nodes ──
-    node_sz = [max(5, min(18, 4 + deg[n]/max_deg*16)) for n in nodes]
-    node_c = ['#ef4444' if flag_count.get(n,0)>=2 else '#f59e0b' if flag_count.get(n,0)==1 else '#3b82f6' for n in nodes]
-    hover = [f"<b>{n}</b><br>Conexiones: {deg[n]}<br>Max score: {max_score.get(n,0):.0f}<br>Flags: {flag_count.get(n,0)}" for n in nodes]
-    fig.add_trace(go.Scatter3d(
-        x=[pos[n][0] for n in nodes], y=[pos[n][1] for n in nodes], z=[pos[n][2] for n in nodes],
-        mode='markers+text', text=[n[:16] for n in nodes],
-        textfont=dict(size=7, color=C['text2'], family='JetBrains Mono'), textposition='top center',
-        marker=dict(size=node_sz, color=node_c, line=dict(width=1, color='rgba(255,255,255,.2)'), opacity=0.95),
-        hovertext=hover, hoverinfo='text', showlegend=False))
+    rows = []
+    for i, (root, cl) in enumerate(sorted(clusters.items(), key=lambda x: -x[1]['max_score'])):
+        rows.append({
+            'cluster': i+1, 'n_empresas': len(cl['empresas']), 'n_pares': cl['pares'],
+            'max_score': round(cl['max_score'], 1), 'flags_total': cl['flags_sum'],
+            'empresas': ', '.join(sorted(cl['empresas'])[:5]) + ('...' if len(cl['empresas']) > 5 else '')
+        })
+    return pd.DataFrame(rows)
 
-    # ── Bright core ──
-    core_sz = [max(2, s*0.35) for s in node_sz]
-    fig.add_trace(go.Scatter3d(
-        x=[pos[n][0] for n in nodes], y=[pos[n][1] for n in nodes], z=[pos[n][2] for n in nodes],
-        mode='markers', marker=dict(size=core_sz, color='rgba(255,255,255,.7)', line=dict(width=0)),
-        hoverinfo='none', showlegend=False))
+def pl_clusters_bubble(cl_df):
+    """Bubble chart of clusters: x=n_empresas, y=max_score, size=n_pares."""
+    if len(cl_df) == 0: return None
+    fig = go.Figure(go.Scatter(
+        x=cl_df['n_empresas'], y=cl_df['max_score'],
+        mode='markers+text', text=[f"C{r['cluster']}" for _, r in cl_df.head(20).iterrows()],
+        textfont=dict(size=7, color=C['text2'], family='JetBrains Mono'),
+        textposition='top center',
+        marker=dict(
+            size=np.sqrt(cl_df['n_pares'].head(20))*8+8,
+            color=cl_df['flags_total'].head(20),
+            colorscale=[[0,'rgba(59,130,246,.7)'],[0.5,'rgba(245,158,11,.8)'],[1,'rgba(239,68,68,.9)']],
+            showscale=True, colorbar=dict(title='Flags', thickness=10, len=.5,
+                                          tickfont=dict(size=9, color=C['muted'])),
+            line=dict(width=1, color='rgba(255,255,255,.1)')),
+        hovertext=[f"<b>Cluster {r['cluster']}</b><br>{r['n_empresas']} empresas<br>"
+                   f"{r['n_pares']} pares<br>Max score: {r['max_score']}<br>{r['empresas'][:80]}"
+                   for _, r in cl_df.head(20).iterrows()],
+        hoverinfo='text'))
+    fig.update_layout(**PL, height=420,
+        title=dict(text='<b>Clusters</b> · Componentes conexas', font=dict(size=13), x=0),
+        xaxis=dict(title='Empresas en cluster', gridcolor=C['grid']),
+        yaxis=dict(title='Max score', gridcolor=C['grid']))
+    return fig
 
-    ax = dict(showbackground=True, backgroundcolor='rgba(5,6,9,.8)', gridcolor='rgba(255,255,255,.03)',
-              zerolinecolor='rgba(255,255,255,.05)', showticklabels=False, title='', showspikes=False)
-    fig.update_layout(
-        paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='JetBrains Mono, monospace', color=C['text'], size=11),
-        margin=dict(l=0, r=0, t=40, b=0), height=620, showlegend=False,
-        title=dict(text='<b>Red de Administradores</b> · Grafo 3D interactivo',
-                   font=dict(size=14, color=C['text'], family='JetBrains Mono'), x=0.5, xanchor='center'),
-        scene=dict(xaxis=ax, yaxis=ax, zaxis=ax, bgcolor='rgba(5,6,9,0.0)',
-                   camera=dict(eye=dict(x=1.8, y=1.8, z=1.2), up=dict(x=0, y=0, z=1)),
-                   aspectmode='cube'),
-        hoverlabel=dict(bgcolor='rgba(13,16,23,0.97)', bordercolor=C['border2'],
-                        font=dict(color=C['text'], size=11, family='JetBrains Mono')),
-        annotations=[dict(text="<b style='color:#3b82f6'>●</b> Sin flags  "
-                               "<b style='color:#f59e0b'>●</b> 1 flag  "
-                               "<b style='color:#ef4444'>●</b> 2+ flags",
-                          xref="paper", yref="paper", x=0.5, y=-0.02, showarrow=False,
-                          font=dict(size=10, color=C['text2'], family='JetBrains Mono'))])
+
+# ═══════════════════════════════════════════════════════════════
+# ADJACENCY MATRIX — persona × empresa heatmap
+# ═══════════════════════════════════════════════════════════════
+def pl_adjacency(df_pares, max_personas=25):
+    """Interactive heatmap of top personas × empresas they connect."""
+    e1c = _fcol(df_pares, 'empresa_1'); e2c = _fcol(df_pares, 'empresa_2')
+    pc = _fcol(df_pares, 'persona','decisor')
+    sc_c = _fcol(df_pares, 'par_score','score_max')
+    if not e1c or not e2c or not pc: return None
+
+    # Build persona → empresa connections
+    pairs = {}
+    for _, r in df_pares.iterrows():
+        p = str(r[pc])[:30]
+        if p not in pairs: pairs[p] = {}
+        for ec in [e1c, e2c]:
+            e = str(r[ec])[:30]
+            sc = float(r[sc_c]) if sc_c and pd.notna(r.get(sc_c)) else 1
+            pairs[p][e] = max(pairs[p].get(e, 0), sc)
+
+    # Top personas by number of companies
+    top_p = sorted(pairs.keys(), key=lambda p: -len(pairs[p]))[:max_personas]
+    all_e = set()
+    for p in top_p: all_e.update(pairs[p].keys())
+    top_e = sorted(all_e, key=lambda e: -sum(pairs.get(p, {}).get(e, 0) for p in top_p))[:40]
+
+    z = [[pairs.get(p, {}).get(e, 0) for e in top_e] for p in top_p]
+    fig = go.Figure(go.Heatmap(
+        z=z, x=[e[:25] for e in top_e], y=[p[:25] for p in top_p],
+        colorscale=[[0,'rgba(5,6,9,1)'],[0.15,'rgba(59,130,246,.2)'],
+                     [0.4,'rgba(59,130,246,.5)'],[0.7,'rgba(245,158,11,.7)'],[1,'rgba(239,68,68,.9)']],
+        hovertemplate='<b>%{y}</b><br>%{x}<br>Score: %{z:.0f}<extra></extra>',
+        colorbar=dict(title='Score', thickness=10, len=.6, tickfont=dict(size=9, color=C['muted']))))
+    fig.update_layout(**PL, height=max(400, len(top_p)*24+100),
+        title=dict(text='<b>Adjacency</b> · Persona × Empresa (score)', font=dict(size=13), x=0),
+        xaxis=dict(tickfont=dict(size=7), tickangle=-45, side='bottom'),
+        yaxis=dict(tickfont=dict(size=8), autorange='reversed'))
     return fig
 
 
@@ -818,10 +949,51 @@ def render_flags(flags):
 
     # ── Specialized views ──
     if 'pares' in sel or 'admin_network' in sel:
-        st.markdown('<div class="sec">Red de administradores — Grafo 3D</div>', unsafe_allow_html=True)
-        st.markdown('<div class="graph-caption">Arrastra para rotar · Scroll para zoom · Hover para detalles · <span>Nodos = empresas, aristas = admin compartido</span></div>', unsafe_allow_html=True)
-        fig_3d = pl_network_3d(df, max_nodes=60)
-        if fig_3d: st.plotly_chart(fig_3d, use_container_width=True)
+        # ── Ego-network ──
+        st.markdown('<div class="sec">Ego-Network · Explorar persona</div>', unsafe_allow_html=True)
+        st.markdown('<div class="graph-caption">Selecciona una persona para ver sus empresas y conexiones · <span>D3.js interactivo con SVG glows</span></div>', unsafe_allow_html=True)
+        pc = _fcol(df, 'persona','decisor','personas')
+        if pc:
+            personas_list = sorted(df[pc].dropna().unique().tolist())
+        else:
+            personas_list = []
+            for col in df.select_dtypes(include=['object']).columns:
+                if 'persona' in col.lower() or 'decisor' in col.lower():
+                    personas_list = sorted(df[col].dropna().unique().tolist()); break
+        if personas_list:
+            sel_persona = st.selectbox("🔍 Buscar persona", [''] + personas_list[:1000], key="ego_p",
+                                       format_func=lambda x: x if x else "Seleccionar...")
+            if sel_persona:
+                ego_data = build_ego_data(df, sel_persona)
+                if ego_data and len(ego_data['nodes']) > 1:
+                    html = ego_d3_html(ego_data)
+                    components.html(html, height=620, scrolling=False)
+                else:
+                    st.info("No se encontraron conexiones para esta persona.")
+        else:
+            st.caption("No se detectó columna de personas en este dataset.")
+
+        # ── Clusters ──
+        st.markdown('<div class="sec">Clusters · Componentes conexas</div>', unsafe_allow_html=True)
+        cl_df = find_clusters(df)
+        if len(cl_df) > 0:
+            c1, c2, c3, c4 = st.columns(4)
+            with c1: st.metric("Clusters", len(cl_df))
+            with c2: st.metric("Más grande", f"{cl_df['n_empresas'].max()} empr.")
+            with c3: st.metric("Max score", f"{cl_df['max_score'].max():.0f}")
+            with c4: st.metric("Con flags", int((cl_df['flags_total'] > 0).sum()))
+            fig_cl = pl_clusters_bubble(cl_df)
+            if fig_cl: st.plotly_chart(fig_cl, use_container_width=True)
+            with st.expander("📋 Detalle de clusters"):
+                st.dataframe(cl_df.head(50), use_container_width=True, hide_index=True)
+
+        # ── Adjacency matrix ──
+        st.markdown('<div class="sec">Adjacency Matrix · Persona × Empresa</div>', unsafe_allow_html=True)
+        fig_adj = pl_adjacency(df)
+        if fig_adj: st.plotly_chart(fig_adj, use_container_width=True)
+        else: st.caption("No se detectó columna de persona para construir la matriz.")
+
+        # ── Bubble chart ──
         st.markdown('<div class="sec">Score vs Concentración</div>', unsafe_allow_html=True)
         fig_bub = pl_f6_bubble(df)
         if fig_bub: st.plotly_chart(fig_bub, use_container_width=True)
