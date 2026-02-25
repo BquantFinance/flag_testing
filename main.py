@@ -807,22 +807,164 @@ def render_resumen(flag_files):
 
     # Show quality JSON stats if they exist
     if q_stats:
-        with st.expander("📊 Estadísticas detalladas de calidad de datos"):
+        with st.expander("📊 Radiografía de calidad de los datos"):
             for name, data in q_stats.items():
-                st.markdown(f"**{name}**")
-                if isinstance(data, dict):
-                    simple = {k: v for k, v in data.items() if isinstance(v, (int, float, str))}
-                    if simple:
-                        cols = st.columns(min(len(simple), 4))
-                        for i, (k, v) in enumerate(simple.items()):
-                            with cols[i % len(cols)]:
-                                display_v = f"{v:,.0f}" if isinstance(v, (int, float)) and v > 100 else str(v)
-                                st.metric(k.replace('_', ' ').title(), display_v)
-                    nested = {k: v for k, v in data.items() if isinstance(v, dict)}
-                    for k, v in nested.items():
-                        st.caption(k.replace('_', ' ').title())
-                        st.dataframe(pd.DataFrame([v]), use_container_width=True, hide_index=True)
-                st.markdown("---")
+                st.markdown(f'<div class="sec">{name.replace("_", " ").upper()}</div>', unsafe_allow_html=True)
+                if not isinstance(data, dict):
+                    continue
+
+                # ── Completeness: bar chart ──
+                completeness = data.get('completeness', {})
+                if not completeness:
+                    # Try top-level simple numeric values as completeness
+                    completeness = {k: v for k, v in data.items()
+                                    if isinstance(v, (int, float)) and 0 < v <= 100}
+                if completeness:
+                    cols_sorted = sorted(completeness.items(), key=lambda x: -x[1])
+                    labels = [c[0].replace('_', ' ') for c in cols_sorted]
+                    vals = [c[1] for c in cols_sorted]
+                    bar_colors = [C['teal'] if v >= 90 else C['amber'] if v >= 60 else C['red'] for v in vals]
+                    fig = go.Figure(go.Bar(
+                        y=labels[::-1], x=vals[::-1], orientation='h',
+                        marker=dict(color=bar_colors[::-1], opacity=.85, line=dict(width=0)),
+                        text=[f"{v:.1f}%" for v in vals[::-1]], textposition='auto',
+                        textfont=dict(size=9, color='white', family='IBM Plex Mono'),
+                        hovertemplate='<b>%{y}</b><br>%{x:.1f}%<extra></extra>'))
+                    fig.update_layout(**PL, height=max(200, len(labels)*24+60),
+                        title=dict(text='Completitud por columna (%)', font=dict(size=11)),
+                        xaxis=dict(range=[0, 105], gridcolor=C['grid'], dtick=25),
+                        yaxis=dict(tickfont=dict(size=9, family='IBM Plex Mono')), bargap=.2)
+                    st.plotly_chart(fig, use_container_width=True)
+
+                # ── Coverage: horizontal metrics ──
+                coverage = data.get('coverage', {})
+                if coverage and isinstance(coverage, dict):
+                    st.markdown(f"<div style='font-family:IBM Plex Mono;font-size:.6rem;color:{C['muted']};"
+                        "letter-spacing:.1em;text-transform:uppercase;margin:12px 0 6px'>Cobertura de campos clave</div>",
+                        unsafe_allow_html=True)
+                    cov_cols = st.columns(min(len(coverage), 5))
+                    for i, (k, v) in enumerate(coverage.items()):
+                        with cov_cols[i % len(cov_cols)]:
+                            color = C['teal'] if v >= 90 else C['amber'] if v >= 60 else C['red']
+                            st.markdown(f"""<div style="background:{C['card']};border:1px solid {C['border']};
+                                border-radius:10px;padding:12px 14px;text-align:center">
+                                <div style="font-family:IBM Plex Mono;font-size:1.1rem;font-weight:700;color:{color}">
+                                    {v:.1f}%</div>
+                                <div style="font-family:IBM Plex Mono;font-size:.58rem;color:{C['muted']};
+                                    letter-spacing:.06em;margin-top:2px">{k.replace('_', ' ')}</div>
+                            </div>""", unsafe_allow_html=True)
+
+                # ── Top adjudicatarios ──
+                top_adj = data.get('top_adjudicatarios', data.get('top_adj', {}))
+                if top_adj and isinstance(top_adj, dict):
+                    names = top_adj.get('names', top_adj.get('name', []))
+                    amounts = top_adj.get('importes', top_adj.get('importe', []))
+                    if names and isinstance(names, list):
+                        st.markdown(f"<div style='font-family:IBM Plex Mono;font-size:.6rem;color:{C['muted']};"
+                            "letter-spacing:.1em;text-transform:uppercase;margin:16px 0 8px'>Top adjudicatarios por importe</div>",
+                            unsafe_allow_html=True)
+                        top_n = min(10, len(names))
+                        rows = []
+                        for j in range(top_n):
+                            nm = str(names[j])[:50] if j < len(names) else '—'
+                            amt = amounts[j] if isinstance(amounts, list) and j < len(amounts) else 0
+                            amt_str = f"{amt/1e6:,.1f}M€" if isinstance(amt, (int,float)) and amt > 1e6 else f"{amt:,.0f}€" if isinstance(amt, (int,float)) else str(amt)
+                            rows.append({'#': j+1, 'Adjudicatario': nm, 'Importe total': amt_str})
+                        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True, height=min(400, top_n*40+40))
+
+                # ── Top órganos ──
+                top_org = data.get('top_organos', data.get('top_org', {}))
+                if top_org and isinstance(top_org, dict):
+                    names = top_org.get('names', top_org.get('name', []))
+                    amounts = top_org.get('importes', top_org.get('importe', []))
+                    if names and isinstance(names, list):
+                        st.markdown(f"<div style='font-family:IBM Plex Mono;font-size:.6rem;color:{C['muted']};"
+                            "letter-spacing:.1em;text-transform:uppercase;margin:16px 0 8px'>Top órganos contratantes</div>",
+                            unsafe_allow_html=True)
+                        top_n = min(10, len(names))
+                        rows = []
+                        for j in range(top_n):
+                            nm = str(names[j])[:60] if j < len(names) else '—'
+                            amt = amounts[j] if isinstance(amounts, list) and j < len(amounts) else 0
+                            amt_str = f"{amt/1e6:,.1f}M€" if isinstance(amt, (int,float)) and amt > 1e6 else f"{amt:,.0f}€" if isinstance(amt, (int,float)) else str(amt)
+                            rows.append({'#': j+1, 'Órgano': nm, 'Importe total': amt_str})
+                        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True, height=min(400, top_n*40+40))
+
+                # ── Categories: compact pills ──
+                categories = data.get('categories', {})
+                if categories and isinstance(categories, dict):
+                    for cat_name, cat_data in categories.items():
+                        if isinstance(cat_data, dict) and 'counts' in cat_data:
+                            counts = cat_data['counts']
+                            if isinstance(counts, list) and len(counts) > 0:
+                                labels_cat = cat_data.get('labels', cat_data.get('values',
+                                    [f"Cat {i+1}" for i in range(len(counts))]))
+                                if isinstance(labels_cat, list):
+                                    top_n = min(8, len(counts))
+                                    fig = go.Figure(go.Bar(
+                                        y=[str(l)[:30] for l in labels_cat[:top_n]][::-1],
+                                        x=counts[:top_n][::-1], orientation='h',
+                                        marker=dict(color=C['blue'], opacity=.8),
+                                        text=[fmt(c) for c in counts[:top_n]][::-1], textposition='auto',
+                                        textfont=dict(size=9, color='white', family='IBM Plex Mono')))
+                                    fig.update_layout(**PL, height=max(180, top_n*28+60),
+                                        title=dict(text=cat_name.replace('_', ' ').title(), font=dict(size=11)),
+                                        xaxis=dict(gridcolor=C['grid']),
+                                        yaxis=dict(tickfont=dict(size=9)), bargap=.2)
+                                    st.plotly_chart(fig, use_container_width=True)
+
+                # ── CPV top ──
+                cpv = data.get('cpv_top', data.get('cpv', {}))
+                if cpv and isinstance(cpv, dict):
+                    codes = cpv.get('codes', [])
+                    labels_cpv = cpv.get('labels', [])
+                    if codes and labels_cpv and isinstance(codes, list) and isinstance(labels_cpv, list):
+                        st.markdown(f"<div style='font-family:IBM Plex Mono;font-size:.6rem;color:{C['muted']};"
+                            "letter-spacing:.1em;text-transform:uppercase;margin:16px 0 8px'>CPV más frecuentes</div>",
+                            unsafe_allow_html=True)
+                        cpv_items = []
+                        for j in range(min(10, len(codes))):
+                            code = str(codes[j]) if j < len(codes) else ''
+                            label = str(labels_cpv[j])[:50] if j < len(labels_cpv) else ''
+                            cpv_items.append({'CPV': code, 'Descripción': label})
+                        st.dataframe(pd.DataFrame(cpv_items), use_container_width=True, hide_index=True)
+
+                # ── Amounts distribution ──
+                amounts_data = data.get('amounts', {})
+                if amounts_data and isinstance(amounts_data, dict):
+                    for amt_name, amt_info in amounts_data.items():
+                        if isinstance(amt_info, dict) and 'brackets' in amt_info:
+                            brackets = amt_info.get('brackets', {})
+                            counts = brackets.get('counts', [])
+                            labels_b = brackets.get('labels',
+                                [f"Tramo {i+1}" for i in range(len(counts))])
+                            if counts and isinstance(counts, list) and isinstance(labels_b, list):
+                                top_n = min(len(counts), len(labels_b))
+                                fig = go.Figure(go.Bar(
+                                    x=[str(l)[:20] for l in labels_b[:top_n]],
+                                    y=counts[:top_n],
+                                    marker=dict(color=C['amber'], opacity=.8),
+                                    hovertemplate='<b>%{x}</b><br>%{y:,.0f}<extra></extra>'))
+                                fig.update_layout(**PL, height=260,
+                                    title=dict(text=amt_name.replace('_', ' ').title(), font=dict(size=11)),
+                                    xaxis=dict(tickangle=-45, tickfont=dict(size=8), gridcolor=C['grid']),
+                                    yaxis=dict(title='Registros', gridcolor=C['grid']), bargap=.15)
+                                st.plotly_chart(fig, use_container_width=True)
+
+                # ── Fallback: any remaining simple key-value pairs not yet shown ──
+                shown_keys = {'completeness','coverage','top_adjudicatarios','top_adj',
+                    'top_organos','top_org','categories','cpv_top','cpv','amounts',
+                    'temporal','comparador'}
+                remaining = {k: v for k, v in data.items()
+                             if k not in shown_keys and isinstance(v, (int, float, str))}
+                if remaining:
+                    rem_cols = st.columns(min(len(remaining), 4))
+                    for i, (k, v) in enumerate(remaining.items()):
+                        with rem_cols[i % len(rem_cols)]:
+                            display_v = f"{v:,.0f}" if isinstance(v, (int, float)) and abs(v) > 100 else str(v)
+                            st.metric(k.replace('_', ' ').title(), display_v)
+
+                st.markdown(f'<div class="divider"></div>', unsafe_allow_html=True)
 
     st.markdown(f"""<div style="font-size:.78rem;color:{C['muted']};line-height:1.6;margin:8px 0 4px">
         <b style="color:{C['text2']}">Nota sobre el cruce:</b>
