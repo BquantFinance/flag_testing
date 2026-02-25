@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore')
 
 st.set_page_config(
     page_title="Señales en Contratación Pública · BQuant",
-    page_icon="🏛️", layout="wide", initial_sidebar_state="collapsed",
+    page_icon="📊", layout="wide", initial_sidebar_state="collapsed",
 )
 
 DATA = Path("anomalias")
@@ -573,7 +573,9 @@ def get_meta(stem):
         'what':'','why':'','how':'','example':'','stat_empresas':0,'stat_extra':''})
 
 _HIDE = {'cargo_norm','cargo_upper','cargo_w','organo_norm','same_group','is_fusion_borme',
-         'size_penalty','flag_weight'}
+         'size_penalty','flag_weight',
+         'risk_score','score','score_max','score_sum','par_score','score_total',
+         'f6_score','f7_max_conc','cargo_weight','concentracion'}
 
 def clean_df(df):
     return df.drop(columns=[c for c in df.columns if c in _HIDE], errors='ignore')
@@ -1021,7 +1023,7 @@ def render_resumen(flag_files):
             st.markdown(f"**{len(results)}** análisis con resultados para **{q}**")
             for r in results:
                 with st.expander(f"{r['icon']} {r['label']} — {r['scope']} · {r['hits']} coincidencias"):
-                    st.dataframe(clean_df(r['sample']), use_container_width=True, hide_index=True)
+                    st.dataframe(_rename_columns(clean_df(r['sample'])), use_container_width=True, hide_index=True)
         else: st.info(f"«{q}» no encontrado.")
 
     st.markdown(f"""<div class="warn-box"><b>⚠️ Importante:</b> Un patrón detectado NO es prueba de irregularidad.
@@ -1144,96 +1146,193 @@ def render_explorar(flag_files):
 
 # ═══════════════ TAB 3: METODOLOGÍA ═══════════════
 def render_metodo():
-    st.markdown(f"""<div class="warn-box"><b>Nota:</b> Pipeline de filtros deterministas — no hay modelos de ML.
-        Un patrón indica una situación que merece revisión humana, <b>no constituye prueba de irregularidad</b>.</div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="warn-box"><b>Nota:</b> Este análisis usa filtros deterministas sobre datos públicos — no hay modelos de ML ni puntuaciones.
+        Un patrón detectado indica una situación que merece revisión humana, <b>no constituye prueba de irregularidad</b>.</div>""", unsafe_allow_html=True)
 
-    st.markdown('<div class="sec">Paso 1 · Obtener los datos</div>', unsafe_allow_html=True)
-    st.markdown(f"""
-    <div class="step"><div class="step-n">1</div><div class="step-body"><div class="step-title">Descargar 64.000 PDFs del BORME</div>
-        BORME-A (Sección Primera: Actos inscritos) publica un PDF diario por provincia desde 2009.
-        Descargamos <b>todos</b> — 64.000 documentos, ~25 GB.<br>
-        <span class="step-stat">2009–2026</span> <span class="step-stat">64.000 PDFs</span> <span class="step-stat">~25 GB</span></div></div>
-    <div class="step"><div class="step-n">2</div><div class="step-body"><div class="step-title">Parsear los PDFs con regex</div>
-        Parser de expresiones regulares extrae: <b>empresa, acto, persona, cargo, capital, fecha</b>. Validado contra 300 PDFs.<br>
-        <span class="step-stat">17.1M filas</span> <span class="step-stat">3.8M personas</span> <span class="step-stat">2.77M empresas</span></div></div>
-    <div class="step"><div class="step-n">3</div><div class="step-body"><div class="step-title">Cargar contratación pública</div>
-        <b>PLACSP:</b> 8.7M registros → filtro → <b>5.8M adjudicaciones útiles</b>.
-        <b>Catalunya:</b> Registre Públic (~3.4M) + menores BCN (~177K).<br>
-        <span class="step-stat">5.8M nacionales</span> <span class="step-stat">3.4M Catalunya</span></div></div>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="sec">Paso 2 · Cruzar los datos</div>', unsafe_allow_html=True)
-    st.markdown(f"""
-    <div class="step"><div class="step-n">4</div><div class="step-body"><div class="step-title">Normalizar nombres</div>
-        Cruce por <b>nombre normalizado</b> (no por NIF — no disponible en BORME).
-        Pipeline: mayúsculas → eliminar acentos (preservar Ñ) → colapsar formas societarias → limpiar puntuación.<br><br>
-        <code>"Construcciones García López, S.L.U. (R.M. Madrid)"</code> → <code>"CONSTRUCCIONES GARCIA LOPEZ"</code><br>
-        <span class="step-stat">~5.550 stop words</span> <span class="step-stat">203 curadas</span> <span class="step-stat">5.400 auto-generadas</span></div></div>
-    <div class="step"><div class="step-n">5</div><div class="step-body"><div class="step-title">Intersección BORME ∩ Contratación</div>
-        Empresas que existen en ambos datasets por nombre normalizado.<br>
-        <span class="step-stat">126.073 empresas (Nacional)</span> <span class="step-stat">23.156 (Catalunya)</span> <span class="step-stat">52% de PLACSP</span></div></div>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="sec">Paso 3 · Señales individuales (F1–F5)</div>', unsafe_allow_html=True)
-    st.markdown(f"""
-    <div class="step"><div class="step-n">6</div><div class="step-body"><div class="step-title">Señales por empresa</div>
-        <b>F1 · Recién creada:</b> Constitución → 1ª adjudicación < 180 días → <span class="step-stat">5.435 empresas</span><br><br>
-        <b>F2 · Capital mínimo:</b> Capital < 10K€ y adjudicación > 100K€ → <span class="step-stat">5.735 empresas</span><br><br>
-        <b>F4 · Disolución:</b> Acto disolución + adjudicación en 0–365 días → <span class="step-stat">1.294 empresas</span><br><br>
-        <b>F5 · Concursal:</b> Acto concursal + adjudicaciones posteriores → <span class="step-stat">540 empresas</span></div></div>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="sec">Paso 4 · Detectar redes (F6)</div>', unsafe_allow_html=True)
-    st.markdown(f"""
-    <div class="step"><div class="step-n">7</div><div class="step-body"><div class="step-title">Cargos vigentes</div>
-        17.1M actos → último acto por (persona, empresa, cargo). Nombramiento → vigente. Cese → inactivo.
-        Filtro: solo cargos de decisión. Excluir personas jurídicas.<br>
-        <span class="step-stat">618K → 232K → 212K cargos activos</span></div></div>
-    <div class="step"><div class="step-n">8</div><div class="step-body"><div class="step-title">Pares sospechosos</div>
-        Personas con 2–50 empresas adjudicatarias → pares con <b>≥2 órganos comunes</b>.<br>
-        <span class="step-stat">7.514 personas</span> <span class="step-stat">3.970 pares</span></div></div>
-    <div class="step"><div class="step-n">9</div><div class="step-body"><div class="step-title">Filtrar grupos corporativos</div>
-        <b>a)</b> Nombre de marca: Jaccard ≥0.5 → grupo.
-        <b>b)</b> Consejo: >40% overlap + ≥3 personas → grupo.
-        <b>c)</b> Fusiones BORME → grupo.<br>
-        <span class="step-stat">3.970 → 2.287 pares</span> <span class="step-stat">1.683 eliminados</span></div></div>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="sec">Paso 5 · Señales adicionales (F7–F11)</div>', unsafe_allow_html=True)
-    st.markdown(f"""
-    <div class="step"><div class="step-n">10</div><div class="step-body"><div class="step-title">F7, F8, F9 (Nacional + CAT)</div>
-        <b>F7:</b> >40% adj de un órgano → <span class="step-stat">286 empresas</span>
-        <b>F8:</b> UTEs con admin compartido → <span class="step-stat">127 pares</span>
-        <b>F9:</b> CCAA registro ≠ CCAA contratos → <span class="step-stat">14.832 empresas</span></div></div>
-    <div class="step"><div class="step-n">11</div><div class="step-body"><div class="step-title">F10, F11 (Catalunya)</div>
-        <b>F10:</b> Troceo: ≥3 contratos ≤15K€ en 90 días, suma > umbral → <span class="step-stat">2.651 empresas</span><br>
-        <b>F11:</b> Modificaciones ≥20% (media: 0.57%) → <span class="step-stat">115 empresas</span></div></div>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="sec">Paso 6 · Consolidar</div>', unsafe_allow_html=True)
-    st.markdown(f"""
-    <div class="step"><div class="step-n">12</div><div class="step-body"><div class="step-title">Listado final</div>
-        Unión de F1–F11 por empresa. Cada empresa recibe un vector binario de señales activas.
-        No hay scoring numérico — solo <b>qué señales tiene y cuántas</b>.<br>
-        <span class="step-stat">Nacional: 25.675 con ≥1</span> <span class="step-stat">125 con ≥3</span>
-        <span class="step-stat">Catalunya: 4.203 con ≥1</span></div></div>
-    """, unsafe_allow_html=True)
-
-    st.markdown('<div class="sec">Diferencias Nacional vs Catalunya</div>', unsafe_allow_html=True)
-    st.markdown(f"""<div class="card card-l card-blue">
-        <b>Datos:</b> Nacional 5.8M adj · Catalunya 3.4M + 177K menores<br>
-        <b>Matching:</b> Nacional 126K · Catalunya 23K<br>
-        <b>F7:</b> Nacional umbral fijo 40% · Catalunya adaptativo 20/30/40%<br>
-        <b>Solo Nacional:</b> F9 geo · <b>Solo Catalunya:</b> F10 troceo, F11 modificaciones
+    # ────────────────────────────────────────
+    st.markdown('<div class="sec">Obtener los datos</div>', unsafe_allow_html=True)
+    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:14px">
+        Todo parte de cuatro fuentes públicas. No accedemos a datos privados ni protegidos.
     </div>""", unsafe_allow_html=True)
 
+    st.markdown(f"""
+    <div class="step"><div class="step-n">1</div><div class="step-body"><div class="step-title">Descargar y parsear el BORME (2009–2026)</div>
+        El Boletín Oficial del Registro Mercantil publica un PDF diario por provincia con todos los actos
+        inscritos: constituciones, nombramientos, ceses, disoluciones, concursos, etc.
+        Descargamos los <b>64.000 PDFs</b> (~25 GB) y los procesamos con un parser de expresiones regulares
+        que extrae empresa, acto, persona, cargo, capital y fecha. Validado contra 300 documentos.<br>
+        <span class="step-stat">17.1M actos extraídos</span> <span class="step-stat">2.77M empresas</span> <span class="step-stat">3.8M personas</span></div></div>
+
+    <div class="step"><div class="step-n">2</div><div class="step-body"><div class="step-title">Cargar la contratación pública</div>
+        <b>Nacional (PLACSP):</b> 8.7M registros de la Plataforma de Contratación del Sector Público.
+        Tras filtrar los que tienen adjudicatario e importe, quedan <b>5.8M adjudicaciones útiles</b>.<br>
+        <b>Catalunya:</b> 3.4M del Registre Públic de Contractes + 177K contratos menores del Ayuntamiento de Barcelona.<br>
+        <span class="step-stat">5.8M nacionales</span> <span class="step-stat">3.4M Catalunya</span> <span class="step-stat">177K menores BCN</span></div></div>
+    """, unsafe_allow_html=True)
+
+    # ────────────────────────────────────────
+    st.markdown('<div class="sec">Cruzar BORME con contratación</div>', unsafe_allow_html=True)
+    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:14px">
+        El BORME no publica NIF/CIF en abierto. El cruce se hace por <b>nombre de empresa normalizado</b>,
+        lo que implica posibles falsos positivos (homónimos) y falsos negativos (variantes no capturadas).
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="step"><div class="step-n">3</div><div class="step-body"><div class="step-title">Normalizar nombres de empresa</div>
+        Cada nombre pasa por un pipeline: mayúsculas → eliminar acentos (preservar Ñ) →
+        colapsar formas societarias (SL, SA, SLU…) → limpiar puntuación.<br><br>
+        <code>"Construcciones García López, S.L.U. (R.M. Madrid)"</code> → <code>"CONSTRUCCIONES GARCIA LOPEZ"</code><br>
+        <span class="step-stat">~5.550 stop words</span> <span class="step-stat">203 reglas manuales</span> <span class="step-stat">5.400 auto-generadas</span></div></div>
+
+    <div class="step"><div class="step-n">4</div><div class="step-body"><div class="step-title">Intersección BORME ∩ Contratación</div>
+        Buscamos qué empresas aparecen en ambos datasets (mismo nombre normalizado).
+        Esto nos da el universo sobre el que podemos aplicar señales.<br>
+        <span class="step-stat">126.073 empresas cruzadas (Nacional)</span> <span class="step-stat">23.156 (Catalunya)</span>
+        <span class="step-stat">52% de adjudicatarios PLACSP</span></div></div>
+    """, unsafe_allow_html=True)
+
+    # ────────────────────────────────────────
+    st.markdown('<div class="sec">Señales sobre la empresa (F1, F2, F4, F5)</div>', unsafe_allow_html=True)
+    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:14px">
+        Las primeras señales cruzan datos del BORME sobre la propia empresa con sus adjudicaciones.
+        No hay F3 — se descartó durante el desarrollo por tener demasiados falsos positivos.
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="step"><div class="step-n">5</div><div class="step-body"><div class="step-title">F1 · Empresa recién creada</div>
+        Si una empresa se constituyó <b>menos de 180 días</b> antes de su primera adjudicación,
+        puede indicar una sociedad instrumental creada para un contrato concreto.
+        Se usa la fecha de constitución publicada en BORME.<br>
+        <span class="step-stat">5.435 empresas</span> <span class="step-stat">890M€ en contratos</span></div></div>
+
+    <div class="step"><div class="step-n">6</div><div class="step-body"><div class="step-title">F2 · Capital social mínimo</div>
+        Capital social inscrito <b>menor de 10.000€</b> y al menos una adjudicación <b>superior a 100.000€</b>.
+        Un capital tan bajo es inusual para empresas con contratos de esa magnitud.<br>
+        <span class="step-stat">5.735 empresas</span> <span class="step-stat">Ratio medio importe/capital: 85×</span></div></div>
+
+    <div class="step"><div class="step-n">7</div><div class="step-body"><div class="step-title">F4 · Empresa disuelta</div>
+        Acto de disolución o extinción en BORME con adjudicaciones en los <b>365 días anteriores</b>.
+        Una empresa en proceso de cierre no debería estar participando activamente en licitaciones.<br>
+        <span class="step-stat">1.294 empresas</span> <span class="step-stat">210M€ post-disolución</span></div></div>
+
+    <div class="step"><div class="step-n">8</div><div class="step-body"><div class="step-title">F5 · Situación concursal</div>
+        La empresa tiene un acto concursal publicado en BORME y sigue recibiendo adjudicaciones
+        posteriores. La legislación restringe la contratación pública a empresas en insolvencia.<br>
+        <span class="step-stat">540 empresas</span> <span class="step-stat">95M€ post-concurso</span></div></div>
+    """, unsafe_allow_html=True)
+
+    # ────────────────────────────────────────
+    st.markdown('<div class="sec">Redes de administradores (F6)</div>', unsafe_allow_html=True)
+    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:14px">
+        La señal más compleja. Buscamos personas que dirigen dos empresas distintas que ganan
+        contratos ante los mismos organismos públicos — y que no pertenecen al mismo grupo corporativo.
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="step"><div class="step-n">9</div><div class="step-body"><div class="step-title">Determinar cargos vigentes</div>
+        Partimos de 17.1M de actos del BORME. Para cada combinación (persona, empresa, cargo),
+        tomamos el <b>último acto publicado</b>: si es un nombramiento, el cargo está vigente;
+        si es un cese, está inactivo. Filtramos solo cargos de decisión (administradores, consejeros delegados,
+        apoderados generales…) y excluimos personas jurídicas.<br>
+        <span class="step-stat">618K cargos → 232K de decisión → 212K activos</span></div></div>
+
+    <div class="step"><div class="step-n">10</div><div class="step-body"><div class="step-title">Buscar pares de empresas sospechosos</div>
+        Identificamos personas que dirigen entre 2 y 50 empresas adjudicatarias. Para cada par
+        de empresas que comparten una persona, contamos en cuántos <b>órganos contratantes coinciden</b>.
+        Solo retenemos pares con <b>≥2 órganos comunes</b>.<br>
+        <span class="step-stat">7.514 personas con ≥2 empresas</span> <span class="step-stat">3.970 pares iniciales</span></div></div>
+
+    <div class="step"><div class="step-n">11</div><div class="step-body"><div class="step-title">Filtrar grupos corporativos legítimos</div>
+        Muchos pares son empresas del mismo grupo (filiales, marcas). Los descartamos con tres filtros:<br>
+        <b>a)</b> <b>Nombre de marca:</b> similitud Jaccard ≥0.5 entre nombres normalizados → mismo grupo.<br>
+        <b>b)</b> <b>Consejo compartido:</b> >40% de overlap en el consejo + ≥3 consejeros → grupo.<br>
+        <b>c)</b> <b>Fusiones BORME:</b> actos de fusión/absorción/escisión entre las dos empresas → grupo.<br>
+        <span class="step-stat">3.970 → 2.287 pares sospechosos</span> <span class="step-stat">1.683 descartados como grupo</span></div></div>
+    """, unsafe_allow_html=True)
+
+    # ────────────────────────────────────────
+    st.markdown('<div class="sec">Señales adicionales (F7 – F9)</div>', unsafe_allow_html=True)
+    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:14px">
+        Estas señales no dependen de redes de personas. Analizan patrones en las propias adjudicaciones.
+        F7 y F8 se calculan tanto para Nacional como para Catalunya. F9 solo para Nacional.
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="step"><div class="step-n">12</div><div class="step-body"><div class="step-title">F7 · Concentración en un órgano</div>
+        Una empresa gana <b>más del 40%</b> de las adjudicaciones de un organismo concreto
+        (mínimo 5 propias y 10 totales del órgano). En Catalunya el umbral es adaptativo: 20% si ≥200 adj, 30% si ≥50, 40% si <50.<br>
+        <span class="step-stat">286 empresas (Nacional)</span> <span class="step-stat">358 pares empresa-órgano</span></div></div>
+
+    <div class="step"><div class="step-n">13</div><div class="step-body"><div class="step-title">F8 · UTEs con miembros vinculados</div>
+        UTEs (Uniones Temporales de Empresas) cuyos miembros comparten administrador según BORME.
+        Si los dos miembros de una UTE tienen el mismo decisor, la unión no aporta independencia real.<br>
+        <span class="step-stat">97 pares de empresas</span> <span class="step-stat">127 UTEs detectadas</span></div></div>
+
+    <div class="step"><div class="step-n">14</div><div class="step-body"><div class="step-title">F9 · Discrepancia geográfica <span style="font-size:.7rem;color:{C['muted']}">(solo Nacional)</span></div>
+        Empresa registrada en una CCAA que gana contratos <b>mayoritariamente en otra</b>.
+        Solo para PYMEs (3–200 adjudicaciones). Las grandes con sede en Madrid se excluyen
+        porque es normal que operen en todo el territorio.<br>
+        <span class="step-stat">14.832 empresas</span> <span class="step-stat">De 27.465 con CCAA mapeada</span></div></div>
+    """, unsafe_allow_html=True)
+
+    # ────────────────────────────────────────
+    st.markdown('<div class="sec">Señales específicas de Catalunya (F10 – F11)</div>', unsafe_allow_html=True)
+    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:14px">
+        Estas señales solo se pueden calcular con datos catalanes, que incluyen contratos menores
+        y columnas nativas de modificaciones contractuales que no existen en PLACSP.
+    </div>""", unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="step"><div class="step-n">15</div><div class="step-body"><div class="step-title">F10 · Posible fraccionamiento <span style="font-size:.7rem;color:{C['muted']}">(solo Catalunya)</span></div>
+        Un mismo par empresa×órgano tiene <b>≥3 contratos menores (≤15K€) en 90 días</b> cuya suma
+        supera el umbral de 15K€. Esto podría indicar que se divide un contrato mayor en partes
+        para evitar el procedimiento de licitación pública.<br>
+        <span class="step-stat">2.651 empresas</span> <span class="step-stat">4.331 clusters detectados</span> <span class="step-stat">Media: 33K€/cluster</span></div></div>
+
+    <div class="step"><div class="step-n">16</div><div class="step-body"><div class="step-title">F11 · Modificaciones excesivas <span style="font-size:.7rem;color:{C['muted']}">(solo Catalunya)</span></div>
+        Empresas con <b>≥20% de sus contratos modificados</b> (la media es ~0.6%).
+        Puede indicar adjudicaciones inicialmente bajas que se incrementan después de ganadas,
+        aprovechando que las modificaciones tienen menos escrutinio.<br>
+        <span class="step-stat">115 empresas</span> <span class="step-stat">36× por encima de la media</span></div></div>
+    """, unsafe_allow_html=True)
+
+    # ────────────────────────────────────────
+    st.markdown('<div class="sec">Consolidar resultados</div>', unsafe_allow_html=True)
+
+    st.markdown(f"""
+    <div class="step"><div class="step-n">17</div><div class="step-body"><div class="step-title">Listado final</div>
+        Unión de todas las señales (F1–F11) por empresa. Cada empresa recibe un <b>vector binario</b>
+        que indica qué señales tiene activas y cuántas son en total.
+        La app no muestra puntuaciones numéricas — solo <b>qué señales tiene cada empresa y cuántas</b>.<br>
+        <span class="step-stat">Nacional: 25.675 con ≥1 señal</span> <span class="step-stat">125 con ≥3</span>
+        <span class="step-stat">Catalunya: 4.203 con ≥1 señal</span></div></div>
+    """, unsafe_allow_html=True)
+
+    # ────────────────────────────────────────
+    st.markdown('<div class="sec">Diferencias Nacional vs Catalunya</div>', unsafe_allow_html=True)
+    st.markdown(f"""<div class="card card-l card-blue">
+        <b>Datos:</b> Nacional usa 5.8M adj. de PLACSP · Catalunya usa 3.4M del Registre Públic + 177K menores BCN<br><br>
+        <b>Matching:</b> Nacional cruza 126K empresas con BORME · Catalunya 23K<br><br>
+        <b>F7 Concentración:</b> Nacional usa umbral fijo (40%) · Catalunya usa umbral adaptativo (20/30/40% según volumen)<br><br>
+        <b>Señales exclusivas:</b> F9 (geográfica) solo Nacional · F10 (fraccionamiento) y F11 (modificaciones) solo Catalunya
+    </div>""", unsafe_allow_html=True)
+
+    # ────────────────────────────────────────
     st.markdown('<div class="sec">Limitaciones</div>', unsafe_allow_html=True)
     st.markdown(f"""<div class="card card-l card-amber">
-        <b>Cobertura:</b> 52% cruzados. Autónomos, personas físicas y extranjeras no figuran en BORME.<br><br>
-        <b>Matching por nombre:</b> No por NIF. Posibles homónimos y variantes no capturadas.<br><br>
-        <b>Vigencia cargos:</b> Si el cese no se publica, el cargo aparece vigente.<br><br>
-        <b>Grupos corporativos:</b> Filtros heurísticos. Holdings complejos pueden escapar.<br><br>
-        <b>Señal ≠ fraude.</b> Requiere investigación humana cualificada.
+        <b>Cobertura parcial:</b> Solo el 52% de adjudicatarios se cruzan con BORME.
+        Autónomos, personas físicas y empresas extranjeras no figuran en el Registro Mercantil.<br><br>
+        <b>Cruce por nombre, no por NIF:</b> Posibles homónimos (falsos positivos) y variantes de nombre
+        no capturadas (falsos negativos). Las 5.550 stop words y 203 reglas manuales mitigan el problema,
+        pero no lo eliminan.<br><br>
+        <b>Vigencia de cargos:</b> Si el cese de un cargo no se publica en BORME, aparece como vigente.
+        El BORME no registra cargos de hecho.<br><br>
+        <b>Grupos corporativos:</b> Los filtros son heurísticos (nombre, consejo, fusiones BORME).
+        Holdings complejos con estructuras opacas pueden escapar al filtro.<br><br>
+        <b>F10 — ventana limitada:</b> Solo detecta fraccionamiento en ventanas de 90 días con umbral de 15K€.
+        Patrones más sofisticados (distintos órganos, periodos más largos) no se capturan.<br><br>
+        <b>Señal ≠ fraude.</b> Cada señal tiene una explicación inocente plausible. Este análisis
+        sirve para priorizar la supervisión humana, no para acusar.
     </div>""", unsafe_allow_html=True)
 
 
@@ -1684,7 +1783,7 @@ def render_screener(flag_files):
 def main():
     st.markdown("""
     <div class="hero">
-        <h1>🏛️ Contratación <span>Pública</span></h1>
+        <h1>Contratación <span>Pública</span></h1>
         <p class="mono">BQUANT FINANCE · @GSNCHEZ</p>
         <div class="hero-desc">
             Cruzamos <b>8.7 millones de contratos públicos</b> con <b>17 millones de actos
