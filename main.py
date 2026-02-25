@@ -534,7 +534,7 @@ FLAGS = {
     'flag8_utes_cat': {'label':'UTEs CAT','short':'F8','icon':'🤝','badge':'b-amber','scope':'Catalunya','color':C['amber'],
         'what':'UTEs vinculadas en Catalunya.','why':'','how':'','example':'','stat_empresas':0,'stat_extra':''},
     'flag9_geo_discrepancia': {'label':'Empresa lejos de donde contrata','short':'F9','icon':'📍','badge':'b-purple','scope':'Nacional','color':C['purple'],
-        'what':'Empresa registrada en una CCAA que gana contratos <b>mayoritariamente en otra</b>.',
+        'what':'Empresa registrada en una CCAA que gana contratos <b>mayoritariamente en otra</b>. <span style="color:#6b7280;font-size:.78rem">Señal débil — alta tasa de falsos positivos. Cobra sentido combinada con otras señales.</span>',
         'why':'Solo PYMEs (3–200 adj). Las grandes con sede en Madrid se excluyen.',
         'how':'Provincia BORME → CCAA registro. NUTS2 → CCAA contratos.',
         'example':'Empresa de Murcia que gana 28 de 31 contratos en Andalucía — 1.8M€.','stat_empresas':14832,'stat_extra':'De 27.465 con CCAA mapeada'},
@@ -1299,7 +1299,7 @@ def render_metodo():
         <span class="step-stat">{_ds_fmt('flag2_capital_ridiculo')} empresas</span></div></div>
 
     <div class="step"><div class="step-n">7</div><div class="step-body"><div class="step-title">F4 · Empresa disuelta</div>
-        Acto de disolución o extinción en BORME con adjudicaciones en los <b>365 días anteriores</b>.
+        Acto de disolución o extinción en BORME con adjudicaciones en los <b>365 días posteriores</b>.
         Una empresa en proceso de cierre no debería estar participando activamente en licitaciones.<br>
         <span class="step-stat">{_ds_fmt('flag4_disolucion')} empresas</span></div></div>
 
@@ -1349,6 +1349,8 @@ def render_metodo():
     <div class="step"><div class="step-n">12</div><div class="step-body"><div class="step-title">F7 · Concentración en un órgano</div>
         Una empresa gana <b>más del 40%</b> de las adjudicaciones de un organismo concreto
         (mínimo 5 propias y 10 totales del órgano). En Catalunya el umbral es adaptativo: 20% si ≥200 adj, 30% si ≥50, 40% si <50.<br>
+        <span style="color:{C['muted']};font-size:.78rem">⚠ El umbral del 40% en Nacional es fijo y arbitrario. Organismos pequeños con pocos contratos
+        pueden disparar esta señal sin que haya nada anómalo. El umbral adaptativo de Catalunya es más robusto.</span><br>
         <span class="step-stat">{_ds_fmt('flag7_concentracion')} empresas (Nacional)</span> <span class="step-stat">{_ds_fmt('flag7_concentracion', 'n_rows')} pares empresa-órgano</span></div></div>
 
     <div class="step"><div class="step-n">13</div><div class="step-body"><div class="step-title">F8 · UTEs con miembros vinculados</div>
@@ -1360,6 +1362,8 @@ def render_metodo():
         Empresa registrada en una CCAA que gana contratos <b>mayoritariamente en otra</b>.
         Solo para PYMEs (3–200 adjudicaciones). Las grandes con sede en Madrid se excluyen
         porque es normal que operen en todo el territorio.<br>
+        <span style="color:{C['muted']};font-size:.78rem">⚠ Señal débil — la más ruidosa del análisis. Muchas empresas operan legítimamente fuera de su comunidad
+        (ej: constructora de Sevilla con obra en Huelva). Por sí sola tiene poco valor; cobra sentido combinada con otras señales.</span><br>
         <span class="step-stat">{_ds_fmt('flag9_geo_discrepancia')} empresas</span></div></div>
     """, unsafe_allow_html=True)
 
@@ -1381,6 +1385,8 @@ def render_metodo():
         Empresas con <b>≥20% de sus contratos modificados</b> (la media es ~0.6%).
         Puede indicar adjudicaciones inicialmente bajas que se incrementan después de ganadas,
         aprovechando que las modificaciones tienen menos escrutinio.<br>
+        <span style="color:{C['muted']};font-size:.78rem">⚠ La media del 0.6% incluye todos los tipos de contrato. Sectores como obras o servicios técnicos
+        tienen tasas de modificación naturalmente más altas. Una comparación por tipo de contrato sería más justa.</span><br>
         <span class="step-stat">{_ds_fmt('flag11_modificaciones_cat')} empresas</span></div></div>
     """, unsafe_allow_html=True)
 
@@ -1419,6 +1425,12 @@ def render_metodo():
         Holdings complejos con estructuras opacas pueden escapar al filtro.<br><br>
         <b>F10 — ventana limitada:</b> Solo detecta fraccionamiento en ventanas de 90 días con umbral de 15K€.
         Patrones más sofisticados (distintos órganos, periodos más largos) no se capturan.<br><br>
+        <b>F9 — señal ruidosa:</b> La discrepancia geográfica es la señal con más falsos positivos.
+        Muchas empresas operan legítimamente fuera de su comunidad. Por sí sola tiene poco valor diagnóstico.<br><br>
+        <b>F7 — umbral arbitrario:</b> El 40% fijo en Nacional no distingue organismos grandes de pequeños.
+        El umbral adaptativo de Catalunya (20/30/40% según volumen) es más robusto.<br><br>
+        <b>F11 — media global:</b> Comparar contra la media general de modificaciones (0.6%) penaliza sectores
+        como obras o servicios técnicos donde las modificaciones son más habituales.<br><br>
         <b>Señal ≠ fraude.</b> Cada señal tiene una explicación inocente plausible. Este análisis
         sirve para priorizar la supervisión humana, no para acusar.
     </div>""", unsafe_allow_html=True)
