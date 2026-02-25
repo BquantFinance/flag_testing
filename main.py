@@ -1328,8 +1328,9 @@ def render_screener(flag_files):
         textposition='outside',
         textfont=dict(family='IBM Plex Mono', size=11, color=C['text2']),
         hovertemplate='<b>%{y}</b><br>%{x:,} empresas<extra></extra>'))
+    pl2 = {k: v for k, v in PL.items() if k != 'margin'}
     fig_overview.update_layout(
-        **PL, height=max(220, len(bool_cols) * 36 + 50),
+        **pl2, height=max(220, len(bool_cols) * 36 + 50),
         margin=dict(l=0, r=80, t=36, b=0),
         xaxis=dict(gridcolor=C['grid'], showticklabels=False, zeroline=False),
         yaxis=dict(tickfont=dict(size=11, family='DM Sans', color=C['text2']),
