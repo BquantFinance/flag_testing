@@ -560,17 +560,74 @@ FLAGS = {
         'what':'Grupos filtrados en Catalunya.','why':'','how':'','example':'','stat_empresas':295,'stat_extra':''},
 }
 
+# ── Pipeline-level metadata (source stats not derivable from output parquets) ──
+# Update these if you re-run the pipeline with new data.
+PIPELINE = {
+    'borme_pdfs': 64_000, 'borme_actos': 17_100_000, 'borme_empresas': 2_770_000, 'borme_personas': 3_800_000,
+    'placsp_total': 8_700_000, 'placsp_useful': 5_800_000,
+    'cat_total': 3_400_000, 'cat_menores': 177_000,
+    'stop_words': 5_550, 'manual_rules': 203, 'auto_rules': 5_400,
+    'matched_nac': 126_073, 'matched_cat': 23_156, 'coverage_pct': 52,
+    'f6_cargos_total': 618_000, 'f6_cargos_decision': 232_000, 'f6_cargos_activos': 212_000,
+    'f6_personas_multi': 7_514, 'f6_pares_iniciales': 3_970,
+}
+
+# Parquets to silently ignore (superseded or too noisy to display)
+_EXCLUDE_STEMS = {'flag3_multi_admin'}
+
 def discover_flags():
     found = {}
     for d, scope in [(DATA, 'Nacional'), (DATA / 'catalunya', 'Catalunya')]:
         if d.exists():
             for f in sorted(d.glob('*.parquet')):
-                found[f.stem] = {'path': str(f), 'scope': scope, 'size': f.stat().st_size}
+                if f.stem not in _EXCLUDE_STEMS:
+                    found[f.stem] = {'path': str(f), 'scope': scope, 'size': f.stat().st_size}
     return found
 
+@st.cache_data(show_spinner=False)
+def _dynamic_stats():
+    """Compute stats from parquets dynamically — empresas, rows, importe."""
+    ff = discover_flags(); out = {}
+    for stem, fi in ff.items():
+        try:
+            df = load_pq(fi['path'])
+            emp_col = next((c for c in ['empresa_norm','adj_norm'] if c in df.columns), None)
+            n_emp = int(df[emp_col].nunique()) if emp_col else len(df)
+            imp_col = next((c for c in df.columns if 'importe' in c.lower() and pd.api.types.is_numeric_dtype(df[c])), None)
+            imp_sum = float(df[imp_col].sum()) if imp_col else 0
+            out[stem] = {'n_empresas': n_emp, 'n_rows': len(df), 'importe': imp_sum}
+        except Exception:
+            out[stem] = {'n_empresas': 0, 'n_rows': 0, 'importe': 0}
+    # Risk scoring: count empresas with ≥3 flags
+    for k in ['risk_scoring_unificado', 'risk_scoring_cat']:
+        if k in out:
+            try:
+                df = load_pq(ff[k]['path'])
+                if 'n_flags' in df.columns:
+                    out[k]['n_ge3'] = int((df['n_flags'] >= 3).sum())
+            except Exception:
+                pass
+    return out
+
+def _ds(stem, field='n_empresas'):
+    """Get a dynamic stat for a flag stem. Returns 0 if not found."""
+    return _dynamic_stats().get(stem, {}).get(field, 0)
+
+def _ds_fmt(stem, field='n_empresas'):
+    """Get a formatted dynamic stat (e.g. '5.435')."""
+    v = _ds(stem, field)
+    if isinstance(v, float) and v >= 1e6:
+        return f"{v/1e6:.0f}M€"
+    return f"{v:,.0f}".replace(',', '.')
+
 def get_meta(stem):
-    return FLAGS.get(stem, {'label':stem,'short':'?','icon':'📄','badge':'b-blue','scope':'?','color':C['blue'],
+    base = FLAGS.get(stem, {'label':stem,'short':'?','icon':'📄','badge':'b-blue','scope':'?','color':C['blue'],
         'what':'','why':'','how':'','example':'','stat_empresas':0,'stat_extra':''})
+    # Override stat_empresas with dynamic count if parquet exists
+    dyn = _dynamic_stats().get(stem)
+    if dyn:
+        base = {**base, 'stat_empresas': dyn['n_empresas']}
+    return base
 
 _HIDE = {'cargo_norm','cargo_upper','cargo_w','organo_norm','same_group','is_fusion_borme',
          'size_penalty','flag_weight',
@@ -598,8 +655,14 @@ def search_all(q, flag_files):
 
 # ═══════════════ PLOTS ═══════════════
 def pl_funnel():
-    stages = [('Contratos PLACSP',8_700_000),('Con adjudicatario e importe',5_800_000),('Actos mercantiles BORME',17_100_000),
-              ('Empresas cruzadas BORME ∩ PLACSP',126_073),('Con señal de alerta (≥1 flag)',25_675),('Con ≥3 señales acumuladas',125)]
+    n_risk = _ds('risk_scoring_unificado')
+    n_ge3 = _dynamic_stats().get('risk_scoring_unificado', {}).get('n_ge3', 0)
+    stages = [('Contratos PLACSP', PIPELINE['placsp_total']),
+              ('Con adjudicatario e importe', PIPELINE['placsp_useful']),
+              ('Actos mercantiles BORME', PIPELINE['borme_actos']),
+              ('Empresas cruzadas BORME ∩ PLACSP', PIPELINE['matched_nac']),
+              ('Con señal de alerta (≥1 flag)', n_risk or 25_675),
+              ('Con ≥3 señales acumuladas', n_ge3 or 125)]
     labels = [s[0] for s in stages]; values = [s[1] for s in stages]
     colors = [C['blue'],C['blue'],C['teal'],C['amber'],C['accent'],C['red']]
     fig = go.Figure(go.Bar(y=labels[::-1],x=values[::-1],orientation='h',
@@ -611,20 +674,30 @@ def pl_funnel():
     return fig
 
 def pl_coverage():
-    fig = go.Figure(go.Pie(values=[52,48],labels=['Cruzadas con BORME','Sin cruzar'],hole=.65,
+    pct = PIPELINE['coverage_pct']
+    fig = go.Figure(go.Pie(values=[pct, 100-pct],labels=['Cruzadas con BORME','Sin cruzar'],hole=.65,
         textinfo='label+percent',textposition='outside',textfont=dict(size=11,family='DM Sans',color=C['text2']),
         marker=dict(colors=[C['blue'],C['border2']],line=dict(width=2,color=C['bg'])),
         hovertemplate='<b>%{label}</b><br>%{percent}<extra></extra>'))
     fig.update_layout(**PL,height=300,showlegend=False,
-        annotations=[dict(text='<b>52%</b><br>cruzadas',x=.5,y=.5,showarrow=False,font=dict(size=16,color=C['text'],family='IBM Plex Mono'))])
+        annotations=[dict(text=f'<b>{pct}%</b><br>cruzadas',x=.5,y=.5,showarrow=False,font=dict(size=16,color=C['text'],family='IBM Plex Mono'))])
     return fig
 
 def pl_signal_summary():
-    signals = [('F9 · Geo discrepancia',14832,C['purple']),('F2 · Capital mínimo',5735,C['amber']),
-        ('F1 · Recién creada',5435,C['red']),('F10 · Fraccionamiento',2651,C['red']),('F6 · Red administradores',2684,C['blue']),
-        ('F4 · Disolución',1294,C['red']),('F5 · Concursal',540,C['red']),('F7 · Concentración',286,C['teal']),
-        ('F11 · Modificaciones',115,C['amber']),('F8 · UTEs vinculadas',97,C['amber'])]
-    labels=[s[0] for s in signals]; vals=[s[1] for s in signals]; cols=[s[2] for s in signals]
+    signals = [('F9 · Geo discrepancia','flag9_geo_discrepancia',C['purple']),
+        ('F2 · Capital mínimo','flag2_capital_ridiculo',C['amber']),
+        ('F1 · Recién creada','flag1_recien_creada',C['red']),
+        ('F10 · Fraccionamiento','flag10_troceo_cat',C['red']),
+        ('F6 · Red administradores','flag6_admin_network',C['blue']),
+        ('F4 · Disolución','flag4_disolucion',C['red']),
+        ('F5 · Concursal','flag5_concursal',C['red']),
+        ('F7 · Concentración','flag7_concentracion',C['teal']),
+        ('F11 · Modificaciones','flag11_modificaciones_cat',C['amber']),
+        ('F8 · UTEs vinculadas','flag8_utes_sospechosas',C['amber'])]
+    labels=[s[0] for s in signals]; vals=[_ds(s[1]) for s in signals]; cols=[s[2] for s in signals]
+    # Sort by value for display
+    combined = sorted(zip(labels, vals, cols), key=lambda x: x[1])
+    labels = [c[0] for c in combined]; vals = [c[1] for c in combined]; cols = [c[2] for c in combined]
     fig = go.Figure(go.Bar(y=labels[::-1],x=vals[::-1],orientation='h',
         marker=dict(color=cols[::-1],opacity=.85,line=dict(width=0)),
         text=[fmt(v) for v in vals[::-1]],textposition='auto',textfont=dict(size=10,color='white',family='IBM Plex Mono'),
@@ -727,8 +800,8 @@ def render_resumen(flag_files):
                 ayuntamientos y entidades públicas.
             </div>
             <div class="ds-metrics">
-                <span class="ds-metric"><b>8.7M</b> registros</span>
-                <span class="ds-metric"><b>5.8M</b> con adj. e importe</span>
+                <span class="ds-metric"><b>{fmt(PIPELINE['placsp_total'])}</b> registros</span>
+                <span class="ds-metric"><b>{fmt(PIPELINE['placsp_useful'])}</b> con adj. e importe</span>
                 <span class="ds-metric"><b>2012–2026</b></span>
             </div>
             <div class="ds-quality">
@@ -750,10 +823,10 @@ def render_resumen(flag_files):
                 Nuestro parser extrae empresa, acto, persona, cargo, capital y fecha.
             </div>
             <div class="ds-metrics">
-                <span class="ds-metric"><b>17.1M</b> actos</span>
-                <span class="ds-metric"><b>2.77M</b> empresas</span>
-                <span class="ds-metric"><b>3.8M</b> personas</span>
-                <span class="ds-metric"><b>64K</b> PDFs</span>
+                <span class="ds-metric"><b>{fmt(PIPELINE['borme_actos'])}</b> actos</span>
+                <span class="ds-metric"><b>{fmt(PIPELINE['borme_empresas'])}</b> empresas</span>
+                <span class="ds-metric"><b>{fmt(PIPELINE['borme_personas'])}</b> personas</span>
+                <span class="ds-metric"><b>{fmt(PIPELINE['borme_pdfs'])}</b> PDFs</span>
             </div>
             <div class="ds-quality">
                 <b>Calidad:</b>
@@ -774,7 +847,7 @@ def render_resumen(flag_files):
                 de modificaciones contractuales que permiten detectar F11.
             </div>
             <div class="ds-metrics">
-                <span class="ds-metric"><b>3.4M</b> registros</span>
+                <span class="ds-metric"><b>{fmt(PIPELINE['cat_total'])}</b> registros</span>
                 <span class="ds-metric"><b>2014–2026</b></span>
                 <span class="ds-metric">Modificaciones nativas</span>
             </div>
@@ -795,7 +868,7 @@ def render_resumen(flag_files):
                 No aparecen en PLACSP. Pieza clave para detectar <b>fraccionamiento</b> (F10).
             </div>
             <div class="ds-metrics">
-                <span class="ds-metric"><b>177K</b> registros</span>
+                <span class="ds-metric"><b>{fmt(PIPELINE['cat_menores'])}</b> registros</span>
                 <span class="ds-metric"><b>Solo BCN</b></span>
                 <span class="ds-metric">Contratos ≤15K€</span>
             </div>
@@ -972,13 +1045,13 @@ def render_resumen(flag_files):
         <b style="color:{C['text2']}">Nota sobre el cruce:</b>
         BORME no incluye NIF/CIF. El cruce con PLACSP se hace por <b>nombre de empresa normalizado</b>.
         Esto implica posibles <b>falsos positivos</b> (homónimos) y <b>falsos negativos</b> (variantes de nombre
-        no capturadas). Las 5.550 stop words y 203 reglas curadas manualmente mitigan el problema, pero no lo eliminan.
+        no capturadas). Las {PIPELINE['stop_words']:,} stop words y {PIPELINE['manual_rules']} reglas curadas manualmente mitigan el problema, pero no lo eliminan.
     </div>""", unsafe_allow_html=True)
 
     st.markdown('<div class="sec">De dónde partimos · El embudo de datos</div>', unsafe_allow_html=True)
     st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.6;margin-bottom:12px">
-        De <b style="color:{C['text']}">8.7 millones</b> de contratos en PLACSP,
-        filtramos los que tienen adjudicatario e importe, cruzamos con <b style="color:{C['text']}">17 millones</b>
+        De <b style="color:{C['text']}">{fmt(PIPELINE['placsp_total'])}</b> de contratos en PLACSP,
+        filtramos los que tienen adjudicatario e importe, cruzamos con <b style="color:{C['text']}">{fmt(PIPELINE['borme_actos'])}</b>
         de actos del Registro Mercantil, y aplicamos 11 filtros de detección.</div>""", unsafe_allow_html=True)
     st.plotly_chart(pl_funnel(), use_container_width=True)
 
@@ -987,9 +1060,9 @@ def render_resumen(flag_files):
     with col_a: st.plotly_chart(pl_coverage(), use_container_width=True)
     with col_b:
         st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.7;padding:10px 0">
-            <b style="color:{C['text']}">No vemos todo.</b> Solo el <b style="color:{C['blue']}">52%</b>
+            <b style="color:{C['text']}">No vemos todo.</b> Solo el <b style="color:{C['blue']}">{PIPELINE['coverage_pct']}%</b>
             de adjudicatarios se cruzan con BORME.<br><br>
-            El <b>48% restante</b> incluye:<br>
+            El <b>{100 - PIPELINE['coverage_pct']}% restante</b> incluye:<br>
             · <b>Autónomos y personas físicas</b> — no figuran en el Registro Mercantil<br>
             · <b>Empresas extranjeras</b> — registradas fuera de España<br>
             · <b>Variantes de nombre no capturadas</b> — cruce por nombre, no por NIF<br><br>
@@ -1110,12 +1183,21 @@ def render_explorar(flag_files):
     df_display = _rename_columns(clean_df(df))
     df_display = _format_pct_col(df_display)
 
+    # Dedup option
+    n_total = len(df_display)
+    n_dedup = len(df_display.drop_duplicates())
+    has_dupes = n_dedup < n_total
+    if has_dupes:
+        dedup = st.checkbox(f"Eliminar filas duplicadas ({n_total:,} → {n_dedup:,})", value=True, key="exp_dedup")
+        if dedup:
+            df_display = df_display.drop_duplicates()
+
     fc1,fc2 = st.columns([1,2])
-    with fc1: search_col = st.selectbox("Buscar en", ['(todas)'] + list(df_display.columns), key="exp_col")
+    with fc1: search_col = st.selectbox("Buscar en", ['(todas las columnas)'] + list(df_display.columns), key="exp_col")
     with fc2: search_term = st.text_input("Filtrar", key="exp_term", placeholder="Escribe para filtrar...")
     filtered = df_display.copy()
     if search_term:
-        if search_col != '(todas)': filtered = filtered[filtered[search_col].astype(str).str.contains(search_term, case=False, na=False)]
+        if search_col != '(todas las columnas)': filtered = filtered[filtered[search_col].astype(str).str.contains(search_term, case=False, na=False)]
         else:
             mask = pd.Series(False, index=filtered.index)
             for col in filtered.select_dtypes(include=['object']).columns: mask |= filtered[col].astype(str).str.contains(search_term, case=False, na=False)
@@ -1159,15 +1241,15 @@ def render_metodo():
     <div class="step"><div class="step-n">1</div><div class="step-body"><div class="step-title">Descargar y parsear el BORME (2009–2026)</div>
         El Boletín Oficial del Registro Mercantil publica un PDF diario por provincia con todos los actos
         inscritos: constituciones, nombramientos, ceses, disoluciones, concursos, etc.
-        Descargamos los <b>64.000 PDFs</b> (~25 GB) y los procesamos con un parser de expresiones regulares
+        Descargamos los <b>~{PIPELINE['borme_pdfs']:,} PDFs</b> (~25 GB) y los procesamos con un parser de expresiones regulares
         que extrae empresa, acto, persona, cargo, capital y fecha. Validado contra 300 documentos.<br>
-        <span class="step-stat">17.1M actos extraídos</span> <span class="step-stat">2.77M empresas</span> <span class="step-stat">3.8M personas</span></div></div>
+        <span class="step-stat">{fmt(PIPELINE['borme_actos'])} actos extraídos</span> <span class="step-stat">{fmt(PIPELINE['borme_empresas'])} empresas</span> <span class="step-stat">{fmt(PIPELINE['borme_personas'])} personas</span></div></div>
 
     <div class="step"><div class="step-n">2</div><div class="step-body"><div class="step-title">Cargar la contratación pública</div>
-        <b>Nacional (PLACSP):</b> 8.7M registros de la Plataforma de Contratación del Sector Público.
-        Tras filtrar los que tienen adjudicatario e importe, quedan <b>5.8M adjudicaciones útiles</b>.<br>
-        <b>Catalunya:</b> 3.4M del Registre Públic de Contractes + 177K contratos menores del Ayuntamiento de Barcelona.<br>
-        <span class="step-stat">5.8M nacionales</span> <span class="step-stat">3.4M Catalunya</span> <span class="step-stat">177K menores BCN</span></div></div>
+        <b>Nacional (PLACSP):</b> {fmt(PIPELINE['placsp_total'])} registros de la Plataforma de Contratación del Sector Público.
+        Tras filtrar los que tienen adjudicatario e importe, quedan <b>{fmt(PIPELINE['placsp_useful'])} adjudicaciones útiles</b>.<br>
+        <b>Catalunya:</b> {fmt(PIPELINE['cat_total'])} del Registre Públic de Contractes + {fmt(PIPELINE['cat_menores'])} contratos menores del Ayuntamiento de Barcelona.<br>
+        <span class="step-stat">{fmt(PIPELINE['placsp_useful'])} nacionales</span> <span class="step-stat">{fmt(PIPELINE['cat_total'])} Catalunya</span> <span class="step-stat">{fmt(PIPELINE['cat_menores'])} menores BCN</span></div></div>
     """, unsafe_allow_html=True)
 
     # ────────────────────────────────────────
@@ -1182,13 +1264,13 @@ def render_metodo():
         Cada nombre pasa por un pipeline: mayúsculas → eliminar acentos (preservar Ñ) →
         colapsar formas societarias (SL, SA, SLU…) → limpiar puntuación.<br><br>
         <code>"Construcciones García López, S.L.U. (R.M. Madrid)"</code> → <code>"CONSTRUCCIONES GARCIA LOPEZ"</code><br>
-        <span class="step-stat">~5.550 stop words</span> <span class="step-stat">203 reglas manuales</span> <span class="step-stat">5.400 auto-generadas</span></div></div>
+        <span class="step-stat">~{PIPELINE['stop_words']:,} stop words</span> <span class="step-stat">{PIPELINE['manual_rules']} reglas manuales</span> <span class="step-stat">{fmt(PIPELINE['auto_rules'])} auto-generadas</span></div></div>
 
     <div class="step"><div class="step-n">4</div><div class="step-body"><div class="step-title">Intersección BORME ∩ Contratación</div>
         Buscamos qué empresas aparecen en ambos datasets (mismo nombre normalizado).
         Esto nos da el universo sobre el que podemos aplicar señales.<br>
-        <span class="step-stat">126.073 empresas cruzadas (Nacional)</span> <span class="step-stat">23.156 (Catalunya)</span>
-        <span class="step-stat">52% de adjudicatarios PLACSP</span></div></div>
+        <span class="step-stat">{PIPELINE['matched_nac']:,} empresas cruzadas (Nacional)</span> <span class="step-stat">{PIPELINE['matched_cat']:,} (Catalunya)</span>
+        <span class="step-stat">{PIPELINE['coverage_pct']}% de adjudicatarios PLACSP</span></div></div>
     """, unsafe_allow_html=True)
 
     # ────────────────────────────────────────
@@ -1203,22 +1285,22 @@ def render_metodo():
         Si una empresa se constituyó <b>menos de 180 días</b> antes de su primera adjudicación,
         puede indicar una sociedad instrumental creada para un contrato concreto.
         Se usa la fecha de constitución publicada en BORME.<br>
-        <span class="step-stat">5.435 empresas</span> <span class="step-stat">890M€ en contratos</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag1_recien_creada')} empresas</span></div></div>
 
     <div class="step"><div class="step-n">6</div><div class="step-body"><div class="step-title">F2 · Capital social mínimo</div>
         Capital social inscrito <b>menor de 10.000€</b> y al menos una adjudicación <b>superior a 100.000€</b>.
         Un capital tan bajo es inusual para empresas con contratos de esa magnitud.<br>
-        <span class="step-stat">5.735 empresas</span> <span class="step-stat">Ratio medio importe/capital: 85×</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag2_capital_ridiculo')} empresas</span></div></div>
 
     <div class="step"><div class="step-n">7</div><div class="step-body"><div class="step-title">F4 · Empresa disuelta</div>
         Acto de disolución o extinción en BORME con adjudicaciones en los <b>365 días anteriores</b>.
         Una empresa en proceso de cierre no debería estar participando activamente en licitaciones.<br>
-        <span class="step-stat">1.294 empresas</span> <span class="step-stat">210M€ post-disolución</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag4_disolucion')} empresas</span></div></div>
 
     <div class="step"><div class="step-n">8</div><div class="step-body"><div class="step-title">F5 · Situación concursal</div>
         La empresa tiene un acto concursal publicado en BORME y sigue recibiendo adjudicaciones
         posteriores. La legislación restringe la contratación pública a empresas en insolvencia.<br>
-        <span class="step-stat">540 empresas</span> <span class="step-stat">95M€ post-concurso</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag5_concursal')} empresas</span></div></div>
     """, unsafe_allow_html=True)
 
     # ────────────────────────────────────────
@@ -1230,24 +1312,24 @@ def render_metodo():
 
     st.markdown(f"""
     <div class="step"><div class="step-n">9</div><div class="step-body"><div class="step-title">Determinar cargos vigentes</div>
-        Partimos de 17.1M de actos del BORME. Para cada combinación (persona, empresa, cargo),
+        Partimos de {fmt(PIPELINE['borme_actos'])} de actos del BORME. Para cada combinación (persona, empresa, cargo),
         tomamos el <b>último acto publicado</b>: si es un nombramiento, el cargo está vigente;
         si es un cese, está inactivo. Filtramos solo cargos de decisión (administradores, consejeros delegados,
         apoderados generales…) y excluimos personas jurídicas.<br>
-        <span class="step-stat">618K cargos → 232K de decisión → 212K activos</span></div></div>
+        <span class="step-stat">{fmt(PIPELINE['f6_cargos_total'])} cargos → {fmt(PIPELINE['f6_cargos_decision'])} de decisión → {fmt(PIPELINE['f6_cargos_activos'])} activos</span></div></div>
 
     <div class="step"><div class="step-n">10</div><div class="step-body"><div class="step-title">Buscar pares de empresas sospechosos</div>
         Identificamos personas que dirigen entre 2 y 50 empresas adjudicatarias. Para cada par
         de empresas que comparten una persona, contamos en cuántos <b>órganos contratantes coinciden</b>.
         Solo retenemos pares con <b>≥2 órganos comunes</b>.<br>
-        <span class="step-stat">7.514 personas con ≥2 empresas</span> <span class="step-stat">3.970 pares iniciales</span></div></div>
+        <span class="step-stat">{PIPELINE['f6_personas_multi']:,} personas con ≥2 empresas</span> <span class="step-stat">{PIPELINE['f6_pares_iniciales']:,} pares iniciales</span></div></div>
 
     <div class="step"><div class="step-n">11</div><div class="step-body"><div class="step-title">Filtrar grupos corporativos legítimos</div>
         Muchos pares son empresas del mismo grupo (filiales, marcas). Los descartamos con tres filtros:<br>
         <b>a)</b> <b>Nombre de marca:</b> similitud Jaccard ≥0.5 entre nombres normalizados → mismo grupo.<br>
         <b>b)</b> <b>Consejo compartido:</b> >40% de overlap en el consejo + ≥3 consejeros → grupo.<br>
         <b>c)</b> <b>Fusiones BORME:</b> actos de fusión/absorción/escisión entre las dos empresas → grupo.<br>
-        <span class="step-stat">3.970 → 2.287 pares sospechosos</span> <span class="step-stat">1.683 descartados como grupo</span></div></div>
+        <span class="step-stat">{PIPELINE['f6_pares_iniciales']:,} → {_ds_fmt('flag6_pares_unicos', 'n_rows')} pares sospechosos</span> <span class="step-stat">{_ds_fmt('grupos_corporativos', 'n_rows')} descartados como grupo</span></div></div>
     """, unsafe_allow_html=True)
 
     # ────────────────────────────────────────
@@ -1261,18 +1343,18 @@ def render_metodo():
     <div class="step"><div class="step-n">12</div><div class="step-body"><div class="step-title">F7 · Concentración en un órgano</div>
         Una empresa gana <b>más del 40%</b> de las adjudicaciones de un organismo concreto
         (mínimo 5 propias y 10 totales del órgano). En Catalunya el umbral es adaptativo: 20% si ≥200 adj, 30% si ≥50, 40% si <50.<br>
-        <span class="step-stat">286 empresas (Nacional)</span> <span class="step-stat">358 pares empresa-órgano</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag7_concentracion')} empresas (Nacional)</span> <span class="step-stat">{_ds_fmt('flag7_concentracion', 'n_rows')} pares empresa-órgano</span></div></div>
 
     <div class="step"><div class="step-n">13</div><div class="step-body"><div class="step-title">F8 · UTEs con miembros vinculados</div>
         UTEs (Uniones Temporales de Empresas) cuyos miembros comparten administrador según BORME.
         Si los dos miembros de una UTE tienen el mismo decisor, la unión no aporta independencia real.<br>
-        <span class="step-stat">97 pares de empresas</span> <span class="step-stat">127 UTEs detectadas</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag8_utes_sospechosas')} pares de empresas</span></div></div>
 
     <div class="step"><div class="step-n">14</div><div class="step-body"><div class="step-title">F9 · Discrepancia geográfica <span style="font-size:.7rem;color:{C['muted']}">(solo Nacional)</span></div>
         Empresa registrada en una CCAA que gana contratos <b>mayoritariamente en otra</b>.
         Solo para PYMEs (3–200 adjudicaciones). Las grandes con sede en Madrid se excluyen
         porque es normal que operen en todo el territorio.<br>
-        <span class="step-stat">14.832 empresas</span> <span class="step-stat">De 27.465 con CCAA mapeada</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag9_geo_discrepancia')} empresas</span></div></div>
     """, unsafe_allow_html=True)
 
     # ────────────────────────────────────────
@@ -1287,13 +1369,13 @@ def render_metodo():
         Un mismo par empresa×órgano tiene <b>≥3 contratos menores (≤15K€) en 90 días</b> cuya suma
         supera el umbral de 15K€. Esto podría indicar que se divide un contrato mayor en partes
         para evitar el procedimiento de licitación pública.<br>
-        <span class="step-stat">2.651 empresas</span> <span class="step-stat">4.331 clusters detectados</span> <span class="step-stat">Media: 33K€/cluster</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag10_troceo_cat')} empresas</span> <span class="step-stat">{_ds_fmt('flag10_troceo_cat', 'n_rows')} clusters detectados</span></div></div>
 
     <div class="step"><div class="step-n">16</div><div class="step-body"><div class="step-title">F11 · Modificaciones excesivas <span style="font-size:.7rem;color:{C['muted']}">(solo Catalunya)</span></div>
         Empresas con <b>≥20% de sus contratos modificados</b> (la media es ~0.6%).
         Puede indicar adjudicaciones inicialmente bajas que se incrementan después de ganadas,
         aprovechando que las modificaciones tienen menos escrutinio.<br>
-        <span class="step-stat">115 empresas</span> <span class="step-stat">36× por encima de la media</span></div></div>
+        <span class="step-stat">{_ds_fmt('flag11_modificaciones_cat')} empresas</span></div></div>
     """, unsafe_allow_html=True)
 
     # ────────────────────────────────────────
@@ -1304,15 +1386,15 @@ def render_metodo():
         Unión de todas las señales (F1–F11) por empresa. Cada empresa recibe un <b>vector binario</b>
         que indica qué señales tiene activas y cuántas son en total.
         La app no muestra puntuaciones numéricas — solo <b>qué señales tiene cada empresa y cuántas</b>.<br>
-        <span class="step-stat">Nacional: 25.675 con ≥1 señal</span> <span class="step-stat">125 con ≥3</span>
-        <span class="step-stat">Catalunya: 4.203 con ≥1 señal</span></div></div>
+        <span class="step-stat">Nacional: {_ds_fmt('risk_scoring_unificado')} con ≥1 señal</span> <span class="step-stat">{_ds_fmt('risk_scoring_unificado', 'n_ge3')} con ≥3</span>
+        <span class="step-stat">Catalunya: {_ds_fmt('risk_scoring_cat')} con ≥1 señal</span></div></div>
     """, unsafe_allow_html=True)
 
     # ────────────────────────────────────────
     st.markdown('<div class="sec">Diferencias Nacional vs Catalunya</div>', unsafe_allow_html=True)
     st.markdown(f"""<div class="card card-l card-blue">
-        <b>Datos:</b> Nacional usa 5.8M adj. de PLACSP · Catalunya usa 3.4M del Registre Públic + 177K menores BCN<br><br>
-        <b>Matching:</b> Nacional cruza 126K empresas con BORME · Catalunya 23K<br><br>
+        <b>Datos:</b> Nacional usa {fmt(PIPELINE['placsp_useful'])} adj. de PLACSP · Catalunya usa {fmt(PIPELINE['cat_total'])} del Registre Públic + {fmt(PIPELINE['cat_menores'])} menores BCN<br><br>
+        <b>Matching:</b> Nacional cruza {fmt(PIPELINE['matched_nac'])} empresas con BORME · Catalunya {fmt(PIPELINE['matched_cat'])}<br><br>
         <b>F7 Concentración:</b> Nacional usa umbral fijo (40%) · Catalunya usa umbral adaptativo (20/30/40% según volumen)<br><br>
         <b>Señales exclusivas:</b> F9 (geográfica) solo Nacional · F10 (fraccionamiento) y F11 (modificaciones) solo Catalunya
     </div>""", unsafe_allow_html=True)
@@ -1320,10 +1402,10 @@ def render_metodo():
     # ────────────────────────────────────────
     st.markdown('<div class="sec">Limitaciones</div>', unsafe_allow_html=True)
     st.markdown(f"""<div class="card card-l card-amber">
-        <b>Cobertura parcial:</b> Solo el 52% de adjudicatarios se cruzan con BORME.
+        <b>Cobertura parcial:</b> Solo el {PIPELINE['coverage_pct']}% de adjudicatarios se cruzan con BORME.
         Autónomos, personas físicas y empresas extranjeras no figuran en el Registro Mercantil.<br><br>
         <b>Cruce por nombre, no por NIF:</b> Posibles homónimos (falsos positivos) y variantes de nombre
-        no capturadas (falsos negativos). Las 5.550 stop words y 203 reglas manuales mitigan el problema,
+        no capturadas (falsos negativos). Las {PIPELINE['stop_words']:,} stop words y {PIPELINE['manual_rules']} reglas manuales mitigan el problema,
         pero no lo eliminan.<br><br>
         <b>Vigencia de cargos:</b> Si el cese de un cargo no se publica en BORME, aparece como vigente.
         El BORME no registra cargos de hecho.<br><br>
@@ -1781,12 +1863,12 @@ def render_screener(flag_files):
 
 # ═══════════════ MAIN ═══════════════
 def main():
-    st.markdown("""
+    st.markdown(f"""
     <div class="hero">
         <h1>Contratación <span>Pública</span></h1>
         <p class="mono">BQUANT FINANCE · @GSNCHEZ</p>
         <div class="hero-desc">
-            Cruzamos <b>8.7 millones de contratos públicos</b> con <b>17 millones de actos
+            Cruzamos <b>{fmt(PIPELINE['placsp_total'])} de contratos públicos</b> con <b>{fmt(PIPELINE['borme_actos'])} de actos
             del Registro Mercantil</b> para detectar patrones que merecen atención.
         </div>
     </div><div class="divider"></div>
