@@ -228,6 +228,51 @@ div[data-testid="stAlert"] {{
     box-shadow: 0 2px 12px rgba(217,74,46,.12);
 }}
 
+/* ── Multiselect ── */
+.stMultiSelect [data-baseweb="select"] > div {{
+    background: var(--card2) !important; color: var(--text) !important;
+    border: 1px solid var(--border) !important; border-radius: 10px !important;
+    font-family: 'DM Sans'; font-size: .82rem !important;
+    min-height: 44px; transition: border-color .3s;
+}}
+.stMultiSelect [data-baseweb="select"] > div:hover {{ border-color: var(--border2) !important }}
+.stMultiSelect [data-baseweb="select"] > div:focus-within {{
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 2px rgba(58,123,213,.12) !important;
+}}
+.stMultiSelect [data-baseweb="tag"] {{
+    background: rgba(217,74,46,.1) !important;
+    border: 1px solid rgba(217,74,46,.25) !important;
+    border-radius: 6px !important; color: var(--accent2) !important;
+    font-family: 'DM Sans'; font-size: .78rem !important; font-weight: 600;
+}}
+.stMultiSelect [data-baseweb="tag"] span {{
+    color: var(--accent2) !important;
+}}
+.stMultiSelect label {{
+    color: var(--muted) !important;
+    font-family: 'IBM Plex Mono'; font-size: .6rem !important;
+    letter-spacing: .08em; text-transform: uppercase;
+}}
+
+/* ── Radio buttons ── */
+.stRadio > div {{
+    gap: 0 !important;
+}}
+.stRadio [data-baseweb="radio"] {{
+    background: var(--card) !important; border: 1px solid var(--border) !important;
+    border-radius: 10px !important; padding: 10px 18px !important; margin: 0 6px 6px 0 !important;
+    transition: all .3s;
+}}
+.stRadio [data-baseweb="radio"]:hover {{
+    border-color: var(--border2) !important;
+    background: var(--card2) !important;
+}}
+.stRadio [data-baseweb="radio"] div[data-testid="stMarkdownContainer"] p {{
+    font-family: 'DM Sans' !important; font-size: .8rem !important; color: var(--text2) !important;
+    font-weight: 500;
+}}
+
 /* ══════════════════════════════════
    CUSTOM CLASSES
    ══════════════════════════════════ */
@@ -458,9 +503,132 @@ header {{ visibility: hidden }}
     from {{ opacity: 0; transform: translateY(12px) }}
     to   {{ opacity: 1; transform: translateY(0) }}
 }}
-.signal-card, .step, .card, .example-box, .warn-box {{
+.signal-card, .step, .card, .example-box, .warn-box, .ds-card {{
     animation: slideUp .4s ease-out both;
 }}
+
+/* ── Dataset cards ── */
+.ds-grid {{
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0;
+}}
+@media (max-width: 768px) {{ .ds-grid {{ grid-template-columns: 1fr }} }}
+.ds-card {{
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 22px 24px; position: relative; overflow: hidden;
+    transition: border-color .3s, box-shadow .3s, transform .2s;
+}}
+.ds-card:hover {{
+    border-color: var(--border2);
+    box-shadow: 0 6px 28px rgba(0,0,0,.18);
+    transform: translateY(-1px);
+}}
+.ds-card::before {{
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    border-radius: 12px 12px 0 0;
+}}
+.ds-card.ds-blue::before  {{ background: linear-gradient(90deg, var(--blue), rgba(58,123,213,.3)) }}
+.ds-card.ds-teal::before  {{ background: linear-gradient(90deg, var(--teal), rgba(16,185,129,.3)) }}
+.ds-card.ds-amber::before {{ background: linear-gradient(90deg, var(--amber), rgba(229,162,41,.3)) }}
+.ds-card.ds-purple::before{{ background: linear-gradient(90deg, var(--purple),rgba(132,102,212,.3)) }}
+.ds-icon {{
+    font-size: 1.4rem; margin-bottom: 8px; display: block;
+}}
+.ds-name {{
+    font-family: 'DM Sans'; font-size: .96rem; font-weight: 700; color: var(--text);
+    margin-bottom: 4px; letter-spacing: -.01em;
+}}
+.ds-full {{
+    font-family: 'IBM Plex Mono'; font-size: .62rem; color: var(--muted);
+    letter-spacing: .04em; margin-bottom: 10px; display: block;
+}}
+.ds-desc {{
+    font-size: .82rem; color: var(--text2); line-height: 1.65; margin-bottom: 12px;
+}}
+.ds-desc b {{ color: var(--text) }}
+.ds-metrics {{
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
+}}
+.ds-metric {{
+    padding: 5px 11px; border-radius: 6px;
+    background: rgba(255,255,255,.02); border: 1px solid var(--border);
+    font-family: 'IBM Plex Mono'; font-size: .66rem; color: var(--text2);
+    transition: background .3s;
+}}
+.ds-metric:hover {{ background: rgba(255,255,255,.04) }}
+.ds-metric b {{ color: var(--text); font-size: .76rem }}
+.ds-quality {{
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+    font-size: .76rem; color: var(--muted); line-height: 1.6;
+    font-family: 'IBM Plex Mono';
+}}
+.ds-quality b {{ color: var(--text2) }}
+.ds-quality .q-good {{ color: var(--teal) }}
+.ds-quality .q-warn {{ color: var(--amber) }}
+.ds-quality .q-bad  {{ color: var(--red) }}
+
+/* ── Screener ── */
+.scr-header {{
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 1.2rem; font-weight: 600; color: var(--text);
+    margin-bottom: 4px; letter-spacing: -.02em;
+}}
+.scr-sub {{
+    font-size: .82rem; color: var(--text2); line-height: 1.6; margin-bottom: 16px;
+}}
+.scr-mode {{
+    display: inline-flex; gap: 0; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border); margin-bottom: 16px;
+}}
+.scr-mode-btn {{
+    padding: 8px 20px; font-family: 'IBM Plex Mono'; font-size: .72rem;
+    font-weight: 600; letter-spacing: .04em; cursor: pointer;
+    border: none; transition: all .3s; color: var(--text2);
+    background: var(--card);
+}}
+.scr-mode-btn:hover {{ background: var(--card2); color: var(--text) }}
+.scr-mode-btn.active {{
+    background: var(--accent); color: #fff;
+    box-shadow: 0 2px 10px rgba(217,74,46,.2);
+}}
+.scr-results {{
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 24px; margin-top: 12px;
+}}
+.scr-count {{
+    font-family: 'IBM Plex Mono'; font-size: 1.8rem; font-weight: 700;
+    color: var(--text); line-height: 1;
+}}
+.scr-count-label {{
+    font-family: 'IBM Plex Mono'; font-size: .62rem; color: var(--muted);
+    letter-spacing: .1em; text-transform: uppercase; margin-top: 4px;
+}}
+.scr-active-flags {{
+    display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px;
+}}
+.scr-pill {{
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 8px;
+    font-family: 'DM Sans'; font-size: .78rem; font-weight: 600;
+    border: 1px solid; transition: all .3s;
+}}
+.scr-pill-red    {{ background: rgba(220,68,68,.08);  color: var(--red);    border-color: rgba(220,68,68,.2) }}
+.scr-pill-blue   {{ background: rgba(58,123,213,.08); color: var(--blue2);  border-color: rgba(58,123,213,.2) }}
+.scr-pill-amber  {{ background: rgba(229,162,41,.08); color: var(--amber);  border-color: rgba(229,162,41,.2) }}
+.scr-pill-teal   {{ background: rgba(16,185,129,.08); color: var(--teal);   border-color: rgba(16,185,129,.2) }}
+.scr-pill-purple {{ background: rgba(132,102,212,.08);color: var(--purple); border-color: rgba(132,102,212,.2) }}
+.scr-logic {{
+    display: inline-block; padding: 3px 10px; border-radius: 6px;
+    font-family: 'IBM Plex Mono'; font-size: .6rem; font-weight: 700;
+    letter-spacing: .08em; vertical-align: middle;
+}}
+.scr-logic-and {{ background: rgba(16,185,129,.1); color: var(--teal); border: 1px solid rgba(16,185,129,.2) }}
+.scr-logic-or  {{ background: rgba(58,123,213,.1); color: var(--blue2); border: 1px solid rgba(58,123,213,.2) }}
+.scr-empty {{
+    text-align: center; padding: 40px 20px; color: var(--muted);
+    font-family: 'DM Sans'; font-size: .9rem;
+}}
+.scr-empty-icon {{ font-size: 2rem; margin-bottom: 8px; display: block; opacity: .5 }}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -696,6 +864,151 @@ def render_resumen(flag_files):
         si está disuelta o en concurso) con la <b>contratación pública española</b> (quién gana contratos
         del Estado) para detectar situaciones que merecen revisión. Ningún patrón es prueba de irregularidad —
         son señales estadísticas para priorizar la supervisión humana.
+    </div>""", unsafe_allow_html=True)
+
+    # ── DATASETS ──
+    st.markdown('<div class="sec">Los datos · 4 fuentes públicas</div>', unsafe_allow_html=True)
+    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:6px">
+        Todo parte de datos abiertos publicados por organismos oficiales. No accedemos a nada privado.
+        Cada fuente tiene sus fortalezas y sus limitaciones — las explicamos aquí.
+    </div>""", unsafe_allow_html=True)
+
+    # Load quality stats if available
+    q_stats = {}
+    if Q_DIR.exists():
+        for qf in Q_DIR.glob('*.json'):
+            try: q_stats[qf.stem] = load_json(str(qf))
+            except Exception: pass
+
+    st.markdown(f"""
+    <div class="ds-grid">
+        <div class="ds-card ds-blue">
+            <span class="ds-icon">🏛️</span>
+            <div class="ds-name">PLACSP</div>
+            <span class="ds-full">Plataforma de Contratación del Sector Público</span>
+            <div class="ds-desc">
+                La base de datos oficial de contratación pública española.
+                Contiene <b>todas las licitaciones y adjudicaciones</b> publicadas por
+                administraciones del Estado, CCAA, diputaciones, ayuntamientos y entidades públicas.
+                Cada registro incluye el órgano contratante, adjudicatario, importe, procedimiento,
+                fecha y objeto del contrato.
+            </div>
+            <div class="ds-metrics">
+                <div class="ds-metric"><b>8.7M</b> registros totales</div>
+                <div class="ds-metric"><b>5.8M</b> con adjudicatario e importe</div>
+                <div class="ds-metric"><b>48</b> columnas</div>
+                <div class="ds-metric"><b>2012–2026</b></div>
+            </div>
+            <div class="ds-quality">
+                <b>Calidad:</b>
+                <span class="q-good">✓</span> Cobertura amplia y obligatoria por ley ·
+                <span class="q-warn">△</span> 33% de registros sin importe o adjudicatario ·
+                <span class="q-warn">△</span> Nombres de empresa sin normalizar (con variantes, abreviaturas, erratas) ·
+                <span class="q-bad">✗</span> No incluye NIF/CIF del adjudicatario en el dataset abierto
+            </div>
+        </div>
+
+        <div class="ds-card ds-teal">
+            <span class="ds-icon">📜</span>
+            <div class="ds-name">BORME</div>
+            <span class="ds-full">Boletín Oficial del Registro Mercantil</span>
+            <div class="ds-desc">
+                Publicación diaria con <b>todos los actos inscritos</b> en los Registros
+                Mercantiles provinciales: constituciones, nombramientos, ceses, disoluciones,
+                ampliaciones de capital, fusiones, concursos, etc. Un PDF por provincia y día.
+                Nuestro parser extrae empresa, acto, persona, cargo, capital y fecha.
+            </div>
+            <div class="ds-metrics">
+                <div class="ds-metric"><b>17.1M</b> actos extraídos</div>
+                <div class="ds-metric"><b>2.77M</b> empresas</div>
+                <div class="ds-metric"><b>3.8M</b> personas</div>
+                <div class="ds-metric"><b>64K</b> PDFs</div>
+                <div class="ds-metric"><b>2009–2026</b></div>
+            </div>
+            <div class="ds-quality">
+                <b>Calidad:</b>
+                <span class="q-good">✓</span> Fuente oficial e inscripción obligatoria ·
+                <span class="q-good">✓</span> Cobertura completa desde 2009 ·
+                <span class="q-warn">△</span> Formato PDF semiestructurado (requiere parsing regex, validado contra muestra) ·
+                <span class="q-warn">△</span> Vigencia de cargos depende de que se publique el cese ·
+                <span class="q-bad">✗</span> No incluye NIF — cruce solo por nombre
+            </div>
+        </div>
+
+        <div class="ds-card ds-amber">
+            <span class="ds-icon">🏗️</span>
+            <div class="ds-name">Registre Públic de Contractes</div>
+            <span class="ds-full">Generalitat de Catalunya · PSCP</span>
+            <div class="ds-desc">
+                Plataforma de contratación propia de la Generalitat de Catalunya.
+                Complementa PLACSP con <b>datos más ricos</b>: incluye columnas nativas de
+                modificaciones contractuales (número, tipo, importe de cada modificación)
+                que permiten detectar F11. Cubre administración autonómica, local y entidades del sector público catalán.
+            </div>
+            <div class="ds-metrics">
+                <div class="ds-metric"><b>3.4M</b> registros</div>
+                <div class="ds-metric"><b>2014–2026</b></div>
+                <div class="ds-metric">Modificaciones nativas</div>
+            </div>
+            <div class="ds-quality">
+                <b>Calidad:</b>
+                <span class="q-good">✓</span> Datos de modificaciones no disponibles en PLACSP ·
+                <span class="q-good">✓</span> Formas societarias catalanas incluidas en normalización ·
+                <span class="q-warn">△</span> Solapamiento parcial con PLACSP (contratos estatales aparecen en ambos)
+            </div>
+        </div>
+
+        <div class="ds-card ds-purple">
+            <span class="ds-icon">📋</span>
+            <div class="ds-name">Contratos Menores BCN</div>
+            <span class="ds-full">Portal de Transparència · Ajuntament de Barcelona</span>
+            <div class="ds-desc">
+                <b>Contratos menores</b> del Ayuntamiento de Barcelona — adjudicaciones directas
+                por debajo del umbral de licitación obligatoria (generalmente <b>≤15.000€</b> para
+                servicios y suministros). Estos contratos no aparecen en PLACSP ni en el Registre Públic.
+                Son la pieza clave para detectar <b>fraccionamiento</b> (F10).
+            </div>
+            <div class="ds-metrics">
+                <div class="ds-metric"><b>177K</b> registros</div>
+                <div class="ds-metric"><b>Solo BCN</b></div>
+                <div class="ds-metric">Contratos ≤15K€</div>
+            </div>
+            <div class="ds-quality">
+                <b>Calidad:</b>
+                <span class="q-good">✓</span> Datos granulares de contratación menor ·
+                <span class="q-warn">△</span> Solo Barcelona ciudad — no cubre el resto de Catalunya ·
+                <span class="q-bad">✗</span> Sin equivalente para el resto de España (no publicado o no accesible)
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Show quality JSON stats if they exist
+    if q_stats:
+        with st.expander("📊 Estadísticas detalladas de calidad de datos"):
+            for name, data in q_stats.items():
+                st.markdown(f"**{name}**")
+                if isinstance(data, dict):
+                    # Show as metric cards if it has simple key-value pairs
+                    simple = {k: v for k, v in data.items() if isinstance(v, (int, float, str))}
+                    if simple:
+                        cols = st.columns(min(len(simple), 4))
+                        for i, (k, v) in enumerate(simple.items()):
+                            with cols[i % len(cols)]:
+                                display_v = f"{v:,.0f}" if isinstance(v, (int, float)) and v > 100 else str(v)
+                                st.metric(k.replace('_', ' ').title(), display_v)
+                    # Show nested dicts as tables
+                    nested = {k: v for k, v in data.items() if isinstance(v, dict)}
+                    for k, v in nested.items():
+                        st.caption(k.replace('_', ' ').title())
+                        st.dataframe(pd.DataFrame([v]), use_container_width=True, hide_index=True)
+                st.markdown("---")
+
+    st.markdown(f"""<div style="font-size:.78rem;color:{C['muted']};line-height:1.6;margin:8px 0 4px">
+        <b style="color:{C['text2']}">Nota sobre el cruce:</b>
+        BORME no incluye NIF/CIF. El cruce con PLACSP se hace por <b>nombre de empresa normalizado</b>.
+        Esto implica posibles <b>falsos positivos</b> (homónimos) y <b>falsos negativos</b> (variantes de nombre
+        no capturadas). Las 5.550 stop words y 203 reglas curadas manualmente mitigan el problema, pero no lo eliminan.
     </div>""", unsafe_allow_html=True)
 
     st.markdown('<div class="sec">De dónde partimos · El embudo de datos</div>', unsafe_allow_html=True)
@@ -954,6 +1267,250 @@ def render_metodo():
     </div>""", unsafe_allow_html=True)
 
 
+# ═══════════════ TAB 4: SCREENER ═══════════════
+
+# Friendly names for boolean columns in risk_scoring
+FLAG_LABELS = {
+    'flag1_recien_creada':     {'label': '🆕 Recién creada (F1)',               'pill': 'scr-pill-red'},
+    'flag2_capital_ridiculo':  {'label': '💰 Capital mínimo (F2)',              'pill': 'scr-pill-amber'},
+    'flag4_disolucion':        {'label': '💀 Disuelta (F4)',                    'pill': 'scr-pill-red'},
+    'flag5_concursal':         {'label': '⚖️ Concursal (F5)',                   'pill': 'scr-pill-red'},
+    'flag6':                   {'label': '🕸️ Red administradores (F6)',          'pill': 'scr-pill-blue'},
+    'flag7':                   {'label': '🎯 Concentración (F7)',               'pill': 'scr-pill-teal'},
+    'flag8':                   {'label': '🤝 UTEs vinculadas (F8)',             'pill': 'scr-pill-amber'},
+    'flag9':                   {'label': '📍 Geo discrepancia (F9)',            'pill': 'scr-pill-purple'},
+    'flag10':                  {'label': '✂️ Fraccionamiento (F10)',             'pill': 'scr-pill-red'},
+    'flag11':                  {'label': '📝 Modificaciones (F11)',             'pill': 'scr-pill-amber'},
+}
+
+def _flag_label(col):
+    """Get friendly label for a boolean flag column."""
+    col_l = col.lower()
+    for key, info in FLAG_LABELS.items():
+        if key in col_l:
+            return info['label']
+    return col
+
+def _flag_pill_class(col):
+    """Get pill CSS class for a flag column."""
+    col_l = col.lower()
+    for key, info in FLAG_LABELS.items():
+        if key in col_l:
+            return info['pill']
+    return 'scr-pill-blue'
+
+def render_screener(flag_files):
+    st.markdown(f"""
+    <div class="scr-header">Filtrar empresas por señales</div>
+    <div class="scr-sub">
+        Selecciona una o más señales para ver qué empresas las cumplen.
+        Puedes combinar filtros para encontrar empresas con <b>múltiples señales activas</b>.
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Find scoring files ──
+    scoring_files = {}
+    for stem, fi in flag_files.items():
+        if 'risk_scoring' in stem:
+            scoring_files[stem] = fi
+
+    if not scoring_files:
+        st.markdown("""<div class="scr-empty">
+            <span class="scr-empty-icon">📭</span>
+            No se encontró el archivo de scoring unificado.<br>
+            Coloca <code>risk_scoring_unificado.parquet</code> en <code>anomalias/</code>.
+        </div>""", unsafe_allow_html=True)
+        return
+
+    # ── Scope selector ──
+    scope_names = {s: f"{'🇪🇸 Nacional' if 'cat' not in s else '🏗️ Catalunya'} ({fi['scope']})" for s, fi in scoring_files.items()}
+    if len(scoring_files) > 1:
+        sel_scope = st.radio("Ámbito", list(scoring_files.keys()),
+            format_func=lambda x: scope_names[x], horizontal=True, key="scr_scope",
+            label_visibility="collapsed")
+    else:
+        sel_scope = list(scoring_files.keys())[0]
+
+    # ── Load data ──
+    with st.spinner("Cargando..."):
+        df_raw = load_pq(scoring_files[sel_scope]['path'])
+
+    # ── Detect boolean flag columns ──
+    bool_cols = [c for c in df_raw.columns if df_raw[c].dtype == bool and df_raw[c].sum() > 0]
+    if not bool_cols:
+        st.info("No se detectaron columnas de señales booleanas en este archivo.")
+        return
+
+    # Sort by number of hits (most common first)
+    bool_cols = sorted(bool_cols, key=lambda c: -int(df_raw[c].sum()))
+
+    # ── n_flags column ──
+    nf_col = next((c for c in df_raw.columns if 'n_flags' in c.lower()), None)
+
+    # ── Flag selection ──
+    st.markdown('<div class="sec">1 · Selecciona señales</div>', unsafe_allow_html=True)
+
+    # Build options with counts
+    flag_options = {c: f"{_flag_label(c)}  ·  {int(df_raw[c].sum()):,} empresas" for c in bool_cols}
+
+    selected_flags = st.multiselect(
+        "Señales a filtrar",
+        options=bool_cols,
+        format_func=lambda c: flag_options[c],
+        key="scr_flags",
+        placeholder="Haz clic para seleccionar señales...",
+    )
+
+    # ── Logic selector ──
+    if len(selected_flags) > 1:
+        st.markdown('<div class="sec">2 · Tipo de combinación</div>', unsafe_allow_html=True)
+        logic = st.radio(
+            "¿Cómo combinar las señales seleccionadas?",
+            ["AND — Tiene TODAS las señales seleccionadas", "OR — Tiene AL MENOS UNA de las seleccionadas"],
+            key="scr_logic", horizontal=True, label_visibility="collapsed",
+        )
+        is_and = logic.startswith("AND")
+    else:
+        is_and = True
+
+    # ── Apply filter ──
+    if not selected_flags:
+        st.markdown(f"""<div class="scr-empty">
+            <span class="scr-empty-icon">👆</span>
+            Selecciona al menos una señal arriba para filtrar empresas.<br>
+            <span style="font-size:.78rem;color:{C['muted']}">
+                Hay <b style="color:{C['text']}">{len(df_raw):,}</b> empresas con al menos 1 señal en el dataset.
+            </span>
+        </div>""", unsafe_allow_html=True)
+
+        # Show distribution preview
+        if nf_col:
+            st.markdown(f"<div style='font-size:.78rem;color:{C['muted']};margin:12px 0 4px'>"
+                "Distribución de señales acumuladas por empresa:</div>", unsafe_allow_html=True)
+            dist = df_raw[nf_col].value_counts().sort_index()
+            fig = go.Figure(go.Bar(
+                x=[f"{int(k)} señal{'es' if k > 1 else ''}" for k in dist.index], y=dist.values,
+                marker=dict(color=[C['blue'] if k <= 1 else C['amber'] if k <= 2 else C['red'] for k in dist.index], opacity=.85),
+                hovertemplate='<b>%{x}</b><br>%{y:,} empresas<extra></extra>'))
+            fig.update_layout(**PL, height=260,
+                xaxis=dict(gridcolor=C['grid']), yaxis=dict(title='Empresas', gridcolor=C['grid']), bargap=.15)
+            st.plotly_chart(fig, use_container_width=True)
+        return
+
+    # ── Filter ──
+    if is_and:
+        mask = pd.Series(True, index=df_raw.index)
+        for c in selected_flags:
+            mask &= df_raw[c]
+    else:
+        mask = pd.Series(False, index=df_raw.index)
+        for c in selected_flags:
+            mask |= df_raw[c]
+
+    df_filtered = df_raw[mask].copy()
+
+    # ── Results header ──
+    st.markdown('<div class="sec">3 · Resultados</div>', unsafe_allow_html=True)
+
+    # Active flags pills
+    pills_html = ""
+    for c in selected_flags:
+        pills_html += f'<span class="scr-pill {_flag_pill_class(c)}">{_flag_label(c)}</span>'
+
+    logic_html = ('<span class="scr-logic scr-logic-and">AND · TODAS</span>'
+                  if is_and else
+                  '<span class="scr-logic scr-logic-or">OR · AL MENOS UNA</span>')
+
+    pct = len(df_filtered) / len(df_raw) * 100 if len(df_raw) > 0 else 0
+
+    st.markdown(f"""
+    <div class="scr-results">
+        <div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap">
+            <div>
+                <div class="scr-count">{len(df_filtered):,}</div>
+                <div class="scr-count-label">empresas encontradas ({pct:.1f}% del total)</div>
+            </div>
+            <div style="flex:1">
+                <div style="font-size:.72rem;color:{C['muted']};margin-bottom:6px">
+                    Filtro activo {logic_html}
+                </div>
+                <div class="scr-active-flags">{pills_html}</div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    if len(df_filtered) == 0:
+        st.markdown(f"""<div class="scr-empty" style="margin-top:16px">
+            <span class="scr-empty-icon">🔍</span>
+            Ninguna empresa cumple {'todas' if is_and else 'ninguna de'} las señales seleccionadas.
+            <br><span style="font-size:.78rem;color:{C['muted']}">Prueba a quitar alguna señal o cambiar a modo OR.</span>
+        </div>""", unsafe_allow_html=True)
+        return
+
+    # ── Additional stats for results ──
+    m1, m2, m3, m4 = st.columns(4)
+    with m1:
+        imp_col = next((c for c in df_filtered.columns if 'importe' in c.lower() and 'total' in c.lower()), None)
+        if not imp_col:
+            imp_col = next((c for c in df_filtered.columns if 'importe' in c.lower()), None)
+        if imp_col and df_filtered[imp_col].notna().any():
+            total_imp = df_filtered[imp_col].sum()
+            st.metric("Importe total", f"{total_imp/1e6:,.0f}M€")
+        else:
+            st.metric("Empresas", f"{len(df_filtered):,}")
+    with m2:
+        if nf_col and nf_col in df_filtered.columns:
+            st.metric("Media señales/empresa", f"{df_filtered[nf_col].mean():.1f}")
+    with m3:
+        adj_col = next((c for c in df_filtered.columns if 'n_adj' in c.lower() or 'n_contratos' in c.lower()), None)
+        if adj_col:
+            st.metric("Contratos totales", f"{int(df_filtered[adj_col].sum()):,}")
+    with m4:
+        active_flags = sum(int(df_filtered[c].sum()) for c in bool_cols)
+        st.metric("Señales activas", f"{active_flags:,}")
+
+    # ── Text search within results ──
+    search_q = st.text_input("🔍 Buscar en resultados", key="scr_search",
+        placeholder="Filtra por nombre de empresa, órgano, persona...")
+
+    df_show = clean_df(df_filtered)
+
+    if search_q and len(search_q) >= 2:
+        smask = pd.Series(False, index=df_show.index)
+        for col in df_show.select_dtypes(include=['object']).columns:
+            smask |= df_show[col].astype(str).str.contains(search_q, case=False, na=False)
+        df_show = df_show[smask]
+        st.caption(f"🔍 {len(df_show):,} resultados para «{search_q}»")
+
+    # ── Sort ──
+    sortable = [c for c in df_show.columns if df_show[c].dtype in ['int64','float64','int32','float32']]
+    if sortable:
+        sort_col = st.selectbox("Ordenar por", ['(sin ordenar)'] + sortable, key="scr_sort")
+        if sort_col != '(sin ordenar)':
+            df_show = df_show.sort_values(sort_col, ascending=False)
+
+    # ── Table ──
+    st.dataframe(df_show.head(2000), use_container_width=True, height=550, hide_index=True)
+
+    st.caption(f"Mostrando {min(len(df_show), 2000):,} de {len(df_show):,} resultados")
+
+    # ── Flag breakdown for filtered results ──
+    with st.expander("📊 Distribución de señales en los resultados filtrados"):
+        flag_breakdown = {_flag_label(c): int(df_filtered[c].sum()) for c in bool_cols if df_filtered[c].sum() > 0}
+        if flag_breakdown:
+            fb_df = pd.DataFrame({'Señal': list(flag_breakdown.keys()),
+                'Empresas': list(flag_breakdown.values())}).sort_values('Empresas', ascending=True)
+            fig = go.Figure(go.Bar(
+                y=fb_df['Señal'], x=fb_df['Empresas'], orientation='h',
+                marker=dict(color=C['blue'], opacity=.85),
+                hovertemplate='<b>%{y}</b><br>%{x:,} empresas<extra></extra>'))
+            fig.update_layout(**PL, height=max(200, len(fb_df) * 32),
+                xaxis=dict(gridcolor=C['grid']),
+                yaxis=dict(tickfont=dict(size=10, family='DM Sans')), bargap=.2)
+            st.plotly_chart(fig, use_container_width=True)
+
+
 # ═══════════════ MAIN ═══════════════
 def main():
     st.markdown("""
@@ -967,10 +1524,11 @@ def main():
     </div><div class="divider"></div>
     """, unsafe_allow_html=True)
     flag_files = discover_flags()
-    tabs = st.tabs(["📊 Resumen", "🔎 Explorar señales", "📋 Cómo funciona"])
+    tabs = st.tabs(["📊 Resumen", "🔬 Screener", "🔎 Explorar señales", "📋 Cómo funciona"])
     with tabs[0]: render_resumen(flag_files)
-    with tabs[1]: render_explorar(flag_files)
-    with tabs[2]: render_metodo()
+    with tabs[1]: render_screener(flag_files)
+    with tabs[2]: render_explorar(flag_files)
+    with tabs[3]: render_metodo()
     st.markdown("""<div class="ft"><a href="https://twitter.com/Gsnchez">@Gsnchez</a> · <a href="https://bquantfinance.com">bquantfinance.com</a> · <a href="https://github.com/BquantFinance">GitHub</a></div>""", unsafe_allow_html=True)
 
 if __name__ == "__main__": main()
