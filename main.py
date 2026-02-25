@@ -21,10 +21,10 @@ DATA = Path("anomalias")
 Q_DIR = DATA / "quality"
 
 C = {
-    'bg':'#06080d','card':'#0b0e15','card2':'#0f1219','border':'#171c28','border2':'#1f2636',
-    'accent':'#d94a2e','accent2':'#e8603f','blue':'#3a7bd5','blue2':'#5b9bf0','teal':'#10b981',
-    'amber':'#e5a229','red':'#dc4444','purple':'#8466d4',
-    'text':'#dfe5ef','text2':'#8d99af','muted':'#505c72','grid':'rgba(255,255,255,0.025)',
+    'bg':'#080b12','card':'#0d1117','card2':'#131921','border':'#1e2636','border2':'#2a3348',
+    'accent':'#e05a3a','accent2':'#f06e52','blue':'#4a8fe7','blue2':'#6baaff','teal':'#22d3a0',
+    'amber':'#f0b030','red':'#ef5555','purple':'#9b7dea',
+    'text':'#e8edf5','text2':'#9dafc8','muted':'#5e6f88','grid':'rgba(255,255,255,0.03)',
 }
 
 PL = dict(
@@ -40,237 +40,174 @@ st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 
-/* ── Resets & vars ── */
 :root {{
-    --bg: {C['bg']}; --card: {C['card']}; --card2: {C['card2']};
-    --border: {C['border']}; --border2: {C['border2']};
-    --accent: {C['accent']}; --accent2: {C['accent2']};
-    --blue: {C['blue']}; --blue2: {C['blue2']};
-    --teal: {C['teal']}; --amber: {C['amber']};
-    --red: {C['red']}; --purple: {C['purple']};
-    --text: {C['text']}; --text2: {C['text2']}; --muted: {C['muted']};
+    --bg:{C['bg']}; --card:{C['card']}; --card2:{C['card2']};
+    --border:{C['border']}; --border2:{C['border2']};
+    --accent:{C['accent']}; --accent2:{C['accent2']};
+    --blue:{C['blue']}; --blue2:{C['blue2']};
+    --teal:{C['teal']}; --amber:{C['amber']};
+    --red:{C['red']}; --purple:{C['purple']};
+    --text:{C['text']}; --text2:{C['text2']}; --muted:{C['muted']};
+    --glow-accent: 0 0 20px rgba(224,90,58,.15), 0 0 60px rgba(224,90,58,.06);
+    --glow-blue:   0 0 20px rgba(74,143,231,.15), 0 0 60px rgba(74,143,231,.06);
+    --glow-teal:   0 0 20px rgba(34,211,160,.12), 0 0 60px rgba(34,211,160,.05);
+    --glow-amber:  0 0 20px rgba(240,176,48,.12), 0 0 60px rgba(240,176,48,.05);
+    --glow-purple: 0 0 20px rgba(155,125,234,.12),0 0 60px rgba(155,125,234,.05);
+    --glow-red:    0 0 20px rgba(239,85,85,.12),  0 0 60px rgba(239,85,85,.05);
 }}
-
-*, *::before, *::after {{ box-sizing: border-box }}
 
 /* ── App shell ── */
 .stApp {{
     background: var(--bg);
     background-image:
-        radial-gradient(ellipse 80% 55% at 10% 0%, rgba(58,123,213,.04) 0%, transparent 55%),
-        radial-gradient(ellipse 60% 45% at 90% 100%, rgba(217,74,46,.025) 0%, transparent 50%),
-        radial-gradient(ellipse 40% 35% at 50% 50%, rgba(132,102,212,.012) 0%, transparent 60%);
-    color: var(--text);
-    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        radial-gradient(ellipse 80% 50% at 8% 0%, rgba(74,143,231,.05) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 92% 100%, rgba(224,90,58,.04) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 30% at 50% 40%, rgba(155,125,234,.02) 0%, transparent 60%);
+    color: var(--text); font-family: 'DM Sans', -apple-system, sans-serif;
 }}
-section[data-testid="stSidebar"] {{
-    background: var(--card); border-right: 1px solid var(--border);
-}}
-.block-container {{
-    max-width: 1180px;
-    padding-top: 1rem !important;
-    padding-bottom: 2rem !important;
-}}
+section[data-testid="stSidebar"] {{ background: var(--card); border-right:1px solid var(--border) }}
+.block-container {{ max-width:1180px; padding-top:1rem!important; padding-bottom:2rem!important }}
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar {{ width: 6px; height: 6px }}
-::-webkit-scrollbar-track {{ background: transparent }}
-::-webkit-scrollbar-thumb {{
-    background: rgba(255,255,255,.08); border-radius: 4px;
-}}
-::-webkit-scrollbar-thumb:hover {{ background: rgba(255,255,255,.14) }}
+::-webkit-scrollbar {{ width:6px; height:6px }}
+::-webkit-scrollbar-track {{ background:transparent }}
+::-webkit-scrollbar-thumb {{ background:rgba(255,255,255,.1); border-radius:4px }}
+::-webkit-scrollbar-thumb:hover {{ background:rgba(255,255,255,.18) }}
 
 /* ── Tabs ── */
-.stTabs [data-baseweb="tab-list"] {{
-    gap: 0; border-bottom: 1px solid var(--border);
-    background: transparent;
-}}
+.stTabs [data-baseweb="tab-list"] {{ gap:0; border-bottom:1px solid var(--border); background:transparent }}
 .stTabs [data-baseweb="tab"] {{
-    background: transparent; color: var(--muted); border: none;
-    padding: 14px 28px; font-family: 'DM Sans'; font-size: .82rem;
-    font-weight: 600; letter-spacing: .02em;
-    transition: color .3s, border-color .3s;
-    border-bottom: 2px solid transparent;
+    background:transparent; color:var(--muted); border:none; padding:14px 28px;
+    font-family:'DM Sans'; font-size:.82rem; font-weight:600; letter-spacing:.02em;
+    transition:color .3s; border-bottom:2px solid transparent;
 }}
-.stTabs [data-baseweb="tab"]:hover {{ color: var(--text2) }}
+.stTabs [data-baseweb="tab"]:hover {{ color:var(--text2) }}
 .stTabs [aria-selected="true"] {{
-    color: var(--accent) !important;
-    border-bottom: 2px solid var(--accent) !important;
-    background: transparent !important;
+    color:var(--accent)!important; border-bottom:2px solid var(--accent)!important;
+    background:transparent!important; text-shadow:0 0 20px rgba(224,90,58,.3);
 }}
-.stTabs [data-baseweb="tab-panel"] {{ padding-top: .5rem }}
+.stTabs [data-baseweb="tab-panel"] {{ padding-top:.5rem }}
 
 /* ── Metrics ── */
 div[data-testid="stMetric"] {{
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 18px 22px; position: relative; overflow: hidden;
-    transition: border-color .3s, box-shadow .3s;
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:18px 22px; position:relative; overflow:hidden;
+    transition:border-color .3s, box-shadow .3s;
 }}
 div[data-testid="stMetric"]:hover {{
-    border-color: var(--border2);
-    box-shadow: 0 4px 24px rgba(0,0,0,.15);
+    border-color:var(--border2); box-shadow:var(--glow-blue);
 }}
 div[data-testid="stMetric"]::before {{
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, transparent 5%, var(--blue) 50%, transparent 95%);
-    opacity: .35;
+    content:''; position:absolute; top:0;left:0;right:0; height:2px;
+    background:linear-gradient(90deg,transparent 10%,var(--blue) 50%,transparent 90%); opacity:.4;
 }}
 div[data-testid="stMetric"] label {{
-    color: var(--muted) !important;
-    font-family: 'IBM Plex Mono'; font-size: .58rem !important;
-    letter-spacing: .1em; text-transform: uppercase;
+    color:var(--muted)!important; font-family:'IBM Plex Mono'; font-size:.58rem!important;
+    letter-spacing:.1em; text-transform:uppercase;
 }}
 div[data-testid="stMetric"] [data-testid="stMetricValue"] {{
-    color: var(--text) !important;
-    font-family: 'IBM Plex Mono'; font-size: 1.25rem !important; font-weight: 600;
+    color:var(--text)!important; font-family:'IBM Plex Mono'; font-size:1.25rem!important; font-weight:600;
 }}
-div[data-testid="stMetricDelta"] {{ font-family: 'IBM Plex Mono'; font-size: .7rem !important }}
 
 /* ── Expander ── */
 div[data-testid="stExpander"] {{
-    background: var(--card) !important; border: 1px solid var(--border) !important;
-    border-radius: 12px !important; overflow: hidden;
-    transition: border-color .3s;
+    background:var(--card)!important; border:1px solid var(--border)!important;
+    border-radius:14px!important; overflow:hidden; transition:border-color .3s;
 }}
-div[data-testid="stExpander"]:hover {{ border-color: var(--border2) !important }}
+div[data-testid="stExpander"]:hover {{ border-color:var(--border2)!important }}
 div[data-testid="stExpander"] details summary {{
-    font-family: 'DM Sans'; font-size: .84rem; font-weight: 600; color: var(--text2);
-    padding: 14px 18px;
+    font-family:'DM Sans'; font-size:.84rem; font-weight:600; color:var(--text2); padding:14px 18px;
 }}
-div[data-testid="stExpander"] details summary:hover {{ color: var(--text) }}
-div[data-testid="stExpander"] details[open] summary {{ border-bottom: 1px solid var(--border) }}
+div[data-testid="stExpander"] details[open] summary {{ border-bottom:1px solid var(--border) }}
 
-/* ── Inputs: text, select, number ── */
-div[data-testid="stTextInput"] input,
-div[data-testid="stNumberInput"] input {{
-    background: var(--card2) !important; color: var(--text) !important;
-    border: 1px solid var(--border) !important; border-radius: 10px !important;
-    font-family: 'IBM Plex Mono'; font-size: .82rem !important;
-    padding: 10px 14px !important;
-    transition: border-color .3s, box-shadow .3s;
+/* ── Inputs ── */
+div[data-testid="stTextInput"] input, div[data-testid="stNumberInput"] input {{
+    background:var(--card2)!important; color:var(--text)!important;
+    border:1px solid var(--border)!important; border-radius:12px!important;
+    font-family:'IBM Plex Mono'; font-size:.82rem!important; padding:10px 14px!important;
+    transition:border-color .3s, box-shadow .3s;
 }}
-div[data-testid="stTextInput"] input:focus,
-div[data-testid="stNumberInput"] input:focus {{
-    border-color: var(--blue) !important;
-    box-shadow: 0 0 0 2px rgba(58,123,213,.12) !important;
-    outline: none !important;
+div[data-testid="stTextInput"] input:focus, div[data-testid="stNumberInput"] input:focus {{
+    border-color:var(--blue)!important; box-shadow:0 0 0 3px rgba(74,143,231,.15), var(--glow-blue)!important;
 }}
-div[data-testid="stTextInput"] input::placeholder {{ color: var(--muted) !important; opacity: .7 }}
-div[data-testid="stTextInput"] label,
-div[data-testid="stNumberInput"] label,
-.stSelectbox label {{
-    color: var(--muted) !important;
-    font-family: 'IBM Plex Mono'; font-size: .6rem !important;
-    letter-spacing: .08em; text-transform: uppercase;
+div[data-testid="stTextInput"] input::placeholder {{ color:var(--muted)!important; opacity:.7 }}
+div[data-testid="stTextInput"] label, div[data-testid="stNumberInput"] label, .stSelectbox label, .stMultiSelect label {{
+    color:var(--muted)!important; font-family:'IBM Plex Mono'; font-size:.6rem!important;
+    letter-spacing:.08em; text-transform:uppercase;
 }}
 
 /* ── Selectbox ── */
 .stSelectbox [data-baseweb="select"] > div {{
-    background: var(--card2) !important; color: var(--text) !important;
-    border: 1px solid var(--border) !important; border-radius: 10px !important;
-    font-family: 'DM Sans'; font-size: .82rem !important;
-    transition: border-color .3s;
+    background:var(--card2)!important; color:var(--text)!important;
+    border:1px solid var(--border)!important; border-radius:12px!important;
+    font-family:'DM Sans'; font-size:.82rem!important; transition:border-color .3s;
 }}
-.stSelectbox [data-baseweb="select"] > div:hover {{ border-color: var(--border2) !important }}
+.stSelectbox [data-baseweb="select"] > div:hover {{ border-color:var(--border2)!important }}
 .stSelectbox [data-baseweb="select"] > div:focus-within {{
-    border-color: var(--blue) !important;
-    box-shadow: 0 0 0 2px rgba(58,123,213,.12) !important;
+    border-color:var(--blue)!important; box-shadow:0 0 0 3px rgba(74,143,231,.15)!important;
 }}
-[data-baseweb="popover"] [data-baseweb="menu"],
-[data-baseweb="popover"] ul {{
-    background: {C['card2']} !important; border: 1px solid var(--border2) !important;
-    border-radius: 10px !important;
+[data-baseweb="popover"] [data-baseweb="menu"], [data-baseweb="popover"] ul {{
+    background:{C['card2']}!important; border:1px solid var(--border2)!important; border-radius:12px!important;
 }}
 [data-baseweb="popover"] li {{
-    color: var(--text2) !important; font-family: 'DM Sans'; font-size: .82rem !important;
-    transition: background .2s, color .2s;
+    color:var(--text2)!important; font-family:'DM Sans'; font-size:.82rem!important; transition:background .2s;
 }}
-[data-baseweb="popover"] li:hover {{
-    background: rgba(58,123,213,.08) !important; color: var(--text) !important;
-}}
-[data-baseweb="popover"] li[aria-selected="true"] {{
-    background: rgba(217,74,46,.1) !important; color: var(--accent) !important;
-}}
-
-/* ── Dataframe / table ── */
-div[data-testid="stDataFrame"] {{
-    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-}}
-div[data-testid="stDataFrame"] [data-testid="glideDataEditor"] {{
-    border-radius: 12px !important;
-}}
-
-/* ── Spinner ── */
-.stSpinner > div {{ border-top-color: var(--accent) !important }}
-
-/* ── Caption ── */
-.stCaption, div[data-testid="stCaptionContainer"] {{
-    font-family: 'IBM Plex Mono' !important; font-size: .72rem !important;
-    color: var(--muted) !important;
-}}
-
-/* ── Info / Warning / Error boxes ── */
-div[data-testid="stAlert"] {{
-    background: var(--card) !important; border: 1px solid var(--border) !important;
-    border-radius: 10px !important; color: var(--text2) !important;
-    font-size: .82rem; font-family: 'DM Sans';
-}}
-
-/* ── Buttons (if any) ── */
-.stButton > button {{
-    background: var(--card2) !important; color: var(--text) !important;
-    border: 1px solid var(--border) !important; border-radius: 10px !important;
-    font-family: 'DM Sans'; font-weight: 600; font-size: .82rem;
-    padding: 8px 20px; transition: all .3s;
-}}
-.stButton > button:hover {{
-    border-color: var(--accent) !important; color: var(--accent) !important;
-    box-shadow: 0 2px 12px rgba(217,74,46,.12);
-}}
+[data-baseweb="popover"] li:hover {{ background:rgba(74,143,231,.1)!important; color:var(--text)!important }}
+[data-baseweb="popover"] li[aria-selected="true"] {{ background:rgba(224,90,58,.12)!important; color:var(--accent)!important }}
 
 /* ── Multiselect ── */
 .stMultiSelect [data-baseweb="select"] > div {{
-    background: var(--card2) !important; color: var(--text) !important;
-    border: 1px solid var(--border) !important; border-radius: 10px !important;
-    font-family: 'DM Sans'; font-size: .82rem !important;
-    min-height: 44px; transition: border-color .3s;
+    background:var(--card2)!important; color:var(--text)!important;
+    border:1px solid var(--border)!important; border-radius:12px!important;
+    font-family:'DM Sans'; font-size:.82rem!important; min-height:44px; transition:border-color .3s;
 }}
-.stMultiSelect [data-baseweb="select"] > div:hover {{ border-color: var(--border2) !important }}
+.stMultiSelect [data-baseweb="select"] > div:hover {{ border-color:var(--border2)!important }}
 .stMultiSelect [data-baseweb="select"] > div:focus-within {{
-    border-color: var(--blue) !important;
-    box-shadow: 0 0 0 2px rgba(58,123,213,.12) !important;
+    border-color:var(--blue)!important; box-shadow:0 0 0 3px rgba(74,143,231,.15)!important;
 }}
 .stMultiSelect [data-baseweb="tag"] {{
-    background: rgba(217,74,46,.1) !important;
-    border: 1px solid rgba(217,74,46,.25) !important;
-    border-radius: 6px !important; color: var(--accent2) !important;
-    font-family: 'DM Sans'; font-size: .78rem !important; font-weight: 600;
+    background:rgba(224,90,58,.12)!important; border:1px solid rgba(224,90,58,.3)!important;
+    border-radius:8px!important; color:var(--accent2)!important;
+    font-family:'DM Sans'; font-size:.78rem!important; font-weight:600;
+    box-shadow:0 0 10px rgba(224,90,58,.08);
 }}
-.stMultiSelect [data-baseweb="tag"] span {{
-    color: var(--accent2) !important;
+.stMultiSelect [data-baseweb="tag"] span {{ color:var(--accent2)!important }}
+
+/* ── Radio ── */
+.stRadio > div {{ gap:0!important }}
+.stRadio [data-baseweb="radio"] {{
+    background:var(--card)!important; border:1px solid var(--border)!important;
+    border-radius:12px!important; padding:10px 18px!important; margin:0 6px 6px 0!important;
+    transition:all .3s;
 }}
-.stMultiSelect label {{
-    color: var(--muted) !important;
-    font-family: 'IBM Plex Mono'; font-size: .6rem !important;
-    letter-spacing: .08em; text-transform: uppercase;
+.stRadio [data-baseweb="radio"]:hover {{ border-color:var(--border2)!important; background:var(--card2)!important }}
+.stRadio [data-baseweb="radio"] div[data-testid="stMarkdownContainer"] p {{
+    font-family:'DM Sans'!important; font-size:.8rem!important; color:var(--text2)!important; font-weight:500;
 }}
 
-/* ── Radio buttons ── */
-.stRadio > div {{
-    gap: 0 !important;
+/* ── Dataframe ── */
+div[data-testid="stDataFrame"] {{ border:1px solid var(--border); border-radius:14px; overflow:hidden }}
+
+/* ── Buttons ── */
+.stButton > button {{
+    background:var(--card2)!important; color:var(--text)!important;
+    border:1px solid var(--border)!important; border-radius:12px!important;
+    font-family:'DM Sans'; font-weight:600; font-size:.82rem; padding:8px 20px; transition:all .3s;
 }}
-.stRadio [data-baseweb="radio"] {{
-    background: var(--card) !important; border: 1px solid var(--border) !important;
-    border-radius: 10px !important; padding: 10px 18px !important; margin: 0 6px 6px 0 !important;
-    transition: all .3s;
+.stButton > button:hover {{
+    border-color:var(--accent)!important; color:var(--accent)!important;
+    box-shadow:var(--glow-accent);
 }}
-.stRadio [data-baseweb="radio"]:hover {{
-    border-color: var(--border2) !important;
-    background: var(--card2) !important;
+
+/* ── Alert ── */
+div[data-testid="stAlert"] {{
+    background:var(--card)!important; border:1px solid var(--border)!important;
+    border-radius:12px!important; color:var(--text2)!important; font-size:.82rem; font-family:'DM Sans';
 }}
-.stRadio [data-baseweb="radio"] div[data-testid="stMarkdownContainer"] p {{
-    font-family: 'DM Sans' !important; font-size: .8rem !important; color: var(--text2) !important;
-    font-weight: 500;
+
+/* ── Caption ── */
+.stCaption, div[data-testid="stCaptionContainer"] {{
+    font-family:'IBM Plex Mono'!important; font-size:.72rem!important; color:var(--muted)!important;
 }}
 
 /* ══════════════════════════════════
@@ -278,357 +215,253 @@ div[data-testid="stAlert"] {{
    ══════════════════════════════════ */
 
 /* ── Hero ── */
-.hero {{
-    text-align: center; padding: 3rem 0 .8rem;
-    animation: fadeIn .7s ease-out;
-}}
-@keyframes fadeIn {{
-    from {{ opacity: 0; transform: translateY(8px) }}
-    to   {{ opacity: 1; transform: translateY(0) }}
-}}
+.hero {{ text-align:center; padding:3rem 0 .8rem; animation:fadeIn .7s ease-out }}
+@keyframes fadeIn {{ from {{ opacity:0; transform:translateY(8px) }} to {{ opacity:1; transform:translateY(0) }} }}
 .hero h1 {{
-    font-family: 'Newsreader', Georgia, serif;
-    font-size: 2.6rem; font-weight: 700; color: var(--text);
-    letter-spacing: -.03em; margin: 0; line-height: 1.15;
+    font-family:'Newsreader',Georgia,serif; font-size:2.6rem; font-weight:700;
+    color:var(--text); letter-spacing:-.03em; margin:0; line-height:1.15;
 }}
 .hero h1 span {{
-    color: var(--accent);
-    background: linear-gradient(135deg, var(--accent) 20%, var(--accent2) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color:var(--accent);
+    background:linear-gradient(135deg,var(--accent) 20%,var(--accent2) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    filter:drop-shadow(0 0 12px rgba(224,90,58,.25));
 }}
 .hero .mono {{
-    font-family: 'IBM Plex Mono'; font-size: .6rem; color: var(--muted);
-    letter-spacing: .2em; text-transform: uppercase; margin-top: .6rem;
+    font-family:'IBM Plex Mono'; font-size:.6rem; color:var(--muted);
+    letter-spacing:.2em; text-transform:uppercase; margin-top:.6rem;
 }}
 .hero-desc {{
-    font-family: 'Newsreader', Georgia, serif;
-    font-size: 1.05rem; font-style: italic; color: var(--text2);
-    max-width: 640px; margin: 1rem auto 0; line-height: 1.7; font-weight: 400;
+    font-family:'Newsreader',Georgia,serif; font-size:1.05rem; font-style:italic;
+    color:var(--text2); max-width:640px; margin:1rem auto 0; line-height:1.7;
 }}
-.hero-desc b {{ color: var(--text); font-weight: 600; font-style: normal }}
+.hero-desc b {{ color:var(--text); font-weight:600; font-style:normal }}
 
 /* ── Divider ── */
 .divider {{
-    height: 1px; margin: 1.5rem 0;
-    background: linear-gradient(90deg, transparent 2%, {C['border2']} 50%, transparent 98%);
+    height:1px; margin:1.5rem 0;
+    background:linear-gradient(90deg,transparent 2%,{C['border2']} 50%,transparent 98%);
 }}
 
 /* ── Section header ── */
 .sec {{
-    font-family: 'IBM Plex Mono'; font-size: .64rem; font-weight: 600;
-    color: var(--accent); letter-spacing: .14em; text-transform: uppercase;
-    border-bottom: 1px solid var(--border); padding-bottom: 8px;
-    margin: 2.2rem 0 1.1rem; position: relative;
+    font-family:'IBM Plex Mono'; font-size:.64rem; font-weight:600;
+    color:var(--accent); letter-spacing:.14em; text-transform:uppercase;
+    border-bottom:1px solid var(--border); padding-bottom:8px;
+    margin:2.2rem 0 1.1rem; position:relative;
+    text-shadow:0 0 18px rgba(224,90,58,.2);
 }}
 .sec::after {{
-    content: ''; position: absolute; bottom: -1px; left: 0;
-    width: 40px; height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 1px;
+    content:''; position:absolute; bottom:-1px; left:0; width:42px; height:2px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border-radius:1px; box-shadow:0 0 8px rgba(224,90,58,.3);
 }}
 
 /* ── Cards ── */
 .card {{
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 20px 24px; margin: 10px 0;
-    font-size: .84rem; color: var(--text2); line-height: 1.7;
-    transition: border-color .3s, box-shadow .3s;
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:20px 24px; margin:10px 0; font-size:.84rem; color:var(--text2); line-height:1.7;
+    transition:border-color .3s, box-shadow .3s;
 }}
-.card:hover {{
-    border-color: var(--border2);
-    box-shadow: 0 2px 16px rgba(0,0,0,.1);
-}}
-.card b {{ color: var(--text) }}
-.card-l {{
-    border-left: 3px solid; border-radius: 0 12px 12px 0;
-    padding-left: 22px;
-}}
-.card-accent {{ border-left-color: var(--accent) }}
-.card-blue  {{ border-left-color: var(--blue) }}
-.card-teal  {{ border-left-color: var(--teal) }}
-.card-amber {{ border-left-color: var(--amber) }}
-.card-red   {{ border-left-color: var(--red) }}
+.card:hover {{ border-color:var(--border2); box-shadow:0 4px 24px rgba(0,0,0,.15) }}
+.card b {{ color:var(--text) }}
+.card-l {{ border-left:3px solid; border-radius:0 14px 14px 0; padding-left:22px }}
+.card-accent {{ border-left-color:var(--accent); box-shadow:inset 3px 0 12px -6px rgba(224,90,58,.15) }}
+.card-blue  {{ border-left-color:var(--blue);   box-shadow:inset 3px 0 12px -6px rgba(74,143,231,.15) }}
+.card-teal  {{ border-left-color:var(--teal);   box-shadow:inset 3px 0 12px -6px rgba(34,211,160,.12) }}
+.card-amber {{ border-left-color:var(--amber);  box-shadow:inset 3px 0 12px -6px rgba(240,176,48,.12) }}
+.card-red   {{ border-left-color:var(--red);    box-shadow:inset 3px 0 12px -6px rgba(239,85,85,.12) }}
 
 /* ── Badges ── */
 .badge {{
-    display: inline-block; padding: 3px 11px; border-radius: 6px;
-    font-family: 'IBM Plex Mono'; font-size: .58rem; font-weight: 600;
-    margin: 2px 4px 2px 0; letter-spacing: .04em;
-    vertical-align: middle;
+    display:inline-block; padding:3px 11px; border-radius:7px;
+    font-family:'IBM Plex Mono'; font-size:.58rem; font-weight:600;
+    margin:2px 4px 2px 0; letter-spacing:.04em; vertical-align:middle;
 }}
-.b-red    {{ background: rgba(220,68,68,.1);  color: var(--red);    border: 1px solid rgba(220,68,68,.2) }}
-.b-blue   {{ background: rgba(58,123,213,.1); color: var(--blue2);  border: 1px solid rgba(58,123,213,.2) }}
-.b-amber  {{ background: rgba(229,162,41,.1); color: var(--amber);  border: 1px solid rgba(229,162,41,.2) }}
-.b-teal   {{ background: rgba(16,185,129,.1); color: var(--teal);   border: 1px solid rgba(16,185,129,.2) }}
-.b-purple {{ background: rgba(132,102,212,.1);color: var(--purple); border: 1px solid rgba(132,102,212,.2) }}
+.b-red    {{ background:rgba(239,85,85,.12);  color:var(--red);    border:1px solid rgba(239,85,85,.22);  box-shadow:0 0 10px rgba(239,85,85,.06) }}
+.b-blue   {{ background:rgba(74,143,231,.12); color:var(--blue2);  border:1px solid rgba(74,143,231,.22); box-shadow:0 0 10px rgba(74,143,231,.06) }}
+.b-amber  {{ background:rgba(240,176,48,.12); color:var(--amber);  border:1px solid rgba(240,176,48,.22); box-shadow:0 0 10px rgba(240,176,48,.06) }}
+.b-teal   {{ background:rgba(34,211,160,.12); color:var(--teal);   border:1px solid rgba(34,211,160,.22); box-shadow:0 0 10px rgba(34,211,160,.06) }}
+.b-purple {{ background:rgba(155,125,234,.12);color:var(--purple); border:1px solid rgba(155,125,234,.22);box-shadow:0 0 10px rgba(155,125,234,.06) }}
 
 /* ── Warning box ── */
 .warn-box {{
-    background: rgba(229,162,41,.035); border: 1px solid rgba(229,162,41,.12);
-    border-radius: 12px; padding: 18px 22px;
-    font-size: .82rem; color: var(--text2); line-height: 1.7;
-    margin-bottom: 1rem;
-    position: relative; overflow: hidden;
+    background:rgba(240,176,48,.04); border:1px solid rgba(240,176,48,.15);
+    border-radius:14px; padding:18px 22px; font-size:.82rem; color:var(--text2); line-height:1.7;
+    margin-bottom:1rem; position:relative; overflow:hidden;
+    box-shadow:0 0 30px rgba(240,176,48,.04);
 }}
 .warn-box::before {{
-    content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px;
-    background: var(--amber); border-radius: 3px 0 0 3px;
+    content:''; position:absolute; top:0;left:0;bottom:0; width:3px;
+    background:var(--amber); border-radius:3px 0 0 3px; box-shadow:0 0 10px rgba(240,176,48,.3);
 }}
-.warn-box b {{ color: var(--text) }}
+.warn-box b {{ color:var(--text) }}
 
 /* ── Example box ── */
 .example-box {{
-    background: rgba(58,123,213,.025);
-    border: 1px solid rgba(58,123,213,.1);
-    border-left: 3px solid rgba(58,123,213,.3);
-    border-radius: 0 10px 10px 0;
-    padding: 14px 18px; margin: 10px 0 0;
-    font-size: .78rem; font-family: 'IBM Plex Mono'; color: var(--text2);
-    line-height: 1.65;
+    background:rgba(74,143,231,.03); border:1px solid rgba(74,143,231,.12);
+    border-left:3px solid rgba(74,143,231,.35); border-radius:0 12px 12px 0;
+    padding:14px 18px; margin:10px 0 0; font-size:.78rem; font-family:'IBM Plex Mono';
+    color:var(--text2); line-height:1.65;
+    box-shadow:inset 3px 0 12px -6px rgba(74,143,231,.1);
 }}
-.example-box b {{ color: var(--blue2) }}
+.example-box b {{ color:var(--blue2) }}
 .example-box .ex-label {{
-    font-size: .56rem; letter-spacing: .12em; text-transform: uppercase;
-    color: var(--blue); margin-bottom: 5px; display: block; font-weight: 600;
+    font-size:.56rem; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--blue); margin-bottom:5px; display:block; font-weight:600;
+    text-shadow:0 0 12px rgba(74,143,231,.3);
 }}
 
 /* ── Pipeline steps ── */
 .step {{
-    display: flex; gap: 18px; margin: 10px 0; padding: 20px 24px;
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    transition: border-color .3s, box-shadow .3s;
-    position: relative;
+    display:flex; gap:18px; margin:10px 0; padding:20px 24px;
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    transition:border-color .3s, box-shadow .3s; position:relative;
 }}
-.step:hover {{
-    border-color: var(--border2);
-    box-shadow: 0 3px 20px rgba(0,0,0,.12);
-}}
+.step:hover {{ border-color:var(--border2); box-shadow:0 4px 24px rgba(0,0,0,.15) }}
 .step::before {{
-    content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 2px;
-    background: linear-gradient(180deg, rgba(217,74,46,.3), rgba(217,74,46,.05));
-    border-radius: 2px;
+    content:''; position:absolute; top:0;left:0;bottom:0; width:2px;
+    background:linear-gradient(180deg,rgba(224,90,58,.3),rgba(224,90,58,.05)); border-radius:2px;
 }}
 .step-n {{
-    flex-shrink: 0; width: 38px; height: 38px; line-height: 38px; text-align: center;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff; font-family: 'IBM Plex Mono'; font-size: .78rem; font-weight: 700;
-    border-radius: 10px;
-    box-shadow: 0 3px 14px rgba(217,74,46,.25), 0 0 0 3px rgba(217,74,46,.08);
+    flex-shrink:0; width:38px; height:38px; line-height:38px; text-align:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
+    font-family:'IBM Plex Mono'; font-size:.78rem; font-weight:700; border-radius:10px;
+    box-shadow:0 3px 16px rgba(224,90,58,.3), 0 0 0 3px rgba(224,90,58,.1);
 }}
-.step-body {{
-    flex: 1; font-size: .84rem; color: var(--text2); line-height: 1.7;
-}}
-.step-body b {{ color: var(--text) }}
+.step-body {{ flex:1; font-size:.84rem; color:var(--text2); line-height:1.7 }}
+.step-body b {{ color:var(--text) }}
 .step-body .step-title {{
-    font-family: 'DM Sans'; font-size: .94rem; font-weight: 700;
-    color: var(--text); margin-bottom: 6px; letter-spacing: -.01em;
+    font-family:'DM Sans'; font-size:.94rem; font-weight:700; color:var(--text);
+    margin-bottom:6px; letter-spacing:-.01em;
 }}
 .step-body code {{
-    background: rgba(58,123,213,.07); color: var(--blue2);
-    padding: 3px 8px; border-radius: 5px;
-    font-family: 'IBM Plex Mono'; font-size: .72rem;
-    border: 1px solid rgba(58,123,213,.1);
+    background:rgba(74,143,231,.08); color:var(--blue2);
+    padding:3px 8px; border-radius:6px; font-family:'IBM Plex Mono'; font-size:.72rem;
+    border:1px solid rgba(74,143,231,.12);
 }}
 .step-stat {{
-    display: inline-block; padding: 4px 10px; border-radius: 6px;
-    background: rgba(16,185,129,.06); color: var(--teal);
-    font-family: 'IBM Plex Mono'; font-size: .65rem; font-weight: 600;
-    border: 1px solid rgba(16,185,129,.15); margin: 3px 2px;
-    transition: background .3s;
+    display:inline-block; padding:4px 10px; border-radius:7px;
+    background:rgba(34,211,160,.07); color:var(--teal);
+    font-family:'IBM Plex Mono'; font-size:.65rem; font-weight:600;
+    border:1px solid rgba(34,211,160,.18); margin:3px 2px;
+    box-shadow:0 0 8px rgba(34,211,160,.06); transition:all .3s;
 }}
-.step-stat:hover {{ background: rgba(16,185,129,.1) }}
+.step-stat:hover {{ background:rgba(34,211,160,.12); box-shadow:0 0 14px rgba(34,211,160,.1) }}
 
 /* ── Signal cards ── */
 .signal-card {{
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 20px 24px; margin: 10px 0;
-    position: relative; overflow: hidden;
-    transition: border-color .3s, box-shadow .3s, transform .2s;
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:20px 24px; margin:10px 0; position:relative; overflow:hidden;
+    transition:border-color .3s, box-shadow .3s, transform .2s;
 }}
 .signal-card:hover {{
-    border-color: var(--border2);
-    box-shadow: 0 6px 28px rgba(0,0,0,.18);
-    transform: translateY(-1px);
+    border-color:var(--border2); box-shadow:0 8px 32px rgba(0,0,0,.2); transform:translateY(-1px);
 }}
 .signal-card::after {{
-    content: ''; position: absolute; top: 0; right: 0;
-    width: 80px; height: 80px;
-    background: radial-gradient(circle at 100% 0%, rgba(217,74,46,.03), transparent 70%);
-    pointer-events: none;
+    content:''; position:absolute; top:0;right:0; width:100px; height:100px;
+    background:radial-gradient(circle at 100% 0%,rgba(224,90,58,.04),transparent 70%); pointer-events:none;
 }}
 .signal-title {{
-    font-family: 'DM Sans'; font-size: .94rem; font-weight: 700;
-    color: var(--text); margin-bottom: 8px; letter-spacing: -.01em;
+    font-family:'DM Sans'; font-size:.94rem; font-weight:700; color:var(--text);
+    margin-bottom:8px; letter-spacing:-.01em;
 }}
-.signal-body {{
-    font-size: .82rem; color: var(--text2); line-height: 1.7;
-}}
-.signal-stats {{
-    display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;
-}}
+.signal-body {{ font-size:.82rem; color:var(--text2); line-height:1.7 }}
+.signal-stats {{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap }}
 .signal-stat {{
-    padding: 7px 14px; border-radius: 8px;
-    background: rgba(255,255,255,.02);
-    border: 1px solid var(--border);
-    font-family: 'IBM Plex Mono'; font-size: .68rem; color: var(--text2);
-    transition: background .3s, border-color .3s;
+    padding:7px 14px; border-radius:8px; background:rgba(255,255,255,.025);
+    border:1px solid var(--border); font-family:'IBM Plex Mono'; font-size:.68rem; color:var(--text2);
+    transition:all .3s;
 }}
-.signal-stat:hover {{
-    background: rgba(255,255,255,.04); border-color: var(--border2);
+.signal-stat:hover {{ background:rgba(255,255,255,.05); border-color:var(--border2); box-shadow:0 2px 12px rgba(0,0,0,.1) }}
+.signal-stat b {{ color:var(--text); font-size:.8rem }}
+
+/* ── Dataset cards ── */
+.ds-card {{
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:22px 24px; position:relative; overflow:hidden;
+    transition:border-color .3s, box-shadow .3s, transform .2s;
+    animation:slideUp .4s ease-out both;
 }}
-.signal-stat b {{ color: var(--text); font-size: .8rem }}
+.ds-card:hover {{
+    border-color:var(--border2); transform:translateY(-1px);
+}}
+.ds-card::before {{
+    content:''; position:absolute; top:0;left:0;right:0; height:2px; border-radius:14px 14px 0 0;
+}}
+.ds-card.ds-blue::before  {{ background:linear-gradient(90deg,var(--blue),rgba(74,143,231,.3)) }}
+.ds-card.ds-teal::before  {{ background:linear-gradient(90deg,var(--teal),rgba(34,211,160,.3)) }}
+.ds-card.ds-amber::before {{ background:linear-gradient(90deg,var(--amber),rgba(240,176,48,.3)) }}
+.ds-card.ds-purple::before{{ background:linear-gradient(90deg,var(--purple),rgba(155,125,234,.3)) }}
+.ds-card.ds-blue:hover  {{ box-shadow:var(--glow-blue) }}
+.ds-card.ds-teal:hover  {{ box-shadow:var(--glow-teal) }}
+.ds-card.ds-amber:hover {{ box-shadow:var(--glow-amber) }}
+.ds-card.ds-purple:hover{{ box-shadow:var(--glow-purple) }}
+.ds-icon {{ font-size:1.4rem; margin-bottom:8px; display:block }}
+.ds-name {{ font-family:'DM Sans'; font-size:1rem; font-weight:700; color:var(--text); margin-bottom:4px }}
+.ds-full {{ font-family:'IBM Plex Mono'; font-size:.6rem; color:var(--muted); letter-spacing:.04em; margin-bottom:10px; display:block }}
+.ds-desc {{ font-size:.82rem; color:var(--text2); line-height:1.65; margin-bottom:12px }}
+.ds-desc b {{ color:var(--text) }}
+.ds-metrics {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px }}
+.ds-metric {{
+    padding:5px 12px; border-radius:7px; background:rgba(255,255,255,.025);
+    border:1px solid var(--border); font-family:'IBM Plex Mono'; font-size:.66rem; color:var(--text2);
+    transition:all .3s;
+}}
+.ds-metric:hover {{ background:rgba(255,255,255,.045); border-color:var(--border2) }}
+.ds-metric b {{ color:var(--text); font-size:.76rem }}
+.ds-quality {{
+    margin-top:12px; padding-top:12px; border-top:1px solid var(--border);
+    font-size:.74rem; color:var(--muted); line-height:1.6; font-family:'IBM Plex Mono';
+}}
+.ds-quality b {{ color:var(--text2) }}
+.ds-quality .q-good {{ color:var(--teal); text-shadow:0 0 8px rgba(34,211,160,.3) }}
+.ds-quality .q-warn {{ color:var(--amber); text-shadow:0 0 8px rgba(240,176,48,.3) }}
+.ds-quality .q-bad  {{ color:var(--red); text-shadow:0 0 8px rgba(239,85,85,.3) }}
+
+/* ── Screener ── */
+.scr-header {{ font-family:'Newsreader',Georgia,serif; font-size:1.2rem; font-weight:600; color:var(--text); margin-bottom:4px }}
+.scr-sub {{ font-size:.82rem; color:var(--text2); line-height:1.6; margin-bottom:16px }}
+.scr-results {{
+    background:var(--card); border:1px solid var(--border); border-radius:14px;
+    padding:22px 26px; margin-top:12px;
+    box-shadow:0 0 40px rgba(0,0,0,.1);
+}}
+.scr-count {{ font-family:'IBM Plex Mono'; font-size:1.8rem; font-weight:700; color:var(--text); line-height:1; text-shadow:0 0 20px rgba(74,143,231,.15) }}
+.scr-count-label {{ font-family:'IBM Plex Mono'; font-size:.62rem; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-top:4px }}
+.scr-active-flags {{ display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 6px }}
+.scr-pill {{
+    display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:8px;
+    font-family:'DM Sans'; font-size:.78rem; font-weight:600; border:1px solid; transition:all .3s;
+}}
+.scr-pill-red    {{ background:rgba(239,85,85,.08);  color:var(--red);    border-color:rgba(239,85,85,.22);  box-shadow:0 0 10px rgba(239,85,85,.05) }}
+.scr-pill-blue   {{ background:rgba(74,143,231,.08); color:var(--blue2);  border-color:rgba(74,143,231,.22); box-shadow:0 0 10px rgba(74,143,231,.05) }}
+.scr-pill-amber  {{ background:rgba(240,176,48,.08); color:var(--amber);  border-color:rgba(240,176,48,.22); box-shadow:0 0 10px rgba(240,176,48,.05) }}
+.scr-pill-teal   {{ background:rgba(34,211,160,.08); color:var(--teal);   border-color:rgba(34,211,160,.22); box-shadow:0 0 10px rgba(34,211,160,.05) }}
+.scr-pill-purple {{ background:rgba(155,125,234,.08);color:var(--purple); border-color:rgba(155,125,234,.22);box-shadow:0 0 10px rgba(155,125,234,.05) }}
+.scr-logic {{
+    display:inline-block; padding:3px 10px; border-radius:7px;
+    font-family:'IBM Plex Mono'; font-size:.6rem; font-weight:700; letter-spacing:.08em;
+}}
+.scr-logic-and {{ background:rgba(34,211,160,.1); color:var(--teal); border:1px solid rgba(34,211,160,.22) }}
+.scr-logic-or  {{ background:rgba(74,143,231,.1); color:var(--blue2); border:1px solid rgba(74,143,231,.22) }}
+.scr-empty {{ text-align:center; padding:40px 20px; color:var(--muted); font-family:'DM Sans'; font-size:.9rem }}
+.scr-empty-icon {{ font-size:2rem; margin-bottom:8px; display:block; opacity:.5 }}
 
 /* ── Footer ── */
 .ft {{
-    text-align: center; color: var(--muted);
-    font-family: 'IBM Plex Mono'; font-size: .58rem;
-    letter-spacing: .06em;
-    padding: 2rem 0 .8rem;
-    border-top: 1px solid var(--border); margin-top: 2.5rem;
+    text-align:center; color:var(--muted); font-family:'IBM Plex Mono'; font-size:.58rem;
+    letter-spacing:.06em; padding:2rem 0 .8rem; border-top:1px solid var(--border); margin-top:2.5rem;
 }}
-.ft a {{
-    color: var(--accent); text-decoration: none;
-    transition: color .3s;
-}}
-.ft a:hover {{ color: var(--accent2) }}
+.ft a {{ color:var(--accent); text-decoration:none; transition:color .3s }}
+.ft a:hover {{ color:var(--accent2); text-shadow:0 0 10px rgba(224,90,58,.3) }}
 
-/* ── Hide Streamlit chrome ── */
-#MainMenu {{ visibility: hidden }}
-footer {{ visibility: hidden }}
-header {{ visibility: hidden }}
+/* ── Hide chrome ── */
+#MainMenu {{ visibility:hidden }} footer {{ visibility:hidden }} header {{ visibility:hidden }}
 
-/* ── Animated fade-in for content ── */
-@keyframes slideUp {{
-    from {{ opacity: 0; transform: translateY(12px) }}
-    to   {{ opacity: 1; transform: translateY(0) }}
-}}
-.signal-card, .step, .card, .example-box, .warn-box, .ds-card {{
-    animation: slideUp .4s ease-out both;
-}}
-
-/* ── Dataset cards ── */
-.ds-grid {{
-    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0;
-}}
-@media (max-width: 768px) {{ .ds-grid {{ grid-template-columns: 1fr }} }}
-.ds-card {{
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 22px 24px; position: relative; overflow: hidden;
-    transition: border-color .3s, box-shadow .3s, transform .2s;
-}}
-.ds-card:hover {{
-    border-color: var(--border2);
-    box-shadow: 0 6px 28px rgba(0,0,0,.18);
-    transform: translateY(-1px);
-}}
-.ds-card::before {{
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    border-radius: 12px 12px 0 0;
-}}
-.ds-card.ds-blue::before  {{ background: linear-gradient(90deg, var(--blue), rgba(58,123,213,.3)) }}
-.ds-card.ds-teal::before  {{ background: linear-gradient(90deg, var(--teal), rgba(16,185,129,.3)) }}
-.ds-card.ds-amber::before {{ background: linear-gradient(90deg, var(--amber), rgba(229,162,41,.3)) }}
-.ds-card.ds-purple::before{{ background: linear-gradient(90deg, var(--purple),rgba(132,102,212,.3)) }}
-.ds-icon {{
-    font-size: 1.4rem; margin-bottom: 8px; display: block;
-}}
-.ds-name {{
-    font-family: 'DM Sans'; font-size: .96rem; font-weight: 700; color: var(--text);
-    margin-bottom: 4px; letter-spacing: -.01em;
-}}
-.ds-full {{
-    font-family: 'IBM Plex Mono'; font-size: .62rem; color: var(--muted);
-    letter-spacing: .04em; margin-bottom: 10px; display: block;
-}}
-.ds-desc {{
-    font-size: .82rem; color: var(--text2); line-height: 1.65; margin-bottom: 12px;
-}}
-.ds-desc b {{ color: var(--text) }}
-.ds-metrics {{
-    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;
-}}
-.ds-metric {{
-    padding: 5px 11px; border-radius: 6px;
-    background: rgba(255,255,255,.02); border: 1px solid var(--border);
-    font-family: 'IBM Plex Mono'; font-size: .66rem; color: var(--text2);
-    transition: background .3s;
-}}
-.ds-metric:hover {{ background: rgba(255,255,255,.04) }}
-.ds-metric b {{ color: var(--text); font-size: .76rem }}
-.ds-quality {{
-    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
-    font-size: .76rem; color: var(--muted); line-height: 1.6;
-    font-family: 'IBM Plex Mono';
-}}
-.ds-quality b {{ color: var(--text2) }}
-.ds-quality .q-good {{ color: var(--teal) }}
-.ds-quality .q-warn {{ color: var(--amber) }}
-.ds-quality .q-bad  {{ color: var(--red) }}
-
-/* ── Screener ── */
-.scr-header {{
-    font-family: 'Newsreader', Georgia, serif;
-    font-size: 1.2rem; font-weight: 600; color: var(--text);
-    margin-bottom: 4px; letter-spacing: -.02em;
-}}
-.scr-sub {{
-    font-size: .82rem; color: var(--text2); line-height: 1.6; margin-bottom: 16px;
-}}
-.scr-mode {{
-    display: inline-flex; gap: 0; border-radius: 10px; overflow: hidden;
-    border: 1px solid var(--border); margin-bottom: 16px;
-}}
-.scr-mode-btn {{
-    padding: 8px 20px; font-family: 'IBM Plex Mono'; font-size: .72rem;
-    font-weight: 600; letter-spacing: .04em; cursor: pointer;
-    border: none; transition: all .3s; color: var(--text2);
-    background: var(--card);
-}}
-.scr-mode-btn:hover {{ background: var(--card2); color: var(--text) }}
-.scr-mode-btn.active {{
-    background: var(--accent); color: #fff;
-    box-shadow: 0 2px 10px rgba(217,74,46,.2);
-}}
-.scr-results {{
-    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-    padding: 20px 24px; margin-top: 12px;
-}}
-.scr-count {{
-    font-family: 'IBM Plex Mono'; font-size: 1.8rem; font-weight: 700;
-    color: var(--text); line-height: 1;
-}}
-.scr-count-label {{
-    font-family: 'IBM Plex Mono'; font-size: .62rem; color: var(--muted);
-    letter-spacing: .1em; text-transform: uppercase; margin-top: 4px;
-}}
-.scr-active-flags {{
-    display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px;
-}}
-.scr-pill {{
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 14px; border-radius: 8px;
-    font-family: 'DM Sans'; font-size: .78rem; font-weight: 600;
-    border: 1px solid; transition: all .3s;
-}}
-.scr-pill-red    {{ background: rgba(220,68,68,.08);  color: var(--red);    border-color: rgba(220,68,68,.2) }}
-.scr-pill-blue   {{ background: rgba(58,123,213,.08); color: var(--blue2);  border-color: rgba(58,123,213,.2) }}
-.scr-pill-amber  {{ background: rgba(229,162,41,.08); color: var(--amber);  border-color: rgba(229,162,41,.2) }}
-.scr-pill-teal   {{ background: rgba(16,185,129,.08); color: var(--teal);   border-color: rgba(16,185,129,.2) }}
-.scr-pill-purple {{ background: rgba(132,102,212,.08);color: var(--purple); border-color: rgba(132,102,212,.2) }}
-.scr-logic {{
-    display: inline-block; padding: 3px 10px; border-radius: 6px;
-    font-family: 'IBM Plex Mono'; font-size: .6rem; font-weight: 700;
-    letter-spacing: .08em; vertical-align: middle;
-}}
-.scr-logic-and {{ background: rgba(16,185,129,.1); color: var(--teal); border: 1px solid rgba(16,185,129,.2) }}
-.scr-logic-or  {{ background: rgba(58,123,213,.1); color: var(--blue2); border: 1px solid rgba(58,123,213,.2) }}
-.scr-empty {{
-    text-align: center; padding: 40px 20px; color: var(--muted);
-    font-family: 'DM Sans'; font-size: .9rem;
-}}
-.scr-empty-icon {{ font-size: 2rem; margin-bottom: 8px; display: block; opacity: .5 }}
-
+/* ── Animations ── */
+@keyframes slideUp {{ from {{ opacity:0; transform:translateY(12px) }} to {{ opacity:1; transform:translateY(0) }} }}
+.signal-card, .step, .card, .example-box, .warn-box {{ animation:slideUp .4s ease-out both }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -868,9 +701,9 @@ def render_resumen(flag_files):
 
     # ── DATASETS ──
     st.markdown('<div class="sec">Los datos · 4 fuentes públicas</div>', unsafe_allow_html=True)
-    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:6px">
+    st.markdown(f"""<div style="font-size:.84rem;color:{C['text2']};line-height:1.65;margin-bottom:14px">
         Todo parte de datos abiertos publicados por organismos oficiales. No accedemos a nada privado.
-        Cada fuente tiene sus fortalezas y sus limitaciones — las explicamos aquí.
+        Cada fuente tiene sus fortalezas y limitaciones.
     </div>""", unsafe_allow_html=True)
 
     # Load quality stats if available
@@ -880,108 +713,97 @@ def render_resumen(flag_files):
             try: q_stats[qf.stem] = load_json(str(qf))
             except Exception: pass
 
-    st.markdown(f"""
-    <div class="ds-grid">
-        <div class="ds-card ds-blue">
+    ds_col1, ds_col2 = st.columns(2)
+    with ds_col1:
+        st.markdown(f"""<div class="ds-card ds-blue">
             <span class="ds-icon">🏛️</span>
             <div class="ds-name">PLACSP</div>
             <span class="ds-full">Plataforma de Contratación del Sector Público</span>
             <div class="ds-desc">
-                La base de datos oficial de contratación pública española.
-                Contiene <b>todas las licitaciones y adjudicaciones</b> publicadas por
-                administraciones del Estado, CCAA, diputaciones, ayuntamientos y entidades públicas.
-                Cada registro incluye el órgano contratante, adjudicatario, importe, procedimiento,
-                fecha y objeto del contrato.
+                Base de datos oficial de contratación pública. Contiene <b>todas las licitaciones
+                y adjudicaciones</b> publicadas por administraciones del Estado, CCAA, diputaciones,
+                ayuntamientos y entidades públicas.
             </div>
             <div class="ds-metrics">
-                <div class="ds-metric"><b>8.7M</b> registros totales</div>
-                <div class="ds-metric"><b>5.8M</b> con adjudicatario e importe</div>
-                <div class="ds-metric"><b>48</b> columnas</div>
-                <div class="ds-metric"><b>2012–2026</b></div>
+                <span class="ds-metric"><b>8.7M</b> registros</span>
+                <span class="ds-metric"><b>5.8M</b> con adj. e importe</span>
+                <span class="ds-metric"><b>2012–2026</b></span>
             </div>
             <div class="ds-quality">
                 <b>Calidad:</b>
-                <span class="q-good">✓</span> Cobertura amplia y obligatoria por ley ·
-                <span class="q-warn">△</span> 33% de registros sin importe o adjudicatario ·
-                <span class="q-warn">△</span> Nombres de empresa sin normalizar (con variantes, abreviaturas, erratas) ·
-                <span class="q-bad">✗</span> No incluye NIF/CIF del adjudicatario en el dataset abierto
+                <span class="q-good">✓</span> Obligatoria por ley ·
+                <span class="q-warn">△</span> 33% sin importe/adj. ·
+                <span class="q-bad">✗</span> Sin NIF/CIF abierto
             </div>
-        </div>
+        </div>""", unsafe_allow_html=True)
 
-        <div class="ds-card ds-teal">
+    with ds_col2:
+        st.markdown(f"""<div class="ds-card ds-teal">
             <span class="ds-icon">📜</span>
             <div class="ds-name">BORME</div>
             <span class="ds-full">Boletín Oficial del Registro Mercantil</span>
             <div class="ds-desc">
                 Publicación diaria con <b>todos los actos inscritos</b> en los Registros
-                Mercantiles provinciales: constituciones, nombramientos, ceses, disoluciones,
-                ampliaciones de capital, fusiones, concursos, etc. Un PDF por provincia y día.
+                Mercantiles provinciales. Un PDF por provincia y día.
                 Nuestro parser extrae empresa, acto, persona, cargo, capital y fecha.
             </div>
             <div class="ds-metrics">
-                <div class="ds-metric"><b>17.1M</b> actos extraídos</div>
-                <div class="ds-metric"><b>2.77M</b> empresas</div>
-                <div class="ds-metric"><b>3.8M</b> personas</div>
-                <div class="ds-metric"><b>64K</b> PDFs</div>
-                <div class="ds-metric"><b>2009–2026</b></div>
+                <span class="ds-metric"><b>17.1M</b> actos</span>
+                <span class="ds-metric"><b>2.77M</b> empresas</span>
+                <span class="ds-metric"><b>3.8M</b> personas</span>
+                <span class="ds-metric"><b>64K</b> PDFs</span>
             </div>
             <div class="ds-quality">
                 <b>Calidad:</b>
-                <span class="q-good">✓</span> Fuente oficial e inscripción obligatoria ·
-                <span class="q-good">✓</span> Cobertura completa desde 2009 ·
-                <span class="q-warn">△</span> Formato PDF semiestructurado (requiere parsing regex, validado contra muestra) ·
-                <span class="q-warn">△</span> Vigencia de cargos depende de que se publique el cese ·
-                <span class="q-bad">✗</span> No incluye NIF — cruce solo por nombre
+                <span class="q-good">✓</span> Inscripción obligatoria ·
+                <span class="q-warn">△</span> Parsing regex (validado) ·
+                <span class="q-bad">✗</span> Sin NIF — cruce por nombre
             </div>
-        </div>
+        </div>""", unsafe_allow_html=True)
 
-        <div class="ds-card ds-amber">
+    ds_col3, ds_col4 = st.columns(2)
+    with ds_col3:
+        st.markdown(f"""<div class="ds-card ds-amber">
             <span class="ds-icon">🏗️</span>
-            <div class="ds-name">Registre Públic de Contractes</div>
+            <div class="ds-name">Registre Públic</div>
             <span class="ds-full">Generalitat de Catalunya · PSCP</span>
             <div class="ds-desc">
-                Plataforma de contratación propia de la Generalitat de Catalunya.
-                Complementa PLACSP con <b>datos más ricos</b>: incluye columnas nativas de
-                modificaciones contractuales (número, tipo, importe de cada modificación)
-                que permiten detectar F11. Cubre administración autonómica, local y entidades del sector público catalán.
+                Contratación catalana con <b>datos más ricos</b> que PLACSP: columnas nativas
+                de modificaciones contractuales que permiten detectar F11.
             </div>
             <div class="ds-metrics">
-                <div class="ds-metric"><b>3.4M</b> registros</div>
-                <div class="ds-metric"><b>2014–2026</b></div>
-                <div class="ds-metric">Modificaciones nativas</div>
+                <span class="ds-metric"><b>3.4M</b> registros</span>
+                <span class="ds-metric"><b>2014–2026</b></span>
+                <span class="ds-metric">Modificaciones nativas</span>
             </div>
             <div class="ds-quality">
                 <b>Calidad:</b>
-                <span class="q-good">✓</span> Datos de modificaciones no disponibles en PLACSP ·
-                <span class="q-good">✓</span> Formas societarias catalanas incluidas en normalización ·
-                <span class="q-warn">△</span> Solapamiento parcial con PLACSP (contratos estatales aparecen en ambos)
+                <span class="q-good">✓</span> Modificaciones únicas ·
+                <span class="q-warn">△</span> Solapamiento parcial con PLACSP
             </div>
-        </div>
+        </div>""", unsafe_allow_html=True)
 
-        <div class="ds-card ds-purple">
+    with ds_col4:
+        st.markdown(f"""<div class="ds-card ds-purple">
             <span class="ds-icon">📋</span>
-            <div class="ds-name">Contratos Menores BCN</div>
+            <div class="ds-name">Menores BCN</div>
             <span class="ds-full">Portal de Transparència · Ajuntament de Barcelona</span>
             <div class="ds-desc">
-                <b>Contratos menores</b> del Ayuntamiento de Barcelona — adjudicaciones directas
-                por debajo del umbral de licitación obligatoria (generalmente <b>≤15.000€</b> para
-                servicios y suministros). Estos contratos no aparecen en PLACSP ni en el Registre Públic.
-                Son la pieza clave para detectar <b>fraccionamiento</b> (F10).
+                <b>Contratos menores</b> (≤15K€) del Ayuntamiento de Barcelona.
+                No aparecen en PLACSP. Pieza clave para detectar <b>fraccionamiento</b> (F10).
             </div>
             <div class="ds-metrics">
-                <div class="ds-metric"><b>177K</b> registros</div>
-                <div class="ds-metric"><b>Solo BCN</b></div>
-                <div class="ds-metric">Contratos ≤15K€</div>
+                <span class="ds-metric"><b>177K</b> registros</span>
+                <span class="ds-metric"><b>Solo BCN</b></span>
+                <span class="ds-metric">Contratos ≤15K€</span>
             </div>
             <div class="ds-quality">
                 <b>Calidad:</b>
-                <span class="q-good">✓</span> Datos granulares de contratación menor ·
-                <span class="q-warn">△</span> Solo Barcelona ciudad — no cubre el resto de Catalunya ·
-                <span class="q-bad">✗</span> Sin equivalente para el resto de España (no publicado o no accesible)
+                <span class="q-good">✓</span> Granular ·
+                <span class="q-warn">△</span> Solo Barcelona ·
+                <span class="q-bad">✗</span> Sin equivalente nacional
             </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+        </div>""", unsafe_allow_html=True)
 
     # Show quality JSON stats if they exist
     if q_stats:
@@ -989,7 +811,6 @@ def render_resumen(flag_files):
             for name, data in q_stats.items():
                 st.markdown(f"**{name}**")
                 if isinstance(data, dict):
-                    # Show as metric cards if it has simple key-value pairs
                     simple = {k: v for k, v in data.items() if isinstance(v, (int, float, str))}
                     if simple:
                         cols = st.columns(min(len(simple), 4))
@@ -997,7 +818,6 @@ def render_resumen(flag_files):
                             with cols[i % len(cols)]:
                                 display_v = f"{v:,.0f}" if isinstance(v, (int, float)) and v > 100 else str(v)
                                 st.metric(k.replace('_', ' ').title(), display_v)
-                    # Show nested dicts as tables
                     nested = {k: v for k, v in data.items() if isinstance(v, dict)}
                     for k, v in nested.items():
                         st.caption(k.replace('_', ' ').title())
