@@ -1194,7 +1194,13 @@ def render_explorar(flag_files):
 
     fc1,fc2 = st.columns([1,2])
     with fc1: search_col = st.selectbox("Buscar en", ['(todas las columnas)'] + list(df_display.columns), key="exp_col")
-    with fc2: search_term = st.text_input("Filtrar", key="exp_term", placeholder="Escribe para filtrar...")
+    _placeholders = {'Empresa':'Ej: IBERDROLA, ACCIONA...','Adjudicatario':'Ej: IBERDROLA ENERGIA SA',
+        'Persona':'Ej: GARCIA LOPEZ','Órgano contratante':'Ej: Ayuntamiento de Madrid',
+        'Objeto del contrato':'Ej: limpieza, consultoría...','CCAA registro':'Ej: Andalucía',
+        'Nombre UTE':'Ej: UTE AUTOPISTA','Miembro 1':'Ej: CONSTRUCCIONES GARCIA',
+        '(todas las columnas)':'Busca en cualquier columna — ej: ACCIONA, Madrid...'}
+    ph = _placeholders.get(search_col, f"Filtrar por {search_col}...")
+    with fc2: search_term = st.text_input("Filtrar", key="exp_term", placeholder=ph)
     filtered = df_display.copy()
     if search_term:
         if search_col != '(todas las columnas)': filtered = filtered[filtered[search_col].astype(str).str.contains(search_term, case=False, na=False)]
