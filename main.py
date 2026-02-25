@@ -572,11 +572,11 @@ def get_meta(stem):
     return FLAGS.get(stem, {'label':stem,'short':'?','icon':'📄','badge':'b-blue','scope':'?','color':C['blue'],
         'what':'','why':'','how':'','example':'','stat_empresas':0,'stat_extra':''})
 
-_HIDE = {'empresa_norm','adj_norm','empresa_1','empresa_2','cargo_norm','cargo_upper','cargo_w','organo_norm','same_group','is_fusion_borme'}
-_SCORES = {'risk_score','score','score_max','score_sum','par_score','score_total','f6_score','f7_max_conc','cargo_weight','flag_weight','size_penalty','concentracion'}
+_HIDE = {'cargo_norm','cargo_upper','cargo_w','organo_norm','same_group','is_fusion_borme',
+         'size_penalty','flag_weight'}
 
 def clean_df(df):
-    return df.drop(columns=[c for c in df.columns if c in _SCORES | _HIDE], errors='ignore')
+    return df.drop(columns=[c for c in df.columns if c in _HIDE], errors='ignore')
 
 @st.cache_data(show_spinner=False)
 def search_all(q, flag_files):
@@ -1084,7 +1084,11 @@ def render_explorar(flag_files):
     if 'risk_scoring' in sel:
         bool_cols = [c for c in df.columns if df[c].dtype == bool]
         if bool_cols:
-            flag_sums = {c:int(df[c].sum()) for c in bool_cols if df[c].sum()>0}
+            flag_sums = {}
+            for c in bool_cols:
+                if df[c].sum() > 0:
+                    lbl = COL_RENAME.get(c, _flag_label(c))
+                    flag_sums[lbl] = int(df[c].sum())
             if flag_sums:
                 fs_df = pd.DataFrame({'Señal':list(flag_sums.keys()),'Empresas':list(flag_sums.values())}).sort_values('Empresas',ascending=True)
                 fig = go.Figure(go.Bar(y=fs_df['Señal'],x=fs_df['Empresas'],orientation='h',marker=dict(color=C['blue'],opacity=.85),hovertemplate='<b>%{y}</b><br>%{x:,}<extra></extra>'))
@@ -1101,7 +1105,9 @@ def render_explorar(flag_files):
             st.plotly_chart(fig, use_container_width=True)
 
     st.markdown('<div class="sec">Explorar datos</div>', unsafe_allow_html=True)
-    df_display = clean_df(df)
+    df_display = _rename_columns(clean_df(df))
+    df_display = _format_pct_col(df_display)
+
     fc1,fc2 = st.columns([1,2])
     with fc1: search_col = st.selectbox("Buscar en", ['(todas)'] + list(df_display.columns), key="exp_col")
     with fc2: search_term = st.text_input("Filtrar", key="exp_term", placeholder="Escribe para filtrar...")
@@ -1113,10 +1119,12 @@ def render_explorar(flag_files):
             for col in filtered.select_dtypes(include=['object']).columns: mask |= filtered[col].astype(str).str.contains(search_term, case=False, na=False)
             filtered = filtered[mask]
         st.caption(f"🔍 {len(filtered):,} de {len(df_display):,}")
-    sortable = [c for c in filtered.columns if filtered[c].dtype in ['int64','float64','int32','float32']]
+    sortable = [c for c in filtered.columns if filtered[c].dtype in ['int64','float64','int32','float32','Int64','Float64']]
     if sortable:
         sort_col = st.selectbox("Ordenar por", ['(sin ordenar)'] + sortable, key="exp_sort")
         if sort_col != '(sin ordenar)': filtered = filtered.sort_values(sort_col, ascending=False)
+    # Format importe after sort
+    filtered = _format_importe_col(filtered)
     st.dataframe(filtered.head(1000), use_container_width=True, height=500, hide_index=True)
 
     with st.expander("🔎 Buscar en TODAS las señales"):
@@ -1245,11 +1253,80 @@ FLAG_LABELS = {
     'modificacion':    {'label': 'Modificaciones',         'short': 'F11','pill': 'scr-pill-amber',  'color_key': 'amber'},
 }
 
-# Column rename map for display
+# Column rename — covers ALL parquets
 COL_RENAME = {
-    'n_adj': 'Adjudicaciones', 'importe_total': 'Importe total',
-    'importe': 'Importe', 'n_flags': 'Nº señales', 'empresa': 'Empresa',
-    'adjudicatario': 'Empresa', 'nombre': 'Empresa',
+    # ── Company / person identifiers ──
+    'empresa_norm':'Empresa', 'adj_norm':'Empresa', 'adjudicatario':'Adjudicatario',
+    'persona':'Persona', 'empresa_1':'Empresa 1', 'empresa_2':'Empresa 2',
+    'ute_name':'Nombre UTE', 'member_1':'Miembro 1', 'member_2':'Miembro 2',
+    'personas':'Personas vinculadas',
+    # ── Amounts ──
+    'n_adj':'Nº adjudicaciones', 'importe':'Importe total', 'importe_total':'Importe total',
+    'importe_adjudicacion':'Importe adj.', 'importe_par':'Importe par',
+    'importe_e1':'Importe emp. 1', 'importe_e2':'Importe emp. 2',
+    'importe_ute':'Importe UTE', 'importe_cluster':'Importe cluster',
+    'importe_medio_cluster':'Importe medio cluster', 'importe_total_par':'Importe total par',
+    'importe_total_empresa':'Importe total empresa', 'importe_mods':'Importe modificaciones',
+    'capital_euros':'Capital social (€)',
+    'n_adj_e1':'Adj. emp. 1', 'n_adj_e2':'Adj. emp. 2', 'n_adj_ute':'Adj. UTE',
+    'n_adj_empresa':'Adj. empresa', 'max_adj':'Máx. adj.',
+    # ── Flag counts ──
+    'n_flags_total':'Nº señales', 'n_flags':'Nº señales',
+    # ── Dates ──
+    'fecha_adjudicacion':'Fecha adj.', 'fecha_constitucion':'Fecha constitución',
+    'fecha_disolucion':'Fecha disolución', 'fecha_concursal':'Fecha concursal',
+    # ── F1 ──
+    'dias_desde_constitucion':'Días desde constitución',
+    # ── F2 ──
+    'ratio_importe_capital':'Ratio importe/capital',
+    # ── F4 ──
+    'dias_hasta_disolucion':'Días hasta disolución',
+    # ── F6 network ──
+    'n_organos_comunes':'Órganos comunes', 'organos_comunes':'Lista órganos comunes',
+    'n_empresas_persona':'Empresas por persona', 'n_organos_concurrent':'Órganos concurrentes',
+    'pct_concurrent':'% concurrencia', 'board_overlap':'Overlap consejo',
+    'n_shared_board':'Consejeros compartidos', 'board_e1':'Consejo emp. 1', 'board_e2':'Consejo emp. 2',
+    'n_personas':'Nº personas', 'n_personas_par':'Personas en par',
+    'n_pares':'Nº pares', 'n_empresas':'Nº empresas', 'max_organos':'Máx. órganos',
+    'total_flags':'Total señales', 'max_cargo_weight':'Peso máx. cargo', 'cargo_weight':'Peso cargo',
+    'f6_score':'Score red (F6)',
+    # ── F7 ──
+    'organo_contratante':'Órgano contratante', 'total_adj_organo':'Total adj. órgano',
+    'total_importe_organo':'Importe total órgano', 'pct_adj_organo':'% adj. en órgano',
+    'pct_importe_organo':'% importe en órgano', 'f7_max_conc':'Máx. concentración (F7)',
+    'threshold':'Umbral',
+    # ── F8 ──
+    'organos':'Órganos',
+    # ── F9 ──
+    'provincia_borme':'Provincia registro', 'ccaa_borme':'CCAA registro',
+    'ccaa_contrato_principal':'CCAA contratos',
+    # ── F10 ──
+    'n_contratos_cluster':'Contratos en cluster', 'supera_umbral':'Supera umbral',
+    'ratio_sobre_umbral':'Ratio sobre umbral', 'n_contratos_total':'Contratos totales par',
+    'ventana_dias':'Ventana (días)', 'umbral':'Umbral (€)',
+    # ── F11 ──
+    'n_contratos':'Nº contratos', 'n_modificaciones':'Nº modificaciones',
+    'pct_modificados':'% modificados',
+    # ── Contract details ──
+    'objeto':'Objeto del contrato', 'id':'ID contrato',
+    # ── Grupos corporativos ──
+    'grupo_reason':'Razón agrupación',
+    # ── Scoring (useful info — no longer hidden) ──
+    'risk_score':'Score riesgo', 'score':'Score', 'score_max':'Score máx.',
+    'score_sum':'Score suma', 'par_score':'Score par', 'score_total':'Score total',
+    'min_organos':'Mín. órganos', 'concentracion':'Concentración',
+    # ── Bool flags ──
+    'F1_recien_creada':'F1 · Recién creada', 'F2_capital_ridiculo':'F2 · Capital mínimo',
+    'F4_disolucion':'F4 · Disuelta', 'F5_concursal':'F5 · Concursal',
+    'F6_red_admin':'F6 · Red admin.', 'F7_concentracion':'F7 · Concentración',
+    'F8_ute_sospechosa':'F8 · UTE vinculada', 'F9_geo_discrepancia':'F9 · Geo discrepancia',
+    'F10_troceo':'F10 · Fraccionamiento', 'F11_modificaciones':'F11 · Modificaciones',
+    # ── F6 detail bools ──
+    'F1_recien_creada_e1':'F1 emp.1', 'F1_recien_creada_e2':'F1 emp.2', 'F1_recien_creada_any':'F1 alguna',
+    'F2_capital_ridiculo_e1':'F2 emp.1', 'F2_capital_ridiculo_e2':'F2 emp.2', 'F2_capital_ridiculo_any':'F2 alguna',
+    'F4_disolucion_e1':'F4 emp.1', 'F4_disolucion_e2':'F4 emp.2', 'F4_disolucion_any':'F4 alguna',
+    'F5_concursal_e1':'F5 emp.1', 'F5_concursal_e2':'F5 emp.2', 'F5_concursal_any':'F5 alguna',
+    'F1_any':'F1 alguna', 'F2_any':'F2 alguna', 'F4_any':'F4 alguna', 'F5_any':'F5 alguna',
 }
 
 def _flag_info(col):
@@ -1281,23 +1358,39 @@ def _rename_columns(df):
     """Rename raw column names to human-readable ones."""
     rmap = {}
     for c in df.columns:
+        # Exact match first (case-sensitive for bool flags like F1_recien_creada)
+        if c in COL_RENAME:
+            rmap[c] = COL_RENAME[c]
+            continue
+        # Case-insensitive exact match
         cl = c.lower()
-        # Check flag columns first
-        info = _flag_info(c)
-        if info:
-            rmap[c] = info['short']
-            continue
-        # Check known columns
-        if cl in COL_RENAME:
-            rmap[c] = COL_RENAME[cl]
-            continue
-        # Partial matches
         for k, v in COL_RENAME.items():
-            if k in cl:
+            if cl == k.lower():
                 rmap[c] = v
                 break
     if rmap:
         df = df.rename(columns=rmap)
+    return df
+
+def _format_importe_col(df):
+    """Format any importe/capital columns to readable currency strings."""
+    for c in df.columns:
+        cl = c.lower()
+        if any(k in cl for k in ['importe','capital']):
+            if df[c].dtype in ('float64','Float64','int64','Int64'):
+                df[c] = df[c].apply(lambda v: f"{v/1e6:,.2f}M€" if pd.notna(v) and abs(v) >= 1e6
+                    else f"{v:,.0f}€" if pd.notna(v) else "")
+    return df
+
+def _format_pct_col(df):
+    """Format percentage columns."""
+    for c in df.columns:
+        cl = c.lower()
+        if any(k in cl for k in ['pct_','% ']) and 'modificados' not in cl:
+            if df[c].dtype in ('float64','Float64'):
+                df[c] = df[c].apply(lambda v: f"{v:.1%}" if pd.notna(v) else "")
+        elif 'modificados' in cl and df[c].dtype in ('float64','Float64'):
+            df[c] = df[c].apply(lambda v: f"{v:.1%}" if pd.notna(v) else "")
     return df
 
 def render_screener(flag_files):
@@ -1513,19 +1606,37 @@ def render_screener(flag_files):
     with m4:
         st.metric("Señales activas", f"{sum(int(df_filtered[c].sum()) for c in bool_cols):,}")
 
+    # ── Prepare display table ──
+    df_show = _rename_columns(clean_df(df_filtered))
+
+    # Reorder: Empresa first, then numeric, then flags, then Nº señales last
+    col_order = []
+    empresa_col = next((c for c in df_show.columns if c == 'Empresa'), None)
+    if empresa_col:
+        col_order.append(empresa_col)
+    for c in df_show.columns:
+        if c not in col_order and c != 'Nº señales' and df_show[c].dtype != bool:
+            col_order.append(c)
+    for c in df_show.columns:
+        if df_show[c].dtype == bool:
+            col_order.append(c)
+    if 'Nº señales' in df_show.columns:
+        col_order.append('Nº señales')
+    df_show = df_show[[c for c in col_order if c in df_show.columns]]
+
+    # Sortable columns (before formatting)
+    sortable = [c for c in df_show.columns if df_show[c].dtype in ('int64','float64','int32','float32','Int64','Float64')]
+
     # ── Search + Sort ──
     sf1, sf2 = st.columns([2.5, 1])
     with sf1:
         search_q = st.text_input("🔍 Buscar", key="scr_search",
             placeholder="Nombre de empresa, órgano, persona…")
     with sf2:
-        sortable = [c for c in clean_df(df_filtered).columns
-                    if df_filtered[c].dtype in ['int64','float64','int32','float32']]
         sort_col = '(sin ordenar)'
         if sortable:
             sort_col = st.selectbox("Ordenar", ['(sin ordenar)'] + sortable, key="scr_sort")
 
-    df_show = _rename_columns(clean_df(df_filtered))
     if search_q and len(search_q) >= 2:
         smask = pd.Series(False, index=df_show.index)
         for col in df_show.select_dtypes(include=['object']).columns:
@@ -1534,6 +1645,10 @@ def render_screener(flag_files):
         st.caption(f"🔍 {len(df_show):,} resultados para «{search_q}»")
     if sort_col != '(sin ordenar)' and sort_col in df_show.columns:
         df_show = df_show.sort_values(sort_col, ascending=False)
+
+    # Format after sort (so numeric sort works)
+    df_show = _format_importe_col(df_show)
+    df_show = _format_pct_col(df_show)
 
     st.dataframe(df_show.head(2000), use_container_width=True, height=520, hide_index=True)
     st.caption(f"Mostrando {min(len(df_show), 2000):,} de {len(df_show):,}")
