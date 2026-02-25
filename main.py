@@ -1233,16 +1233,23 @@ def render_metodo():
 
 # Friendly names — keys are distinctive substrings to match any column naming convention
 FLAG_LABELS = {
-    'recien_cread':    {'label': 'Recién creada',          'short': 'F1', 'icon': '🆕', 'pill': 'scr-pill-red',    'color_key': 'red'},
-    'capital_ridic':   {'label': 'Capital mínimo',         'short': 'F2', 'icon': '💰', 'pill': 'scr-pill-amber',  'color_key': 'amber'},
-    'disolucion':      {'label': 'Disuelta',               'short': 'F4', 'icon': '💀', 'pill': 'scr-pill-red',    'color_key': 'red'},
-    'concursal':       {'label': 'Concursal',              'short': 'F5', 'icon': '⚖️', 'pill': 'scr-pill-red',    'color_key': 'red'},
-    'admin_network':   {'label': 'Red administradores',    'short': 'F6', 'icon': '🕸️', 'pill': 'scr-pill-blue',   'color_key': 'blue2'},
-    'concentracion':   {'label': 'Concentración',          'short': 'F7', 'icon': '🎯', 'pill': 'scr-pill-teal',   'color_key': 'teal'},
-    'ute':             {'label': 'UTEs vinculadas',        'short': 'F8', 'icon': '🤝', 'pill': 'scr-pill-amber',  'color_key': 'amber'},
-    'geo_discrep':     {'label': 'Discrepancia geográfica','short': 'F9', 'icon': '📍', 'pill': 'scr-pill-purple', 'color_key': 'purple'},
-    'troceo':          {'label': 'Fraccionamiento',        'short': 'F10','icon': '✂️', 'pill': 'scr-pill-red',    'color_key': 'red'},
-    'modificacion':    {'label': 'Modificaciones',         'short': 'F11','icon': '📝', 'pill': 'scr-pill-amber',  'color_key': 'amber'},
+    'recien_cread':    {'label': 'Recién creada',          'short': 'F1', 'pill': 'scr-pill-red',    'color_key': 'red'},
+    'capital_ridic':   {'label': 'Capital mínimo',         'short': 'F2', 'pill': 'scr-pill-amber',  'color_key': 'amber'},
+    'disolucion':      {'label': 'Disuelta',               'short': 'F4', 'pill': 'scr-pill-red',    'color_key': 'red'},
+    'concursal':       {'label': 'Concursal',              'short': 'F5', 'pill': 'scr-pill-red',    'color_key': 'red'},
+    'red_admin':       {'label': 'Red administradores',    'short': 'F6', 'pill': 'scr-pill-blue',   'color_key': 'blue2'},
+    'concentracion':   {'label': 'Concentración',          'short': 'F7', 'pill': 'scr-pill-teal',   'color_key': 'teal'},
+    'ute_sospech':     {'label': 'UTEs vinculadas',        'short': 'F8', 'pill': 'scr-pill-amber',  'color_key': 'amber'},
+    'geo_discrep':     {'label': 'Discrepancia geográfica','short': 'F9', 'pill': 'scr-pill-purple', 'color_key': 'purple'},
+    'troceo':          {'label': 'Fraccionamiento',        'short': 'F10','pill': 'scr-pill-red',    'color_key': 'red'},
+    'modificacion':    {'label': 'Modificaciones',         'short': 'F11','pill': 'scr-pill-amber',  'color_key': 'amber'},
+}
+
+# Column rename map for display
+COL_RENAME = {
+    'n_adj': 'Adjudicaciones', 'importe_total': 'Importe total',
+    'importe': 'Importe', 'n_flags': 'Nº señales', 'empresa': 'Empresa',
+    'adjudicatario': 'Empresa', 'nombre': 'Empresa',
 }
 
 def _flag_info(col):
@@ -1255,7 +1262,7 @@ def _flag_info(col):
 
 def _flag_label(col):
     info = _flag_info(col)
-    if info: return f"{info['icon']} {info['label']} ({info['short']})"
+    if info: return f"{info['short']} · {info['label']}"
     return col
 
 def _flag_short(col):
@@ -1269,6 +1276,29 @@ def _flag_pill_class(col):
 def _flag_color(col):
     info = _flag_info(col)
     return C.get(info['color_key'], C['blue2']) if info else C['blue2']
+
+def _rename_columns(df):
+    """Rename raw column names to human-readable ones."""
+    rmap = {}
+    for c in df.columns:
+        cl = c.lower()
+        # Check flag columns first
+        info = _flag_info(c)
+        if info:
+            rmap[c] = info['short']
+            continue
+        # Check known columns
+        if cl in COL_RENAME:
+            rmap[c] = COL_RENAME[cl]
+            continue
+        # Partial matches
+        for k, v in COL_RENAME.items():
+            if k in cl:
+                rmap[c] = v
+                break
+    if rmap:
+        df = df.rename(columns=rmap)
+    return df
 
 def render_screener(flag_files):
 
@@ -1353,7 +1383,7 @@ def render_screener(flag_files):
     for c in bool_cols:
         info = _flag_info(c)
         if info:
-            flag_opts[c] = f"{info['icon']}  {info['short']} · {info['label']}  —  {int(df_raw[c].sum()):,}"
+            flag_opts[c] = f"{info['short']} · {info['label']}  —  {int(df_raw[c].sum()):,}"
         else:
             flag_opts[c] = f"{c}  —  {int(df_raw[c].sum()):,}"
 
@@ -1420,55 +1450,47 @@ def render_screener(flag_files):
     # ══════════════════════════════════════════════
     # RESULTS BANNER
     # ══════════════════════════════════════════════
-    pills = []
+    # Build pills as simple CSS-class spans (no inline styles to avoid f-string quote issues)
+    pills_parts = []
     for c in selected_flags:
         info = _flag_info(c)
-        color = _flag_color(c)
-        if info:
-            pill_text = f"{info['icon']} {info['short']} · {info['label']}"
-        else:
-            pill_text = c
-        pills.append(
-            f'<span style="display:inline-flex;align-items:center;gap:4px;'
-            f'padding:4px 12px;border-radius:8px;font-size:.72rem;font-family:DM Sans;font-weight:600;'
-            f'background:{color}18;color:{color};border:1px solid {color}30">'
-            f'{pill_text}</span>')
+        pcls = _flag_pill_class(c)
+        lbl = _flag_label(c) if info else c
+        pills_parts.append('<span class="scr-pill ' + pcls + '">' + lbl + '</span>')
+    pills_html = "".join(pills_parts)
 
-    logic_badge = ""
+    logic_html = ""
     if len(selected_flags) >= 2:
-        lc = C['teal'] if is_and else C['amber']
-        lt = 'AND — todas' if is_and else 'OR — al menos 1'
-        logic_badge = (
-            f'<span style="display:inline-block;padding:3px 10px;border-radius:6px;'
-            f'font-family:IBM Plex Mono;font-size:.58rem;font-weight:700;letter-spacing:.06em;'
-            f'background:{lc}20;color:{lc};border:1px solid {lc}35">{lt}</span>')
+        if is_and:
+            logic_html = '<span class="scr-logic scr-logic-and">AND</span>'
+        else:
+            logic_html = '<span class="scr-logic scr-logic-or">OR</span>'
 
-    st.markdown(f"""
-    <div style="background:{C['card']};border:1px solid {C['border']};border-radius:14px;
-        padding:24px 28px;margin:4px 0 18px">
-        <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap">
-            <div style="flex-shrink:0;min-width:110px">
-                <div style="font-family:IBM Plex Mono;font-size:2.4rem;font-weight:700;
-                    color:{C['text']};line-height:1;letter-spacing:-.02em">{len(df_filtered):,}</div>
-                <div style="font-family:IBM Plex Mono;font-size:.56rem;color:{C['muted']};
-                    letter-spacing:.12em;text-transform:uppercase;margin-top:6px">
-                    EMPRESAS · {pct:.1f}% DEL TOTAL</div>
-            </div>
-            <div style="width:1px;height:48px;background:{C['border']}"></div>
-            <div style="flex:1;min-width:200px">
-                {'<div style="margin-bottom:8px">' + logic_badge + '</div>' if logic_badge else ''}
-                <div style="display:flex;flex-wrap:wrap;gap:6px">{"".join(pills)}</div>
-            </div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    banner = (
+        '<div class="scr-results">'
+        '<div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap">'
+        '<div style="flex-shrink:0;min-width:110px">'
+        '<div class="scr-count">' + f"{len(df_filtered):,}" + '</div>'
+        '<div class="scr-count-label">'
+        + f"empresas · {pct:.1f}% del total" +
+        '</div></div>'
+        '<div style="width:1px;height:48px;background:' + C['border'] + '"></div>'
+        '<div style="flex:1;min-width:200px">'
+        + ('<div style="margin-bottom:8px">' + logic_html + '</div>' if logic_html else '') +
+        '<div class="scr-active-flags">' + pills_html + '</div>'
+        '</div></div></div>'
+    )
+    st.markdown(banner, unsafe_allow_html=True)
 
     if len(df_filtered) == 0:
-        st.markdown(f"""<div style="text-align:center;padding:40px;color:{C['muted']}">
-            <div style="font-size:1.4rem;margin-bottom:6px;opacity:.35">∅</div>
-            <span style="font-size:.88rem">Ninguna empresa cumple {'todas' if is_and else 'ninguna de'} las señales.</span><br>
-            <span style="font-size:.76rem">Cambia señales o prueba modo {'OR' if is_and else 'AND'}.</span>
-        </div>""", unsafe_allow_html=True)
+        msg = 'todas' if is_and else 'ninguna de'
+        alt = 'OR' if is_and else 'AND'
+        st.markdown(
+            '<div style="text-align:center;padding:40px;color:' + C['muted'] + '">'
+            '<div style="font-size:1.2rem;margin-bottom:6px;opacity:.35">Sin resultados</div>'
+            '<span style="font-size:.84rem">Ninguna empresa cumple ' + msg + ' las señales.</span><br>'
+            '<span style="font-size:.76rem">Cambia señales o prueba modo ' + alt + '.</span>'
+            '</div>', unsafe_allow_html=True)
         return
 
     # ── Metrics ──
@@ -1503,7 +1525,7 @@ def render_screener(flag_files):
         if sortable:
             sort_col = st.selectbox("Ordenar", ['(sin ordenar)'] + sortable, key="scr_sort")
 
-    df_show = clean_df(df_filtered)
+    df_show = _rename_columns(clean_df(df_filtered))
     if search_q and len(search_q) >= 2:
         smask = pd.Series(False, index=df_show.index)
         for col in df_show.select_dtypes(include=['object']).columns:
