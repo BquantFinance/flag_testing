@@ -563,7 +563,7 @@ FLAGS = {
 # ── Pipeline-level metadata (source stats not derivable from output parquets) ──
 # Update these if you re-run the pipeline with new data.
 PIPELINE = {
-    'borme_pdfs': 64_000, 'borme_actos': 17_100_000, 'borme_empresas': 2_770_000, 'borme_personas': 3_800_000,
+    'borme_pdfs': 126_065, 'borme_actos': 17_100_000, 'borme_empresas': 2_770_000, 'borme_personas': 3_800_000,
     'placsp_total': 8_700_000, 'placsp_useful': 5_800_000,
     'cat_total': 3_400_000, 'cat_menores': 177_000,
     'stop_words': 5_550, 'manual_rules': 203, 'auto_rules': 5_400,
