@@ -1231,35 +1231,44 @@ def render_metodo():
 
 # ═══════════════ TAB 4: SCREENER ═══════════════
 
-# Friendly names for boolean columns in risk_scoring
+# Friendly names — keys are distinctive substrings to match any column naming convention
 FLAG_LABELS = {
-    'flag1_recien_creada':     {'label': '🆕 Recién creada (F1)',               'pill': 'scr-pill-red'},
-    'flag2_capital_ridiculo':  {'label': '💰 Capital mínimo (F2)',              'pill': 'scr-pill-amber'},
-    'flag4_disolucion':        {'label': '💀 Disuelta (F4)',                    'pill': 'scr-pill-red'},
-    'flag5_concursal':         {'label': '⚖️ Concursal (F5)',                   'pill': 'scr-pill-red'},
-    'flag6':                   {'label': '🕸️ Red administradores (F6)',          'pill': 'scr-pill-blue'},
-    'flag7':                   {'label': '🎯 Concentración (F7)',               'pill': 'scr-pill-teal'},
-    'flag8':                   {'label': '🤝 UTEs vinculadas (F8)',             'pill': 'scr-pill-amber'},
-    'flag9':                   {'label': '📍 Geo discrepancia (F9)',            'pill': 'scr-pill-purple'},
-    'flag10':                  {'label': '✂️ Fraccionamiento (F10)',             'pill': 'scr-pill-red'},
-    'flag11':                  {'label': '📝 Modificaciones (F11)',             'pill': 'scr-pill-amber'},
+    'recien_cread':    {'label': 'Recién creada',          'short': 'F1', 'icon': '🆕', 'pill': 'scr-pill-red',    'color_key': 'red'},
+    'capital_ridic':   {'label': 'Capital mínimo',         'short': 'F2', 'icon': '💰', 'pill': 'scr-pill-amber',  'color_key': 'amber'},
+    'disolucion':      {'label': 'Disuelta',               'short': 'F4', 'icon': '💀', 'pill': 'scr-pill-red',    'color_key': 'red'},
+    'concursal':       {'label': 'Concursal',              'short': 'F5', 'icon': '⚖️', 'pill': 'scr-pill-red',    'color_key': 'red'},
+    'admin_network':   {'label': 'Red administradores',    'short': 'F6', 'icon': '🕸️', 'pill': 'scr-pill-blue',   'color_key': 'blue2'},
+    'concentracion':   {'label': 'Concentración',          'short': 'F7', 'icon': '🎯', 'pill': 'scr-pill-teal',   'color_key': 'teal'},
+    'ute':             {'label': 'UTEs vinculadas',        'short': 'F8', 'icon': '🤝', 'pill': 'scr-pill-amber',  'color_key': 'amber'},
+    'geo_discrep':     {'label': 'Discrepancia geográfica','short': 'F9', 'icon': '📍', 'pill': 'scr-pill-purple', 'color_key': 'purple'},
+    'troceo':          {'label': 'Fraccionamiento',        'short': 'F10','icon': '✂️', 'pill': 'scr-pill-red',    'color_key': 'red'},
+    'modificacion':    {'label': 'Modificaciones',         'short': 'F11','icon': '📝', 'pill': 'scr-pill-amber',  'color_key': 'amber'},
 }
 
-def _flag_label(col):
-    """Get friendly label for a boolean flag column."""
+def _flag_info(col):
+    """Get full info dict for a flag column, matching by substring."""
     col_l = col.lower()
     for key, info in FLAG_LABELS.items():
         if key in col_l:
-            return info['label']
+            return info
+    return None
+
+def _flag_label(col):
+    info = _flag_info(col)
+    if info: return f"{info['icon']} {info['label']} ({info['short']})"
     return col
 
+def _flag_short(col):
+    info = _flag_info(col)
+    return info['short'] if info else col[:6]
+
 def _flag_pill_class(col):
-    """Get pill CSS class for a flag column."""
-    col_l = col.lower()
-    for key, info in FLAG_LABELS.items():
-        if key in col_l:
-            return info['pill']
-    return 'scr-pill-blue'
+    info = _flag_info(col)
+    return info['pill'] if info else 'scr-pill-blue'
+
+def _flag_color(col):
+    info = _flag_info(col)
+    return C.get(info['color_key'], C['blue2']) if info else C['blue2']
 
 def render_screener(flag_files):
 
@@ -1272,34 +1281,24 @@ def render_screener(flag_files):
     if not scoring_files:
         st.markdown("""<div class="scr-empty">
             <span class="scr-empty-icon">📭</span>
-            No se encontró el archivo de scoring unificado.<br>
-            Coloca <code>risk_scoring_unificado.parquet</code> en <code>anomalias/</code>.
+            No se encontró <code>risk_scoring_unificado.parquet</code>.
         </div>""", unsafe_allow_html=True)
         return
 
     # ── Scope selector ──
-    scope_names = {s: f"{'🇪🇸 Nacional' if 'cat' not in s else '🏗️ Catalunya'}" for s, fi in scoring_files.items()}
+    scope_names = {}
+    for s, fi in scoring_files.items():
+        scope_names[s] = '🇪🇸 Nacional' if 'cat' not in s else '🏗️ Catalunya'
     if len(scoring_files) > 1:
-        sc1, sc2 = st.columns([3, 1])
-        with sc1:
-            st.markdown(f"""<div class="scr-header">Screener de empresas</div>
-                <div class="scr-sub">Filtra por señales para encontrar empresas con patrones específicos.</div>
-            """, unsafe_allow_html=True)
-        with sc2:
-            sel_scope = st.radio("Ámbito", list(scoring_files.keys()),
-                format_func=lambda x: scope_names[x], horizontal=True, key="scr_scope",
-                label_visibility="collapsed")
+        sel_scope = st.radio("Ámbito", list(scoring_files.keys()),
+            format_func=lambda x: scope_names[x], horizontal=True, key="scr_scope",
+            label_visibility="collapsed")
     else:
         sel_scope = list(scoring_files.keys())[0]
-        st.markdown(f"""<div class="scr-header">Screener de empresas</div>
-            <div class="scr-sub">Filtra por señales para encontrar empresas con patrones específicos.</div>
-        """, unsafe_allow_html=True)
 
-    # ── Load data ──
-    with st.spinner("Cargando..."):
+    with st.spinner("Cargando…"):
         df_raw = load_pq(scoring_files[sel_scope]['path'])
 
-    # ── Detect boolean flag columns ──
     bool_cols = [c for c in df_raw.columns if df_raw[c].dtype == bool and df_raw[c].sum() > 0]
     if not bool_cols:
         st.info("No se detectaron columnas de señales booleanas.")
@@ -1307,163 +1306,171 @@ def render_screener(flag_files):
     bool_cols = sorted(bool_cols, key=lambda c: -int(df_raw[c].sum()))
     nf_col = next((c for c in df_raw.columns if 'n_flags' in c.lower()), None)
 
-    # ── Top metrics ──
-    mc1, mc2, mc3, mc4 = st.columns(4)
-    with mc1: st.metric("Empresas en dataset", f"{len(df_raw):,}")
-    with mc2: st.metric("Señales detectadas", f"{len(bool_cols)}")
-    with mc3:
-        if nf_col: st.metric("Con ≥2 señales", f"{int((df_raw[nf_col] >= 2).sum()):,}")
-    with mc4:
-        if nf_col: st.metric("Con ≥3 señales", f"{int((df_raw[nf_col] >= 3).sum()):,}")
+    # ══════════════════════════════════════════════
+    # PANORAMA — clean horizontal bar chart of all flags
+    # ══════════════════════════════════════════════
+    chart_labels = []
+    chart_counts = []
+    chart_colors = []
+    for fc in reversed(bool_cols):
+        info = _flag_info(fc)
+        if info:
+            chart_labels.append(f"{info['short']}  {info['label']}")
+        else:
+            chart_labels.append(fc)
+        chart_counts.append(int(df_raw[fc].sum()))
+        chart_colors.append(_flag_color(fc))
 
-    # ── Flag overview as visual grid ──
-    st.markdown(f"""
-    <div style="margin:20px 0 8px; display:flex; align-items:center; gap:12px">
-        <div style="font-family:IBM Plex Mono; font-size:.64rem; font-weight:600; color:{C['accent']};
-            letter-spacing:.14em; text-transform:uppercase; text-shadow:0 0 18px rgba(224,90,58,.2)">
-            Señales disponibles</div>
-        <div style="flex:1; height:1px; background:linear-gradient(90deg,{C['border']},transparent)"></div>
-    </div>
-    <div style="font-size:.78rem; color:{C['muted']}; margin-bottom:14px">
-        Cada tarjeta muestra una señal y cuántas empresas la tienen. Selecciona abajo cuáles quieres filtrar.
-    </div>
-    """, unsafe_allow_html=True)
+    fig_overview = go.Figure(go.Bar(
+        y=chart_labels, x=chart_counts, orientation='h',
+        marker=dict(color=chart_colors, opacity=.88, line=dict(width=0)),
+        text=[f"  {c:,}" for c in chart_counts],
+        textposition='outside',
+        textfont=dict(family='IBM Plex Mono', size=11, color=C['text2']),
+        hovertemplate='<b>%{y}</b><br>%{x:,} empresas<extra></extra>'))
+    fig_overview.update_layout(
+        **PL, height=max(220, len(bool_cols) * 36 + 50),
+        margin=dict(l=0, r=80, t=36, b=0),
+        xaxis=dict(gridcolor=C['grid'], showticklabels=False, zeroline=False),
+        yaxis=dict(tickfont=dict(size=11, family='DM Sans', color=C['text2']),
+            automargin=True),
+        title=dict(
+            text=f"<b>{len(df_raw):,}</b> empresas  ·  <b>{len(bool_cols)}</b> señales detectadas",
+            font=dict(size=12, color=C['text2'], family='DM Sans'),
+            x=0, xanchor='left'),
+        bargap=.25)
+    st.plotly_chart(fig_overview, use_container_width=True)
 
-    # Render flag overview cards in rows of 3
-    flag_rows = [bool_cols[i:i+3] for i in range(0, len(bool_cols), 3)]
-    for row in flag_rows:
-        cols = st.columns(len(row))
-        for i, flag_col in enumerate(row):
-            count = int(df_raw[flag_col].sum())
-            pct = count / len(df_raw) * 100
-            label = _flag_label(flag_col)
-            pill_cls = _flag_pill_class(flag_col)
-            # Map pill class to color
-            color_map = {'scr-pill-red': C['red'], 'scr-pill-blue': C['blue2'],
-                'scr-pill-amber': C['amber'], 'scr-pill-teal': C['teal'], 'scr-pill-purple': C['purple']}
-            color = color_map.get(pill_cls, C['blue2'])
-            with cols[i]:
-                st.markdown(f"""<div style="background:{C['card']}; border:1px solid {C['border']};
-                    border-radius:14px; padding:16px 18px; transition:all .3s; position:relative; overflow:hidden">
-                    <div style="position:absolute; top:0;left:0;right:0; height:2px;
-                        background:linear-gradient(90deg,{color},transparent); opacity:.6"></div>
-                    <div style="font-family:DM Sans; font-size:.82rem; font-weight:700; color:{C['text']};
-                        margin-bottom:6px">{label}</div>
-                    <div style="display:flex; align-items:baseline; gap:8px">
-                        <span style="font-family:IBM Plex Mono; font-size:1.3rem; font-weight:700;
-                            color:{color}; text-shadow:0 0 16px {color}33">{count:,}</span>
-                        <span style="font-family:IBM Plex Mono; font-size:.65rem; color:{C['muted']}">
-                            empresas · {pct:.1f}%</span>
-                    </div>
-                    <div style="margin-top:8px; height:4px; border-radius:2px; background:rgba(255,255,255,.04);
-                        overflow:hidden">
-                        <div style="height:100%; width:{min(pct*2, 100):.0f}%; background:{color};
-                            border-radius:2px; box-shadow:0 0 8px {color}44"></div>
-                    </div>
-                </div>""", unsafe_allow_html=True)
+    # ══════════════════════════════════════════════
+    # FILTER CONTROLS
+    # ══════════════════════════════════════════════
+    st.markdown(f"""<div style="height:1px;background:linear-gradient(90deg,{C['border']},{C['bg']});
+        margin:4px 0 20px"></div>""", unsafe_allow_html=True)
 
-    # ── Flag selection multiselect ──
-    st.markdown(f"""
-    <div style="margin:24px 0 8px; display:flex; align-items:center; gap:12px">
-        <div style="font-family:IBM Plex Mono; font-size:.64rem; font-weight:600; color:{C['accent']};
-            letter-spacing:.14em; text-transform:uppercase; text-shadow:0 0 18px rgba(224,90,58,.2)">
-            Filtrar</div>
-        <div style="flex:1; height:1px; background:linear-gradient(90deg,{C['border']},transparent)"></div>
-    </div>
-    """, unsafe_allow_html=True)
+    # Build rich option labels
+    flag_opts = {}
+    for c in bool_cols:
+        info = _flag_info(c)
+        if info:
+            flag_opts[c] = f"{info['icon']}  {info['short']} · {info['label']}  —  {int(df_raw[c].sum()):,}"
+        else:
+            flag_opts[c] = f"{c}  —  {int(df_raw[c].sum()):,}"
 
-    flag_options = {c: f"{_flag_label(c)}  ·  {int(df_raw[c].sum()):,}" for c in bool_cols}
-
-    fc1, fc2 = st.columns([3, 1])
+    fc1, fc2 = st.columns([4, 1])
     with fc1:
         selected_flags = st.multiselect(
-            "Señales a filtrar",
+            "Filtrar por señales",
             options=bool_cols,
-            format_func=lambda c: flag_options[c],
+            format_func=lambda c: flag_opts[c],
             key="scr_flags",
-            placeholder="Selecciona señales para filtrar...",
+            placeholder="Elige señales para filtrar empresas…",
         )
     with fc2:
-        if len(selected_flags) > 1:
-            logic = st.radio("Combinar",
-                ["AND · Todas", "OR · Al menos una"],
+        if len(selected_flags) >= 2:
+            logic = st.radio("Lógica",
+                ["AND — Todas", "OR — Al menos 1"],
                 key="scr_logic", label_visibility="collapsed")
             is_and = logic.startswith("AND")
         else:
             is_and = True
-            if selected_flags:
-                st.markdown(f"""<div style="background:{C['card']}; border:1px solid {C['border']};
-                    border-radius:12px; padding:12px 16px; text-align:center; margin-top:2px">
-                    <div style="font-family:IBM Plex Mono; font-size:.6rem; color:{C['muted']};
-                        letter-spacing:.08em; text-transform:uppercase">Modo</div>
-                    <div style="font-family:DM Sans; font-size:.82rem; color:{C['text2']};
-                        font-weight:600; margin-top:2px">1 señal</div>
-                </div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div style="background:{C['card']};border:1px solid {C['border']};
+                border-radius:10px;padding:10px 12px;text-align:center;margin-top:25px">
+                <span style="font-family:IBM Plex Mono;font-size:.6rem;color:{C['muted']};
+                    letter-spacing:.06em">{'SELECCIONA ≥2' if len(selected_flags)<2 else 'FILTRO DIRECTO'}</span>
+            </div>""", unsafe_allow_html=True)
 
-    # ── Empty state ──
+    # ══════════════════════════════════════════════
+    # EMPTY STATE
+    # ══════════════════════════════════════════════
     if not selected_flags:
-        st.markdown(f"""<div style="text-align:center; padding:32px 20px; color:{C['muted']};
-            font-family:DM Sans; font-size:.88rem; margin-top:16px">
-            <div style="font-size:1.6rem; margin-bottom:6px; opacity:.4">🔬</div>
-            Selecciona señales arriba para filtrar el dataset.
-        </div>""", unsafe_allow_html=True)
-
-        # Distribution preview
         if nf_col:
             dist = df_raw[nf_col].value_counts().sort_index()
-            fig = go.Figure(go.Bar(
-                x=[f"{int(k)} señal{'es' if k > 1 else ''}" for k in dist.index], y=dist.values,
-                marker=dict(color=[C['blue'] if k <= 1 else C['amber'] if k <= 2 else C['red'] for k in dist.index],
+            fig_dist = go.Figure(go.Bar(
+                x=[f"{int(k)}" for k in dist.index], y=dist.values,
+                marker=dict(
+                    color=[C['blue'] if k <= 1 else C['amber'] if k <= 2 else C['red'] for k in dist.index],
                     opacity=.85, line=dict(width=0)),
-                hovertemplate='<b>%{x}</b><br>%{y:,} empresas<extra></extra>'))
-            fig.update_layout(**PL, height=240,
-                title=dict(text='Señales acumuladas por empresa', font=dict(size=11), x=0),
-                xaxis=dict(gridcolor=C['grid']), yaxis=dict(title='Empresas', gridcolor=C['grid']), bargap=.15)
-            st.plotly_chart(fig, use_container_width=True)
+                text=[f"{v:,}" for v in dist.values],
+                textposition='outside',
+                textfont=dict(family='IBM Plex Mono', size=10, color=C['muted']),
+                hovertemplate='%{x} señales<br>%{y:,} empresas<extra></extra>'))
+            fig_dist.update_layout(**PL, height=200,
+                title=dict(text='Señales acumuladas por empresa',
+                    font=dict(size=11, color=C['text2']), x=0),
+                xaxis=dict(title='Nº señales', gridcolor=C['grid']),
+                yaxis=dict(gridcolor=C['grid'], showticklabels=False), bargap=.2)
+            st.plotly_chart(fig_dist, use_container_width=True)
         return
 
-    # ═══ FILTER & RESULTS ═══
+    # ══════════════════════════════════════════════
+    # APPLY FILTER
+    # ══════════════════════════════════════════════
     if is_and:
         mask = pd.Series(True, index=df_raw.index)
-        for c in selected_flags: mask &= df_raw[c]
+        for c in selected_flags:
+            mask &= df_raw[c]
     else:
         mask = pd.Series(False, index=df_raw.index)
-        for c in selected_flags: mask |= df_raw[c]
-
+        for c in selected_flags:
+            mask |= df_raw[c]
     df_filtered = df_raw[mask].copy()
-
-    # ── Results banner ──
-    pills_html = "".join(f'<span class="scr-pill {_flag_pill_class(c)}">{_flag_label(c)}</span>' for c in selected_flags)
-    logic_html = ('<span class="scr-logic scr-logic-and">AND</span>' if is_and
-                  else '<span class="scr-logic scr-logic-or">OR</span>')
     pct = len(df_filtered) / len(df_raw) * 100 if len(df_raw) > 0 else 0
 
+    # ══════════════════════════════════════════════
+    # RESULTS BANNER
+    # ══════════════════════════════════════════════
+    pills = []
+    for c in selected_flags:
+        info = _flag_info(c)
+        color = _flag_color(c)
+        if info:
+            pill_text = f"{info['icon']} {info['short']} · {info['label']}"
+        else:
+            pill_text = c
+        pills.append(
+            f'<span style="display:inline-flex;align-items:center;gap:4px;'
+            f'padding:4px 12px;border-radius:8px;font-size:.72rem;font-family:DM Sans;font-weight:600;'
+            f'background:{color}18;color:{color};border:1px solid {color}30">'
+            f'{pill_text}</span>')
+
+    logic_badge = ""
+    if len(selected_flags) >= 2:
+        lc = C['teal'] if is_and else C['amber']
+        lt = 'AND — todas' if is_and else 'OR — al menos 1'
+        logic_badge = (
+            f'<span style="display:inline-block;padding:3px 10px;border-radius:6px;'
+            f'font-family:IBM Plex Mono;font-size:.58rem;font-weight:700;letter-spacing:.06em;'
+            f'background:{lc}20;color:{lc};border:1px solid {lc}35">{lt}</span>')
+
     st.markdown(f"""
-    <div class="scr-results">
-        <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap">
-            <div style="flex-shrink:0">
-                <div class="scr-count">{len(df_filtered):,}</div>
-                <div class="scr-count-label">empresas · {pct:.1f}% del total</div>
+    <div style="background:{C['card']};border:1px solid {C['border']};border-radius:14px;
+        padding:24px 28px;margin:4px 0 18px">
+        <div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap">
+            <div style="flex-shrink:0;min-width:110px">
+                <div style="font-family:IBM Plex Mono;font-size:2.4rem;font-weight:700;
+                    color:{C['text']};line-height:1;letter-spacing:-.02em">{len(df_filtered):,}</div>
+                <div style="font-family:IBM Plex Mono;font-size:.56rem;color:{C['muted']};
+                    letter-spacing:.12em;text-transform:uppercase;margin-top:6px">
+                    EMPRESAS · {pct:.1f}% DEL TOTAL</div>
             </div>
-            <div style="width:1px; height:44px; background:{C['border']}"></div>
-            <div style="flex:1; min-width:200px">
-                <div style="font-size:.68rem; color:{C['muted']}; margin-bottom:6px; font-family:IBM Plex Mono;
-                    letter-spacing:.06em">FILTRO {logic_html}</div>
-                <div class="scr-active-flags">{pills_html}</div>
+            <div style="width:1px;height:48px;background:{C['border']}"></div>
+            <div style="flex:1;min-width:200px">
+                {'<div style="margin-bottom:8px">' + logic_badge + '</div>' if logic_badge else ''}
+                <div style="display:flex;flex-wrap:wrap;gap:6px">{"".join(pills)}</div>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     if len(df_filtered) == 0:
-        st.markdown(f"""<div style="text-align:center; padding:40px 20px; color:{C['muted']}; margin-top:16px">
-            <div style="font-size:1.6rem; margin-bottom:6px; opacity:.4">∅</div>
-            <div style="font-family:DM Sans; font-size:.88rem">Ninguna empresa cumple {'todas' if is_and else 'ninguna de'} las señales.</div>
-            <div style="font-size:.78rem; margin-top:4px">Prueba a cambiar señales o modo de combinación.</div>
+        st.markdown(f"""<div style="text-align:center;padding:40px;color:{C['muted']}">
+            <div style="font-size:1.4rem;margin-bottom:6px;opacity:.35">∅</div>
+            <span style="font-size:.88rem">Ninguna empresa cumple {'todas' if is_and else 'ninguna de'} las señales.</span><br>
+            <span style="font-size:.76rem">Cambia señales o prueba modo {'OR' if is_and else 'AND'}.</span>
         </div>""", unsafe_allow_html=True)
         return
 
-    # ── Result metrics ──
+    # ── Metrics ──
     m1, m2, m3, m4 = st.columns(4)
     with m1:
         imp_col = next((c for c in df_filtered.columns if 'importe' in c.lower() and 'total' in c.lower()), None)
@@ -1475,23 +1482,25 @@ def render_screener(flag_files):
             st.metric("Empresas", f"{len(df_filtered):,}")
     with m2:
         if nf_col and nf_col in df_filtered.columns:
-            st.metric("Media señales/empresa", f"{df_filtered[nf_col].mean():.1f}")
+            st.metric("Media señales", f"{df_filtered[nf_col].mean():.1f}")
     with m3:
         adj_col = next((c for c in df_filtered.columns if 'n_adj' in c.lower() or 'n_contratos' in c.lower()), None)
-        if adj_col: st.metric("Contratos totales", f"{int(df_filtered[adj_col].sum()):,}")
+        if adj_col:
+            st.metric("Contratos", f"{int(df_filtered[adj_col].sum()):,}")
     with m4:
-        active_flags = sum(int(df_filtered[c].sum()) for c in bool_cols)
-        st.metric("Señales activas", f"{active_flags:,}")
+        st.metric("Señales activas", f"{sum(int(df_filtered[c].sum()) for c in bool_cols):,}")
 
-    # ── Search + Sort row ──
-    sf1, sf2 = st.columns([2, 1])
+    # ── Search + Sort ──
+    sf1, sf2 = st.columns([2.5, 1])
     with sf1:
-        search_q = st.text_input("🔍 Buscar en resultados", key="scr_search",
-            placeholder="Nombre de empresa, órgano, persona...")
+        search_q = st.text_input("🔍 Buscar", key="scr_search",
+            placeholder="Nombre de empresa, órgano, persona…")
     with sf2:
         sortable = [c for c in clean_df(df_filtered).columns
                     if df_filtered[c].dtype in ['int64','float64','int32','float32']]
-        sort_col = st.selectbox("Ordenar por", ['(sin ordenar)'] + sortable, key="scr_sort") if sortable else '(sin ordenar)'
+        sort_col = '(sin ordenar)'
+        if sortable:
+            sort_col = st.selectbox("Ordenar", ['(sin ordenar)'] + sortable, key="scr_sort")
 
     df_show = clean_df(df_filtered)
     if search_q and len(search_q) >= 2:
@@ -1503,23 +1512,34 @@ def render_screener(flag_files):
     if sort_col != '(sin ordenar)' and sort_col in df_show.columns:
         df_show = df_show.sort_values(sort_col, ascending=False)
 
-    st.dataframe(df_show.head(2000), use_container_width=True, height=550, hide_index=True)
-    st.caption(f"Mostrando {min(len(df_show), 2000):,} de {len(df_show):,} resultados")
+    st.dataframe(df_show.head(2000), use_container_width=True, height=520, hide_index=True)
+    st.caption(f"Mostrando {min(len(df_show), 2000):,} de {len(df_show):,}")
 
     # ── Breakdown chart ──
-    with st.expander("📊 Distribución de señales en los resultados"):
-        flag_breakdown = {_flag_label(c): int(df_filtered[c].sum()) for c in bool_cols if df_filtered[c].sum() > 0}
-        if flag_breakdown:
-            fb_df = pd.DataFrame({'Señal': list(flag_breakdown.keys()),
-                'Empresas': list(flag_breakdown.values())}).sort_values('Empresas', ascending=True)
-            fig = go.Figure(go.Bar(
-                y=fb_df['Señal'], x=fb_df['Empresas'], orientation='h',
-                marker=dict(color=C['blue'], opacity=.85),
-                hovertemplate='<b>%{y}</b><br>%{x:,} empresas<extra></extra>'))
-            fig.update_layout(**PL, height=max(200, len(fb_df) * 32),
-                xaxis=dict(gridcolor=C['grid']),
-                yaxis=dict(tickfont=dict(size=10, family='DM Sans')), bargap=.2)
-            st.plotly_chart(fig, use_container_width=True)
+    with st.expander("📊 Desglose de señales en estos resultados"):
+        bd_labels = []
+        bd_counts = []
+        bd_colors = []
+        for fc in reversed(bool_cols):
+            n = int(df_filtered[fc].sum())
+            if n > 0:
+                info = _flag_info(fc)
+                bd_labels.append(f"{info['short']}  {info['label']}" if info else fc)
+                bd_counts.append(n)
+                bd_colors.append(_flag_color(fc))
+        if bd_labels:
+            fig_bd = go.Figure(go.Bar(
+                y=bd_labels, x=bd_counts, orientation='h',
+                marker=dict(color=bd_colors, opacity=.85),
+                text=[f"  {v:,}" for v in bd_counts],
+                textposition='outside',
+                textfont=dict(family='IBM Plex Mono', size=10, color=C['text2']),
+                hovertemplate='<b>%{y}</b><br>%{x:,}<extra></extra>'))
+            fig_bd.update_layout(**PL, height=max(180, len(bd_labels) * 32),
+                xaxis=dict(gridcolor=C['grid'], showticklabels=False),
+                yaxis=dict(tickfont=dict(size=10, family='DM Sans'), automargin=True),
+                bargap=.22)
+            st.plotly_chart(fig_bd, use_container_width=True)
 
 
 # ═══════════════ MAIN ═══════════════
